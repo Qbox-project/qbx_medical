@@ -6,6 +6,7 @@ version '1.0.0'
 
 shared_scripts {
 	'@qbx-core/shared/locale.lua',
+	'@qbx-core/import.lua',
 	'locales/en.lua',
 	'locales/*.lua',
 	'config.lua',
@@ -14,6 +15,10 @@ shared_scripts {
 
 server_scripts {
 	'server/main.lua',
+}
+
+modules {
+	'qbx-core:core'
 }
 
 dependencies {

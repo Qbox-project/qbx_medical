@@ -1,3 +1,11 @@
+---@class Injury
+---@field part Bone body part
+---@field severity integer higher numbers are worse injuries
+---@field label string
+
+---@type Injury[]
+Injuries = {}
+
 ---@class BodyPart
 ---@field label string
 ---@field causeLimp boolean
@@ -27,6 +35,10 @@ BodyParts = {
 --- temporary export to aid in qbx-ambulancejob transition
 exports('getBodyPartsDeprecated', function()
     return BodyParts
+end)
+
+exports('getInjuries', function()
+    return Injuries
 end)
 
 RegisterNetEvent('hospital:client:adminHeal', function()
@@ -68,6 +80,13 @@ function ResetMinorInjuries()
             v.severity = 0
         end
     end
+
+    for k, v in pairs(Injuries) do
+        if v.severity <= 2 then
+            v.severity = 0
+            table.remove(Injuries, k)
+        end
+    end
 end
 
 exports('resetMinorInjuries', ResetMinorInjuries)
@@ -77,11 +96,33 @@ function ResetAllInjuries()
         v.isDamaged = false
         v.severity = 0
     end
+
+    Injuries = {}
 end
 
 exports('resetAllInjuries', ResetAllInjuries)
 
-exports('damageBodyPart', function(bone, severity)
+function DamageBodyPart(bone, severity)
     BodyParts[bone].isDamaged = true
     BodyParts[bone].severity = severity
+end
+
+---creates an injury on body part with random severity between 1 and maxSeverity.
+---@param bodyPart BodyPart
+---@param bone Bone
+---@param maxSeverity number
+function CreateInjury(bodyPart, bone, maxSeverity)
+    if bodyPart.isDamaged then return end
+
+    local severity = math.random(1, maxSeverity)
+    DamageBodyPart(bone, severity)
+    Injuries[#Injuries + 1] = {
+        part = bone,
+        label = bodyPart.label,
+        severity = severity,
+    }
+end
+
+exports('createInjury', function(bodyPart, bone, maxSeverity)
+    CreateInjury(bodyPart, bone, maxSeverity)
 end)

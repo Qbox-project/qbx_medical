@@ -1,5 +1,3 @@
-QBCore = exports['qb-core']:GetCoreObject()
-
 ---@type number[] weapon hashes
 CurrentDamageList = {}
 

@@ -1,3 +1,6 @@
+---@type number[] weapon hashes
+CurrentDamageList = {}
+
 ---@class Injury
 ---@field part Bone body part
 ---@field severity integer higher numbers are worse injuries
@@ -150,6 +153,9 @@ function ResetAllInjuries()
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
+
+    CurrentDamageList = {}
+    TriggerServerEvent('hospital:server:SetWeaponDamage', CurrentDamageList)
 end
 
 exports('resetAllInjuries', ResetAllInjuries)

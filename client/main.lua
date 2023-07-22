@@ -32,6 +32,34 @@ BodyParts = {
     ['RFOOT'] = { label = Lang:t('body.right_foot'), causeLimp = true, isDamaged = false, severity = 0 },
 }
 
+BleedLevel = 0
+BleedTickTimer, AdvanceBleedTimer = 0, 0
+FadeOutTimer, BlackoutTimer = 0, 0
+
+exports('getBleedLevel', function()
+    return BleedLevel
+end)
+
+exports('setBleedLevel', function(bleedLevel)
+    BleedLevel = bleedLevel
+end)
+
+exports('getBleedTickTimerDeprecated', function()
+    return BleedTickTimer
+end)
+
+exports('setBleedTickTimerDeprecated', function(timer)
+    BleedTickTimer = timer
+end)
+
+exports('getAdvanceBleedTimerDeprecated', function()
+    return AdvanceBleedTimer
+end)
+
+exports('setAdvanceBleedTimerDeprecated', function(timer)
+    AdvanceBleedTimer = timer
+end)
+
 --- temporary export to aid in qbx-ambulancejob transition
 exports('getBodyPartsDeprecated', function()
     return BodyParts
@@ -87,6 +115,19 @@ function ResetMinorInjuries()
             table.remove(Injuries, k)
         end
     end
+
+    if BleedLevel <= 2 then
+        BleedLevel = 0
+        BleedTickTimer = 0
+        AdvanceBleedTimer = 0
+        FadeOutTimer = 0
+        BlackoutTimer = 0
+    end
+
+    TriggerServerEvent('hospital:server:SyncInjuries', {
+        limbs = BodyParts,
+        isBleeding = BleedLevel
+    })
 end
 
 exports('resetMinorInjuries', ResetMinorInjuries)
@@ -98,6 +139,17 @@ function ResetAllInjuries()
     end
 
     Injuries = {}
+
+    BleedLevel = 0
+    BleedTickTimer = 0
+    AdvanceBleedTimer = 0
+    FadeOutTimer = 0
+    BlackoutTimer = 0
+
+    TriggerServerEvent('hospital:server:SyncInjuries', {
+        limbs = BodyParts,
+        isBleeding = BleedLevel
+    })
 end
 
 exports('resetAllInjuries', ResetAllInjuries)

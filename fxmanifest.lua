@@ -17,6 +17,10 @@ server_scripts {
 	'server/main.lua',
 }
 
+client_scripts {
+	'client/**/*.lua'
+}
+
 modules {
 	'qbx-core:core'
 }
@@ -27,3 +31,4 @@ dependencies {
 }
 
 lua54 'yes'
+use_experimental_fxv2_oal 'yes'

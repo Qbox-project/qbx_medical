@@ -66,3 +66,35 @@ exports('handleBloodLossEffectsDeprecated', function()
         FadeOutTimer += 1
     end
 end)
+
+local function applyBleedEffects()
+    local ped = cache.ped
+    local bleedDamage = BleedLevel * Config.BleedTickDamage
+    ApplyDamageToPed(ped, bleedDamage, false)
+    SendBleedAlert()
+    Hp -= bleedDamage
+    local randX = math.random() + math.random(-1, 1)
+    local randY = math.random() + math.random(-1, 1)
+    local coords = GetOffsetFromEntityInWorldCoords(ped, randX, randY, 0)
+    TriggerServerEvent("evidence:server:CreateBloodDrop", PlayerData.citizenid, PlayerData.metadata.bloodtype, coords)
+
+    if AdvanceBleedTimer >= Config.AdvanceBleedTimer then
+        ApplyBleed(1)
+        AdvanceBleedTimer = 0
+    else
+        AdvanceBleedTimer += 1
+    end
+end
+
+exports('applyBleedEffectsDeprecated', applyBleedEffects)
+
+---reduce bleeding by level. Bleed level cannot be negative.
+---@param level number
+local function removeBleed(level)
+    if BleedLevel == 0 then return end
+    BleedLevel -= level
+    BleedLevel = (BleedLevel < 0) and 0 or BleedLevel
+    SendBleedAlert()
+end
+
+exports('removeBleed', removeBleed)

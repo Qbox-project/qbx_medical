@@ -42,6 +42,8 @@ FadeOutTimer, BlackoutTimer = 0, 0
 ---@type number
 Hp = nil
 
+IsDead = false
+
 exports('getBleedLevel', function()
     return BleedLevel
 end)
@@ -66,11 +68,6 @@ exports('setAdvanceBleedTimerDeprecated', function(timer)
     AdvanceBleedTimer = timer
 end)
 
---- temporary export to aid in qbx-ambulancejob transition
-exports('getBodyPartsDeprecated', function()
-    return BodyParts
-end)
-
 exports('getInjuries', function()
     return Injuries
 end)
@@ -81,6 +78,18 @@ end)
 
 exports('setHp', function(hp)
     Hp = hp
+end)
+
+exports('isDead', function()
+    return IsDead
+end)
+
+exports('kill', function()
+    IsDead = true
+end)
+
+exports('setIsDeadDeprecated', function(isDead)
+    IsDead = isDead
 end)
 
 RegisterNetEvent('hospital:client:adminHeal', function()
@@ -142,6 +151,8 @@ function ResetMinorInjuries()
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
+
+    SendBleedAlert()
 end
 
 exports('resetMinorInjuries', ResetMinorInjuries)
@@ -167,6 +178,8 @@ function ResetAllInjuries()
 
     CurrentDamageList = {}
     TriggerServerEvent('hospital:server:SetWeaponDamage', CurrentDamageList)
+
+    SendBleedAlert()
 end
 
 exports('resetAllInjuries', ResetAllInjuries)
@@ -194,4 +207,42 @@ end
 
 exports('createInjury', function(bodyPart, bone, maxSeverity)
     CreateInjury(bodyPart, bone, maxSeverity)
+end)
+
+---notify the player of bleeding to their body.
+function SendBleedAlert()
+    if IsDead or BleedLevel == 0 then return end
+    lib.notify({ title = Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[BleedLevel]}), type = 'inform' })
+end
+
+exports('sendBleedAlert', SendBleedAlert)
+
+---adds a bleed to the player and alerts them. Total bleed level maxes at 4.
+---@param level 1|2|3|4 speed of the bleed
+function ApplyBleed(level)
+    if BleedLevel == 4 then return end
+    BleedLevel += level
+    BleedLevel = (BleedLevel >= 4) and 4 or BleedLevel
+    SendBleedAlert()
+end
+
+---Creates random injuries on the player
+RegisterNetEvent('hospital:client:SetPain', function()
+    if GetInvokingResource() then return end
+    ApplyBleed(math.random(1, 4))
+ 
+    local bone = Config.Bones[24816]
+    CreateInjury(BodyParts[bone], bone, 4)
+
+    bone = Config.Bones[40269]
+    CreateInjury(BodyParts[bone], bone, 4)
+
+    TriggerServerEvent('hospital:server:SyncInjuries', {
+        limbs = BodyParts,
+        isBleeding = BleedLevel
+    })
+end)
+
+exports('getBleedStateLabelDeprecated', function(level)
+    return Config.BleedingStates[level]
 end)

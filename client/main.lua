@@ -39,6 +39,9 @@ BleedLevel = 0
 BleedTickTimer, AdvanceBleedTimer = 0, 0
 FadeOutTimer, BlackoutTimer = 0, 0
 
+---@type number
+Hp = nil
+
 exports('getBleedLevel', function()
     return BleedLevel
 end)
@@ -70,6 +73,14 @@ end)
 
 exports('getInjuries', function()
     return Injuries
+end)
+
+exports('getHp', function()
+    return Hp
+end)
+
+exports('setHp', function(hp)
+    Hp = hp
 end)
 
 RegisterNetEvent('hospital:client:adminHeal', function()

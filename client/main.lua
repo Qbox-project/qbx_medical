@@ -43,6 +43,7 @@ FadeOutTimer, BlackoutTimer = 0, 0
 Hp = nil
 
 IsDead = false
+InLaststand = false
 
 exports('getBleedLevel', function()
     return BleedLevel
@@ -92,6 +93,14 @@ exports('setIsDeadDeprecated', function(isDead)
     IsDead = isDead
 end)
 
+exports('getLaststand', function()
+    return InLaststand
+end)
+
+exports('setLaststand', function(inLaststand)
+    InLaststand = inLaststand
+end)
+
 RegisterNetEvent('hospital:client:adminHeal', function()
     if GetInvokingResource() then return end
     SetEntityHealth(cache.ped, 200)
@@ -111,6 +120,24 @@ local function isInjuryCausingLimp()
         end
     end
     return false
+end
+
+---notify the player of damage to their body.
+local function doLimbAlert()
+    if IsDead or InLaststand or #Injuries == 0 then return end
+
+    local limbDamageMsg = ''
+    if #Injuries <= Config.AlertShowInfo then
+        for k, v in pairs(Injuries) do
+            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = v.label, severity = Config.WoundStates[v.severity] })
+            if k < #Injuries then
+                limbDamageMsg = limbDamageMsg .. " | "
+            end
+        end
+    else
+        limbDamageMsg = Lang:t('info.many_places')
+    end
+    lib.notify({ description = limbDamageMsg, type = 'error' })
 end
 
 ---sets ped animation to limping and prevents running.
@@ -153,6 +180,8 @@ function ResetMinorInjuries()
     })
 
     SendBleedAlert()
+    MakePedLimp()
+    doLimbAlert()
 end
 
 exports('resetMinorInjuries', ResetMinorInjuries)
@@ -180,6 +209,9 @@ function ResetAllInjuries()
     TriggerServerEvent('hospital:server:SetWeaponDamage', CurrentDamageList)
 
     SendBleedAlert()
+    MakePedLimp()
+    doLimbAlert()
+    TriggerServerEvent("hospital:server:resetHungerThirst")
 end
 
 exports('resetAllInjuries', ResetAllInjuries)
@@ -246,3 +278,37 @@ end)
 exports('getBleedStateLabelDeprecated', function(level)
     return Config.BleedingStates[level]
 end)
+
+---heals player wounds.
+---@param type? "full"|any heals all wounds if full otherwise heals only major wounds.
+RegisterNetEvent('hospital:client:HealInjuries', function(type)
+    if GetInvokingResource() then return end
+    if type == "full" then
+        ResetAllInjuries()
+    else
+        ResetMinorInjuries()
+    end
+    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
+
+    lib.notify({ description = Lang:t('success.wounds_healed'), type = 'success' })
+end)
+
+CreateThread(function()
+    while true do
+        Wait((1000 * Config.MessageTimer))
+        doLimbAlert()
+    end
+end)
+
+---Convert wounded body part data to a human readable form
+---@param damagedBodyParts BodyParts
+---@return string[]
+local function getPatientStatus(damagedBodyParts)
+    local status = {}
+    for _, bodyPart in pairs(damagedBodyParts) do
+        status[#status + 1] = bodyPart.label .. " (" .. Config.WoundStates[bodyPart.severity] .. ")"
+    end
+    return status
+end
+
+exports('getPatientStatus', getPatientStatus)

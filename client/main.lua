@@ -232,7 +232,7 @@ function ResetAllInjuries()
     TriggerServerEvent("hospital:server:resetHungerThirst")
 end
 
-exports('ResetAllInjuries', ResetAllInjuries)
+exports('resetAllInjuries', ResetAllInjuries)
 
 function DamageBodyPart(bone, severity)
     BodyParts[bone].isDamaged = true

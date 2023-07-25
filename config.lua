@@ -16,6 +16,22 @@ Config.BleedingStates = { -- Translate bleeding alerts
     Lang:t('states.big_bleed'),
 }
 
+Config.WeaponClasses = { -- Define gta weapon classe numbers
+    ['SMALL_CALIBER'] = 1,
+    ['MEDIUM_CALIBER'] = 2,
+    ['HIGH_CALIBER'] = 3,
+    ['SHOTGUN'] = 4,
+    ['CUTTING'] = 5,
+    ['LIGHT_IMPACT'] = 6,
+    ['HEAVY_IMPACT'] = 7,
+    ['EXPLOSIVE'] = 8,
+    ['FIRE'] = 9,
+    ['SUFFOCATING'] = 10,
+    ['OTHER'] = 11,
+    ['WILDLIFE'] = 12,
+    ['NOTHING'] = 13
+}
+
 Config.ForceInjury = 35 -- Maximum amount of damage a player can take before limb damage & effects are forced to occur
 Config.HealthDamage = 5 -- Minumum damage done to health before checking for injuries
 Config.MaxInjuryChanceMulti = 3 -- How many times the HealthDamage value above can divide into damage taken before damage is forced to be applied
@@ -124,22 +140,6 @@ Config.Bones = { -- Correspond bone hash numbers to their label
     [51826] = 'RLEG',
     [20781] = 'RFOOT',
     [52301] = 'RFOOT',
-}
-
-Config.WeaponClasses = { -- Define gta weapon classe numbers
-    ['SMALL_CALIBER'] = 1,
-    ['MEDIUM_CALIBER'] = 2,
-    ['HIGH_CALIBER'] = 3,
-    ['SHOTGUN'] = 4,
-    ['CUTTING'] = 5,
-    ['LIGHT_IMPACT'] = 6,
-    ['HEAVY_IMPACT'] = 7,
-    ['EXPLOSIVE'] = 8,
-    ['FIRE'] = 9,
-    ['SUFFOCATING'] = 10,
-    ['OTHER'] = 11,
-    ['WILDLIFE'] = 12,
-    ['NOTHING'] = 13
 }
 
 Config.Weapons = { -- Correspond weapon names to their class number

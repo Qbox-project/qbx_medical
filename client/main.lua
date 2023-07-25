@@ -182,7 +182,7 @@ function ResetAllInjuries()
     SendBleedAlert()
 end
 
-exports('resetAllInjuries', ResetAllInjuries)
+exports('ResetAllInjuries', ResetAllInjuries)
 
 function DamageBodyPart(bone, severity)
     BodyParts[bone].isDamaged = true

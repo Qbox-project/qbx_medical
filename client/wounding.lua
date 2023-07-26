@@ -51,22 +51,6 @@ end
 
 exports('makePlayerFadeOut', makePlayerFadeOut)
 
-exports('handleBloodLossEffectsDeprecated', function()
-    if FadeOutTimer + 1 == Config.FadeOutTimer then
-        if BlackoutTimer + 1 == Config.BlackoutTimer then
-            makePlayerBlackout()
-            BlackoutTimer = 0
-        else
-            makePlayerFadeOut()
-            BlackoutTimer += BleedLevel > 3 and 2 or 1
-        end
-
-        FadeOutTimer = 0
-    else
-        FadeOutTimer += 1
-    end
-end)
-
 local function applyBleedEffects()
     local ped = cache.ped
     local bleedDamage = BleedLevel * Config.BleedTickDamage
@@ -86,8 +70,6 @@ local function applyBleedEffects()
     end
 end
 
-exports('applyBleedEffectsDeprecated', applyBleedEffects)
-
 ---reduce bleeding by level. Bleed level cannot be negative.
 ---@param level number
 local function removeBleed(level)
@@ -98,3 +80,23 @@ local function removeBleed(level)
 end
 
 exports('removeBleed', removeBleed)
+
+local function handleBleeding()
+    if IsDead or InLaststand or BleedLevel <= 0 then return end
+    if FadeOutTimer + 1 == Config.FadeOutTimer then
+        if BlackoutTimer + 1 == Config.BlackoutTimer then
+            makePlayerBlackout()
+            BlackoutTimer = 0
+        else
+            makePlayerFadeOut()
+            BlackoutTimer += BleedLevel > 3 and 2 or 1
+        end
+
+        FadeOutTimer = 0
+    else
+        FadeOutTimer += 1
+    end
+    applyBleedEffects()
+end
+
+exports('handleBleedingDeprecated', handleBleeding)

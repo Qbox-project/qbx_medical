@@ -15,6 +15,23 @@ Config.BleedingStates = { -- Translate bleeding alerts
     Lang:t('states.lot_bleed'),
     Lang:t('states.big_bleed'),
 }
+Config.WoundStates = { -- Translate wound alerts
+    Lang:t('states.irritated'),
+    Lang:t('states.quite_painful'),
+    Lang:t('states.painful'),
+    Lang:t('states.really_painful'),
+}
+
+Config.MessageTimer = 12 -- How long it will take to display limb/bleed message
+Config.AlertShowInfo = 2 -- How many injuries a player must have before being alerted about them
+Config.HeadInjuryTimer = 30 -- How much time, in seconds, do head injury effects chance occur
+Config.ArmInjuryTimer = 30 -- How much time, in seconds, do arm injury effects chance occur
+Config.LegInjuryTimer = 15 -- How much time, in seconds, do leg injury effects chance occur
+Config.HeadInjuryChance = 25 -- The chance, in percent, that head injury side-effects get applied
+Config.LegInjuryChance = { -- The chance, in percent, that leg injury side-effects get applied
+    Running = 50,
+    Walking = 15
+}
 
 Config.WeaponClasses = { -- Define gta weapon classe numbers
     ['SMALL_CALIBER'] = 1,

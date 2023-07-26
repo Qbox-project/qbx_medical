@@ -44,6 +44,8 @@ Hp = nil
 
 IsDead = false
 InLaststand = false
+DeathTime = 0
+LaststandTime = 0
 
 exports('getBleedLevel', function()
     return BleedLevel
@@ -99,6 +101,22 @@ end)
 
 exports('setLaststand', function(inLaststand)
     InLaststand = inLaststand
+end)
+
+exports('getDeathTime', function()
+    return DeathTime
+end)
+
+exports('setDeathTime', function(value)
+    DeathTime = value
+end)
+
+exports('getLaststandTime', function()
+    return LaststandTime
+end)
+
+exports('setLaststandTime', function(value)
+    LaststandTime = value
 end)
 
 RegisterNetEvent('hospital:client:adminHeal', function()

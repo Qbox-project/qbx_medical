@@ -1,3 +1,5 @@
+local playerArmor = nil
+
 ---Increases severity of an injury
 ---@param bodyPart BodyPart
 ---@param bone Bone
@@ -23,8 +25,6 @@ local function injureBodyPart(bone)
         upgradeInjury(bodyPart, bone)
     end
 end
-
-exports('injureBodyPart', injureBodyPart)
 
 ---@param array any[]
 ---@param value any
@@ -59,8 +59,6 @@ local function findDamageCause()
         TriggerServerEvent("hospital:server:SetWeaponDamage", CurrentDamageList)
     end
 end
-
-exports('findDamageCauseDeprecated', findDamageCause)
 
 ---returns true if player took damage in their upper body or if the weapon class is nothing.
 ---@param isArmorDamaged boolean
@@ -208,4 +206,39 @@ local function applyDamage(ped, damageDone, isArmorDamaged)
     end
 end
 
-exports('applyDamageDeprecated', applyDamage)
+---If the player health and armor haven't already been set, initialize them.
+---@param health number
+---@param armor number
+local function initHealthAndArmorIfNotSet(health, armor)
+    if not Hp then
+        Hp = health
+    end
+
+    if not playerArmor then
+        playerArmor = armor
+    end
+end
+
+---detects if player took damage, applies injuries, and updates health/armor values
+local function checkForDamage()
+    local ped = cache.ped
+    local health = GetEntityHealth(ped)
+    local armor = GetPedArmour(ped)
+
+    initHealthAndArmorIfNotSet(health, armor)
+
+    local isArmorDamaged = (playerArmor ~= armor and armor < (playerArmor - Config.ArmorDamage) and armor > 0) -- Players armor was damaged
+    local isHealthDamaged = (Hp ~= health) -- Players health was damaged
+
+    if isArmorDamaged or isHealthDamaged then
+        local damageDone = (Hp - health)
+        applyDamage(ped, damageDone, isArmorDamaged)
+        findDamageCause()
+        ClearEntityLastDamageEntity(ped)
+    end
+
+    Hp = health
+    playerArmor = armor
+end
+
+exports('checkForDamageDeprecated', checkForDamage)

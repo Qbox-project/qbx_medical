@@ -22,6 +22,7 @@ Config.WoundStates = { -- Translate wound alerts
     Lang:t('states.really_painful'),
 }
 
+Config.ArmorDamage = 5 -- Minumum damage done to armor before checking for injuries
 Config.MessageTimer = 12 -- How long it will take to display limb/bleed message
 Config.AlertShowInfo = 2 -- How many injuries a player must have before being alerted about them
 Config.HeadInjuryTimer = 30 -- How much time, in seconds, do head injury effects chance occur

@@ -95,6 +95,14 @@ RegisterNetEvent('hospital:server:SetDeathStatus', function(isDead)
 	player.Functions.SetMetaData("isdead", isDead)
 end)
 
+RegisterNetEvent('qbx-medical:server:playerDied', function(source)
+	if GetInvokingResource() then return end
+	local src = source
+	local player = QBCore.Functions.GetPlayer(src)
+	if not player then return end
+	player.Functions.SetMetaData("isdead", true)
+end)
+
 ---@param bool boolean
 RegisterNetEvent('hospital:server:SetLaststandStatus', function(bool)
 	if GetInvokingResource() then return end

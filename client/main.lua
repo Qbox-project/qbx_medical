@@ -87,10 +87,6 @@ exports('isDead', function()
     return IsDead
 end)
 
-exports('kill', function()
-    IsDead = true
-end)
-
 exports('setIsDeadDeprecated', function(isDead)
     IsDead = isDead
 end)

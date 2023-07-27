@@ -1,3 +1,5 @@
+local prevPos = nil
+
 local function getWorstInjury()
     local level = 0
     for _, injury in pairs(Injuries) do
@@ -99,4 +101,41 @@ local function handleBleeding()
     applyBleedEffects()
 end
 
-exports('handleBleedingDeprecated', handleBleeding)
+---@param ped number
+local function bleedTick(ped)
+    if math.floor(BleedTickTimer % (Config.BleedTickRate / 10)) == 0 then
+        local currPos = GetEntityCoords(ped, true)
+        local moving = #(prevPos.xy - currPos.xy)
+        if (moving > 1 and not cache.vehicle) and BleedLevel > 2 then
+            AdvanceBleedTimer += Config.BleedMovementAdvance
+            BleedTickTimer += Config.BleedMovementTick
+            prevPos = currPos
+        else
+            BleedTickTimer += 1
+        end
+    end
+    BleedTickTimer += 1
+end
+
+local function checkBleeding()
+    if BleedLevel == 0 then return end
+    local player = cache.ped
+    if BleedTickTimer >= Config.BleedTickRate and not IsInHospitalBed then
+        handleBleeding()
+        BleedTickTimer = 0
+    else
+        bleedTick(player)
+    end
+end
+
+exports('checkBleedingDeprecated', checkBleeding)
+
+local function savePlayerPos()
+    prevPos = GetEntityCoords(cache.ped, true)
+end
+
+AddEventHandler('QBCore:Client:OnPlayerLoaded', savePlayerPos)
+AddEventHandler('onResourceStart', function(resourceName)
+    if GetCurrentResourceName() ~= resourceName then return end
+    savePlayerPos()
+end)

@@ -9,6 +9,9 @@ Config.FadeOutTimer = 2 -- How many bleed ticks occur before fadeout happens
 Config.BlackoutTimer = 10 -- How many bleed ticks occur before blacking out
 Config.BleedTickDamage = 8 -- The base damage that is multiplied by bleed level everytime a bleed tick occurs
 Config.AdvanceBleedTimer = 10 -- How many bleed ticks occur before bleed level increases
+Config.BleedTickRate = 30 -- How much time, in seconds, between bleed ticks
+Config.BleedMovementTick = 10 -- How many seconds is taken away from the bleed tick rate if the player is walking, jogging, or sprinting
+Config.BleedMovementAdvance = 3 -- How much time moving while bleeding adds
 Config.BleedingStates = { -- Translate bleeding alerts
     Lang:t('states.little_bleed'),
     Lang:t('states.bleed'),

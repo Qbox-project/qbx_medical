@@ -46,6 +46,7 @@ IsDead = false
 InLaststand = false
 DeathTime = 0
 LaststandTime = 0
+RespawnHoldTime = 5
 
 exports('getBleedLevel', function()
     return BleedLevel
@@ -113,6 +114,10 @@ end)
 
 exports('setLaststandTime', function(value)
     LaststandTime = value
+end)
+
+exports('getRespawnHoldTimeDeprecated', function()
+    return RespawnHoldTime
 end)
 
 RegisterNetEvent('hospital:client:adminHeal', function()

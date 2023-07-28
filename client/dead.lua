@@ -48,10 +48,10 @@ end
 ---Allow player to respawn
 function AllowRespawn(isInHospitalBed)
     RespawnHoldTime = 5
-    while exports['qbx-medical']:isDead() do
+    while IsDead do
         Wait(1000)
-        exports['qbx-medical']:setDeathTime(exports['qbx-medical']:getDeathTime() - 1)
-        if exports['qbx-medical']:getDeathTime() <= 0 then
+        DeathTime -= 1
+        if DeathTime <= 0 then
             if IsControlPressed(0, 38) and RespawnHoldTime <= 1 and not isInHospitalBed then
                 respawn()
             end

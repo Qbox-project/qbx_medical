@@ -47,6 +47,8 @@ InLaststand = false
 DeathTime = 0
 LaststandTime = 0
 RespawnHoldTime = 5
+LastStandDict = "combat@damage@writhe"
+LastStandAnim = "writhe_loop"
 
 exports('getBleedLevel', function()
     return BleedLevel

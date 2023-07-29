@@ -19,7 +19,7 @@ if not lib then return end
 local eventHooks = {}
 local microtime = os.microtime
 
-local function TriggerEventHooks(event, payload)
+local function triggerEventHooks(event, payload)
     local hooks = eventHooks[event]
     if not hooks then return true end
 
@@ -86,4 +86,4 @@ exports('removeHooks', function(id)
 	removeResourceHooks(GetInvokingResource() or cache.resource, id)
 end)
 
-return TriggerEventHooks
+return triggerEventHooks

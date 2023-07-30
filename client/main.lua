@@ -58,22 +58,6 @@ exports('setBleedLevel', function(bleedLevel)
     BleedLevel = bleedLevel
 end)
 
-exports('getBleedTickTimerDeprecated', function()
-    return BleedTickTimer
-end)
-
-exports('setBleedTickTimerDeprecated', function(timer)
-    BleedTickTimer = timer
-end)
-
-exports('getAdvanceBleedTimerDeprecated', function()
-    return AdvanceBleedTimer
-end)
-
-exports('setAdvanceBleedTimerDeprecated', function(timer)
-    AdvanceBleedTimer = timer
-end)
-
 exports('getInjuries', function()
     return Injuries
 end)

@@ -197,6 +197,6 @@ end)
 
 lib.callback.register('qbx-medical:server:respawn', function(source)
 	if not triggerEventHooks('respawn', source) then return false end
-	exports['qbx-ambulancejob']:respawnDeprecated(source)
+	TriggerEvent('qbx-medical:server:playerRespawned', source)
 	return true
 end)

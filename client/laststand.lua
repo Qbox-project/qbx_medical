@@ -71,7 +71,7 @@ function StartLastStand()
     Wait(1000)
     WaitForPlayerToStopMoving()
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
-    LaststandTime = Laststand.ReviveInterval
+    LaststandTime = Config.LaststandReviveInterval
     ResurrectPlayer()
     SetEntityHealth(ped, 150)
     PlayUnescortedLastStandAnimation()

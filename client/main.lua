@@ -317,3 +317,29 @@ local function getPatientStatus(damagedBodyParts)
 end
 
 exports('getPatientStatus', getPatientStatus)
+
+---Revives player, healing all injuries
+---Intended to be called from client or server.
+RegisterNetEvent('hospital:client:Revive', function()
+    local ped = cache.ped
+
+    if IsDead or InLaststand then
+        local pos = GetEntityCoords(ped, true)
+        NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), true, false)
+        IsDead = false
+        SetEntityInvincible(ped, false)
+        EndLastStand()
+    end
+
+    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
+    SetEntityMaxHealth(ped, 200)
+    SetEntityHealth(ped, 200)
+    ClearPedBloodDamage(ped)
+    SetPlayerSprint(cache.playerId, true)
+    ResetAllInjuries()
+    ResetPedMovementClipset(ped, 0.0)
+    TriggerServerEvent('hud:server:RelieveStress', 100)
+    TriggerServerEvent("hospital:server:SetDeathStatus", false)
+    TriggerServerEvent("hospital:server:SetLaststandStatus", false)
+    lib.notify({ description = Lang:t('info.healthy'), type = 'inform' })
+end)

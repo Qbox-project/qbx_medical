@@ -41,7 +41,7 @@ exports('killPlayer', OnDeath)
 local function respawn()
     local success = lib.callback.await('qbx-medical:server:respawn')
     if not success then return end
-    if exports["qb-policejob"]:IsHandcuffed() then
+    if exports["qbx-policejob"]:IsHandcuffed() then
         TriggerEvent("police:client:GetCuffed", -1)
     end
     TriggerEvent("police:client:DeEscort")

@@ -55,7 +55,7 @@ local function countdownLastStand()
         LaststandTime -= 1
         Config.DeathTime = LaststandTime
     else
-        lib.notify({ description = Lang:t('error.bled_out'), type = 'error' })
+        QBCore.Functions.Notify(Lang:t('error.bled_out'), 'error')
         EndLastStand()
         logPlayerKiller()
         DeathTime = 0

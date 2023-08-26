@@ -19,7 +19,6 @@ server_scripts {
 
 client_scripts {
     'client/**/*.lua',
-    'load-unload.lua'
 }
 
 modules {

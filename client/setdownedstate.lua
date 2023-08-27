@@ -5,7 +5,7 @@ local vehicleAnim = "sit"
 function PlayUnescortedLastStandAnimation()
     local ped = cache.ped
     if cache.vehicle then
-        lib.requestAnimDict("vehicleDict")
+        lib.requestAnimDict(vehicleDict)
         if not IsEntityPlayingAnim(ped, vehicleDict, vehicleAnim, 3) then
             TaskPlayAnim(ped, vehicleDict, vehicleAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end

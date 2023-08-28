@@ -12,11 +12,11 @@ end
 ---starts death or last stand based off of player's metadata
 ---@param metadata any
 local function initDeathAndLastStand(metadata)
-    if not metadata.inlaststand and metadata.isdead then
+    if metadata.isdead then
         DeathTime = Config.LaststandReviveInterval
         OnDeath()
         AllowRespawn()
-    elseif metadata.inlaststand and not metadata.isdead then
+    elseif metadata.inlaststand then
         StartLastStand()
     else
         TriggerServerEvent("hospital:server:SetDeathStatus", false)

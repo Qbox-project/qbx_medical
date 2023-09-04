@@ -26,7 +26,7 @@ end
 
 ---initialize settings from player object
 local function onPlayerLoaded()
-    exports.spawnmanager:setAutoSpawn(false)
+    pcall(function() exports.spawnmanager:setAutoSpawn(false) end)
     CreateThread(function()
         Wait(1000)
         local ped = cache.ped

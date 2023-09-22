@@ -37,29 +37,9 @@ local function onPlayerLoaded()
     end)
 end
 
----reset player settings that the server is storing
-local function onPlayerUnloaded()
-    local ped = cache.ped
-    TriggerServerEvent("hospital:server:SetDeathStatus", false)
-    TriggerServerEvent('hospital:server:SetLaststandStatus', false)
-    TriggerServerEvent("hospital:server:SetArmor", GetPedArmour(ped))
-    IsDead = false
-    DeathTime = 0
-    SetEntityInvincible(ped, false)
-    SetPedArmour(ped, 0)
-    ResetAllInjuries()
-end
-
 AddEventHandler('QBCore:Client:OnPlayerLoaded', onPlayerLoaded)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', onPlayerUnloaded)
 
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
     onPlayerLoaded()
-end)
-
-AddEventHandler('onResourceStop', function(resourceName)
-    if GetCurrentResourceName() ~= resourceName then return end
-    onPlayerUnloaded()
 end)

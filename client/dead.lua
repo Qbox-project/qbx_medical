@@ -86,8 +86,8 @@ local function logDeath(victim, attacker, weapon)
     local playerName = GetPlayerName(playerid) .. " " .. "(" .. GetPlayerServerId(playerid) .. ")" or Lang:t('info.self_death')
     local killerId = NetworkGetPlayerIndexFromPed(attacker)
     local killerName = GetPlayerName(killerId) .. " " .. "(" .. GetPlayerServerId(killerId) .. ")" or Lang:t('info.self_death')
-    local weaponLabel = QBCore.Shared.Weapons[weapon].label or 'Unknown'
-    local weaponName = QBCore.Shared.Weapons[weapon].name or 'Unknown'
+    local weaponLabel = QBX.Shared.Weapons[weapon].label or 'Unknown'
+    local weaponName = QBX.Shared.Weapons[weapon].name or 'Unknown'
     TriggerServerEvent("qb-log:server:CreateLog", "death", Lang:t('logs.death_log_title', { playername = playerName, playerid = GetPlayerServerId(playerid) }), "red", Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName }))
 end
 

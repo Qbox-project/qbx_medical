@@ -14,7 +14,7 @@ local triggerEventHooks = require 'modules.hooks.server'
 RegisterNetEvent('hospital:server:SetWeaponDamage', function(data)
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	if not player then return end
 	playerWeaponWounds[player.PlayerData.source] = data
 end)
@@ -22,7 +22,7 @@ end)
 RegisterNetEvent('hospital:server:RestoreWeaponDamage', function()
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	playerWeaponWounds[player.PlayerData.source] = nil
 end)
 
@@ -61,7 +61,7 @@ end
 
 ---@param playerId number
 lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
-	local playerSource = QBCore.Functions.GetPlayer(playerId).PlayerData.source
+	local playerSource = QBX.Functions.GetPlayer(playerId).PlayerData.source
 
 	---@class PlayerDamage
 	---@field damagedBodyParts BodyParts
@@ -92,7 +92,7 @@ end)
 RegisterNetEvent('hospital:server:SetDeathStatus', function(isDead)
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	if not player then return end
 	player.Functions.SetMetaData("isdead", isDead)
 end)
@@ -100,7 +100,7 @@ end)
 RegisterNetEvent('qbx-medical:server:playerDied', function()
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	if not player then return end
 	player.Functions.SetMetaData("isdead", true)
 end)
@@ -109,7 +109,7 @@ end)
 RegisterNetEvent('hospital:server:SetLaststandStatus', function(bool)
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	if not player then return end
 	player.Functions.SetMetaData("inlaststand", bool)
 end)
@@ -118,14 +118,14 @@ end)
 RegisterNetEvent('hospital:server:SetArmor', function(amount)
 	if GetInvokingResource() then return end
 	local src = source
-	local player = QBCore.Functions.GetPlayer(src)
+	local player = QBX.Functions.GetPlayer(src)
 	if not player then return end
 	player.Functions.SetMetaData("armor", amount)
 end)
 
 RegisterNetEvent('hospital:server:resetHungerThirst', function()
 	if GetInvokingResource() then return end
-	local player = QBCore.Functions.GetPlayer(source)
+	local player = QBX.Functions.GetPlayer(source)
 
 	if not player then return end
 
@@ -145,7 +145,7 @@ local function triggerEventOnPlayer(src, event, targetPlayerId)
 		return
 	end
 
-	local player = QBCore.Functions.GetPlayer(tonumber(targetPlayerId))
+	local player = QBX.Functions.GetPlayer(tonumber(targetPlayerId))
 
 	if not player then
 		TriggerClientEvent('ox_lib:notify', src, { description = Lang:t('error.not_online'), type = 'error' })

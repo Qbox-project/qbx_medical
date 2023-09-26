@@ -31,9 +31,8 @@ local function onPlayerLoaded()
         Wait(1000)
         local ped = cache.ped
         local playerId = cache.playerId
-        PlayerData = QBCore.Functions.GetPlayerData()
-        initHealthAndArmor(ped, playerId, PlayerData.metadata)
-        initDeathAndLastStand(PlayerData.metadata)
+        initHealthAndArmor(ped, playerId, QBX.PlayerData.metadata)
+        initDeathAndLastStand(QBX.PlayerData.metadata)
     end)
 end
 

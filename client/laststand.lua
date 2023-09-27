@@ -40,7 +40,7 @@ local function logPlayerKiller()
     local killerName = killerId ~= -1 and GetPlayerName(killerId) .. " " .. "(" .. GetPlayerServerId(killerId) .. ")" or Lang:t('info.self_death')
     local weaponLabel = Lang:t('info.wep_unknown')
     local weaponName = Lang:t('info.wep_unknown')
-    local weaponItem = QBCore.Shared.Weapons[killerWeapon]
+    local weaponItem = QBX.Shared.Weapons[killerWeapon]
     if weaponItem then
         weaponLabel = weaponItem.label
         weaponName = weaponItem.name
@@ -55,7 +55,7 @@ local function countdownLastStand()
         LaststandTime -= 1
         Config.DeathTime = LaststandTime
     else
-        QBCore.Functions.Notify(Lang:t('error.bled_out'), 'error')
+        QBX.Functions.Notify(Lang:t('error.bled_out'), 'error')
         EndLastStand()
         logPlayerKiller()
         DeathTime = 0

@@ -5,12 +5,12 @@ description 'https://github.com/Qbox-project'
 version '1.0.0'
 
 shared_scripts {
-    '@qbx-core/shared/locale.lua',
-    '@qbx-core/import.lua',
+    '@ox_lib/init.lua',
+    '@qbx_core/shared/locale.lua',
+    '@qbx_core/import.lua',
     'locales/en.lua',
     'locales/*.lua',
-    'config.lua',
-    '@ox_lib/init.lua',
+    'config.lua'
 }
 
 server_scripts {
@@ -22,12 +22,14 @@ client_scripts {
 }
 
 modules {
-    'qbx-core:core'
+    'qbx_core:core',
+    'qbx_core:playerdata',
+    'qbx_core:utils'
 }
 
 dependencies {
     'ox_lib',
-    'qbx-core',
+    'qbx_core',
 }
 
 lua54 'yes'

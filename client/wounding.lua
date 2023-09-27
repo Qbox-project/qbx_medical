@@ -55,8 +55,7 @@ exports('makePlayerFadeOut', makePlayerFadeOut)
 
 local function applyBleedEffects()
     local ped = cache.ped
-    local playerData = QBCore.Functions.GetPlayerData()
-    if not playerData then return end
+    if not QBX.PlayerData then return end
     local bleedDamage = BleedLevel * Config.BleedTickDamage
     ApplyDamageToPed(ped, bleedDamage, false)
     SendBleedAlert()
@@ -64,7 +63,7 @@ local function applyBleedEffects()
     local randX = math.random() + math.random(-1, 1)
     local randY = math.random() + math.random(-1, 1)
     local coords = GetOffsetFromEntityInWorldCoords(ped, randX, randY, 0)
-    TriggerServerEvent("evidence:server:CreateBloodDrop", playerData.citizenid, playerData.metadata.bloodtype, coords)
+    TriggerServerEvent("evidence:server:CreateBloodDrop", QBX.PlayerData.citizenid, QBX.PlayerData.metadata.bloodtype, coords)
 
     if AdvanceBleedTimer >= Config.AdvanceBleedTimer then
         ApplyBleed(1)

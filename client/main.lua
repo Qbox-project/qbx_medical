@@ -142,7 +142,7 @@ local function doLimbAlert()
     else
         limbDamageMsg = Lang:t('info.many_places')
     end
-    QBX.Functions.Notify(limbDamageMsg, 'error')
+    exports.qbx_core:Notify(limbDamageMsg, 'error')
 end
 
 ---sets ped animation to limping and prevents running.
@@ -249,7 +249,7 @@ end)
 ---notify the player of bleeding to their body.
 function SendBleedAlert()
     if IsDead or BleedLevel == 0 then return end
-    QBX.Functions.Notify(Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[BleedLevel]}), 'inform')
+    exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[BleedLevel]}), 'inform')
 end
 
 exports('sendBleedAlert', SendBleedAlert)
@@ -295,7 +295,7 @@ RegisterNetEvent('hospital:client:HealInjuries', function(type)
     end
     TriggerServerEvent("hospital:server:RestoreWeaponDamage")
 
-    QBX.Functions.Notify(Lang:t('success.wounds_healed'), 'success')
+    exports.qbx_core:Notify(Lang:t('success.wounds_healed'), 'success')
 end)
 
 CreateThread(function()
@@ -341,5 +341,5 @@ RegisterNetEvent('hospital:client:Revive', function()
     TriggerServerEvent('hud:server:RelieveStress', 100)
     TriggerServerEvent("hospital:server:SetDeathStatus", false)
     TriggerServerEvent("hospital:server:SetLaststandStatus", false)
-    QBX.Functions.Notify(Lang:t('info.healthy'), 'inform')
+    exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
 end)

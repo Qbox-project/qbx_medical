@@ -121,7 +121,7 @@ end
 local function checkBleeding()
     if BleedLevel == 0 then return end
     local player = cache.ped
-    if BleedTickTimer >= Config.BleedTickRate and not IsInHospitalBed then
+    if BleedTickTimer >= Config.BleedTickRate then
         handleBleeding()
         BleedTickTimer = 0
     else

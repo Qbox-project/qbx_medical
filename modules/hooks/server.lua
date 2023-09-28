@@ -17,7 +17,7 @@
 if not lib then return end
 
 local eventHooks = {}
-local microtime = os.microtime()
+local microtime = os.microtime
 
 local function triggerEventHooks(event, payload)
     local hooks = eventHooks[event]

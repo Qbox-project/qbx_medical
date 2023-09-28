@@ -17,7 +17,7 @@
 if not lib then return end
 
 local eventHooks = {}
-local microtime = os.microtime
+local microtime = os.microtime()
 
 local function triggerEventHooks(event, payload)
     local hooks = eventHooks[event]
@@ -27,7 +27,7 @@ local function triggerEventHooks(event, payload)
         local hook = hooks[i]
 
         if hook.print then
-            shared.info(('Triggering event hook "%s:%s:%s".'):format(hook.resource, event, i))
+            lib.print.info(('Triggering event hook "%s:%s:%s".'):format(hook.resource, event, i))
         end
 
         local start = microtime()
@@ -54,7 +54,7 @@ exports('registerHook', function(event, cb, options)
 	local mt = getmetatable(cb)
 	mt.__index = nil
 	mt.__newindex = nil
-   	cb.resource = GetInvokingResource()
+    cb.resource = GetInvokingResource()
 	hookId += 1
 	cb.hookId = hookId
 

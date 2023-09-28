@@ -22,7 +22,6 @@ client_scripts {
 }
 
 modules {
-    'qbx_core:core',
     'qbx_core:playerdata',
     'qbx_core:utils'
 }

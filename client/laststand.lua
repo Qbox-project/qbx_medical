@@ -40,7 +40,7 @@ local function logPlayerKiller()
     local killerName = killerId ~= -1 and GetPlayerName(killerId) .. " " .. "(" .. GetPlayerServerId(killerId) .. ")" or Lang:t('info.self_death')
     local weaponLabel = Lang:t('info.wep_unknown')
     local weaponName = Lang:t('info.wep_unknown')
-    local weaponItem = QBX.Shared.Weapons[killerWeapon]
+    local weaponItem = exports.qbx_core:GetWeapons()[killerWeapon]
     if weaponItem then
         weaponLabel = weaponItem.label
         weaponName = weaponItem.name
@@ -55,7 +55,7 @@ local function countdownLastStand()
         LaststandTime -= 1
         Config.DeathTime = LaststandTime
     else
-        QBX.Functions.Notify(Lang:t('error.bled_out'), 'error')
+        exports.qbx_core:Notify(Lang:t('error.bled_out'), 'error')
         EndLastStand()
         logPlayerKiller()
         DeathTime = 0
@@ -76,7 +76,7 @@ function StartLastStand()
     SetEntityHealth(ped, 150)
     PlayUnescortedLastStandAnimation()
     InLaststand = true
-    TriggerServerEvent('qbx-medical:server:onPlayerLaststand')
+    TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
     CreateThread(function()
         while InLaststand do
             countdownLastStand()

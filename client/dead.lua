@@ -24,7 +24,7 @@ exports('playDeadAnimation', playDeadAnimation)
 function OnDeath()
     if IsDead then return end
     IsDead = true
-    TriggerServerEvent('qbx-medical:server:playerDied')
+    TriggerServerEvent('qbx_medical:server:playerDied')
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
     local player = cache.ped
 
@@ -39,9 +39,9 @@ end
 exports('killPlayer', OnDeath)
 
 local function respawn()
-    local success = lib.callback.await('qbx-medical:server:respawn')
+    local success = lib.callback.await('qbx_medical:server:respawn')
     if not success then return end
-    if exports["qbx-policejob"]:IsHandcuffed() then
+    if exports.qbx_policejob:IsHandcuffed() then
         TriggerEvent("police:client:GetCuffed", -1)
     end
     TriggerEvent("police:client:DeEscort")
@@ -86,8 +86,8 @@ local function logDeath(victim, attacker, weapon)
     local playerName = GetPlayerName(playerid) .. " " .. "(" .. GetPlayerServerId(playerid) .. ")" or Lang:t('info.self_death')
     local killerId = NetworkGetPlayerIndexFromPed(attacker)
     local killerName = GetPlayerName(killerId) .. " " .. "(" .. GetPlayerServerId(killerId) .. ")" or Lang:t('info.self_death')
-    local weaponLabel = QBX.Shared.Weapons[weapon].label or 'Unknown'
-    local weaponName = QBX.Shared.Weapons[weapon].name or 'Unknown'
+    local weaponLabel = exports.qbx_core:GetWeapons()[weapon].label or 'Unknown'
+    local weaponName = exports.qbx_core:GetWeapons()[weapon].name or 'Unknown'
     TriggerServerEvent("qb-log:server:CreateLog", "death", Lang:t('logs.death_log_title', { playername = playerName, playerid = GetPlayerServerId(playerid) }), "red", Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName }))
 end
 

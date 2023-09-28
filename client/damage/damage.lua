@@ -44,7 +44,7 @@ end
 ---Adds weapon hashes that damaged the ped that aren't already in the CurrentDamagedList and syncs to the server.
 local function findDamageCause()
     local detected = false
-    for hash, weapon in pairs(QBX.Shared.Weapons) do
+    for hash, weapon in pairs(exports.qbx_core:GetWeapons()) do
         if HasPedBeenDamagedByWeapon(cache.ped, hash, 0) and not isInArray(CurrentDamageList, hash) then
             detected = true
             TriggerEvent('chat:addMessage', {

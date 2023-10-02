@@ -1,4 +1,4 @@
-local prevPos = vector3(0.0, 0.0, 0.0)
+local prevPos = vec3(0.0, 0.0, 0.0)
 
 local function getWorstInjury()
     local level = 0

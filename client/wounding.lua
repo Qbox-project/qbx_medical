@@ -1,4 +1,4 @@
-local prevPos = nil
+local prevPos = vec3(0.0, 0.0, 0.0)
 
 local function getWorstInjury()
     local level = 0

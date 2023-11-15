@@ -1,14 +1,3 @@
----Initialize health and armor settings on the player's ped
----@param ped number
----@param playerId number
----@param playerMetadata any
-local function initHealthAndArmor(ped, playerId, playerMetadata)
-    SetEntityHealth(ped, playerMetadata.health)
-    SetPlayerHealthRechargeMultiplier(playerId, 0.0)
-    SetPlayerHealthRechargeLimit(playerId, 0.0)
-    SetPedArmour(ped, playerMetadata.armor)
-end
-
 ---starts death or last stand based off of player's metadata
 ---@param metadata any
 local function initDeathAndLastStand(metadata)
@@ -29,9 +18,6 @@ local function onPlayerLoaded()
     pcall(function() exports.spawnmanager:setAutoSpawn(false) end)
     CreateThread(function()
         Wait(1000)
-        local ped = cache.ped
-        local playerId = cache.playerId
-        initHealthAndArmor(ped, playerId, QBX.PlayerData.metadata)
         initDeathAndLastStand(QBX.PlayerData.metadata)
     end)
 end

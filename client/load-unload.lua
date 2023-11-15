@@ -4,6 +4,7 @@
 ---@param playerMetadata any
 local function initHealthAndArmor(ped, playerId, playerMetadata)
     SetEntityHealth(ped, playerMetadata.health)
+    SetEntityMaxHealth(ped, 200)
     SetPlayerHealthRechargeMultiplier(playerId, 0.0)
     SetPlayerHealthRechargeLimit(playerId, 0.0)
     SetPedArmour(ped, playerMetadata.armor)

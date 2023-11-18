@@ -11,20 +11,24 @@ local playerWeaponWounds = {}
 local triggerEventHooks = require 'modules.hooks.server'
 
 ---@param data number[] weapon hashes
-RegisterNetEvent('hospital:server:SetWeaponDamage', function(data)
-	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	if not player then return end
-	playerWeaponWounds[player.PlayerData.source] = data
+lib.callback.register('qbx_medical:server:setWeaponWounds', function(source, data)
+	playerWeaponWounds[source] = data
 end)
 
-RegisterNetEvent('hospital:server:RestoreWeaponDamage', function()
-	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	playerWeaponWounds[player.PlayerData.source] = nil
+lib.callback.register('qbx_medical:server:clearWeaponWounds', function(source)
+	playerWeaponWounds[source] = nil
 end)
+
+---@param player table|number
+local function revivePlayer(player)
+	if type(player) == "number" then
+		player = exports.qbx_core:GetPlayer(player)
+	end
+	player.Functions.SetMetaData("isdead", false)
+	player.Functions.SetMetaData("inlaststand", false)
+	playerWeaponWounds[source] = nil
+	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
+end
 
 ---Compatibility with txAdmin Menu's heal options.
 ---This is an admin only server side event that will pass the target player id or -1.
@@ -36,15 +40,13 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 		return
 	end
 
-	TriggerClientEvent('hospital:client:Revive', eventData.id)
+	revivePlayer(eventData.id)
 	TriggerClientEvent("hospital:client:HealInjuries", eventData.id, "full")
 end)
 
 ---@param data PlayerStatus
-RegisterNetEvent('hospital:server:SyncInjuries', function(data)
-	if GetInvokingResource() then return end
-	local src = source
-	playerStatus[src] = data
+lib.callback.register('qbx_medical:server:syncInjuries', function(source, data)
+	playerStatus[source] = data
 end)
 
 ---@param limbs BodyParts
@@ -88,15 +90,6 @@ lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 	return damage
 end)
 
----@param isDead boolean
-RegisterNetEvent('hospital:server:SetDeathStatus', function(isDead)
-	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	if not player then return end
-	player.Functions.SetMetaData("isdead", isDead)
-end)
-
 RegisterNetEvent('qbx_medical:server:playerDied', function()
 	if GetInvokingResource() then return end
 	local src = source
@@ -105,21 +98,21 @@ RegisterNetEvent('qbx_medical:server:playerDied', function()
 	player.Functions.SetMetaData("isdead", true)
 end)
 
----@param bool boolean
-RegisterNetEvent('hospital:server:SetLaststandStatus', function(bool)
+RegisterNetEvent('qbx_medical:server:onPlayerLaststand', function()
 	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	if not player then return end
-	player.Functions.SetMetaData("inlaststand", bool)
+	local player = exports.qbx_core:GetPlayer(source)
+	player.Functions.SetMetaData("inlaststand", true)
+end)
+
+RegisterNetEvent('qbx_medical:server:onPlayerLaststandEnd', function()
+	if GetInvokingResource() then return end
+	local player = exports.qbx_core:GetPlayer(source)
+	player.Functions.SetMetaData("inlaststand", false)
 end)
 
 ---@param amount number
-RegisterNetEvent('hospital:server:SetArmor', function(amount)
-	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	if not player then return end
+lib.callback('qbx_medical:server:setArmor', function(source, amount)
+	local player = exports.qbx_core:GetPlayer(source)
 	player.Functions.SetMetaData("armor", amount)
 end)
 
@@ -162,7 +155,13 @@ lib.addCommand('revive', {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
-	triggerEventOnPlayer(source, 'hospital:client:Revive', args.id)
+	if not args.id then args.id = source end
+	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
+	if not player then
+		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		return
+	end
+	revivePlayer(args.id)
 end)
 
 lib.addCommand('setpain', {

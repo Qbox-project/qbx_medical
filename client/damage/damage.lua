@@ -56,7 +56,7 @@ local function findDamageCause()
         end
     end
     if detected then
-        TriggerServerEvent("hospital:server:SetWeaponDamage", CurrentDamageList)
+        lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
     end
 end
 
@@ -173,7 +173,7 @@ local function checkDamage(ped, boneId, weapon, damageDone)
     applyImmediateEffects(ped, bone, weapon, damageDone)
     injureBodyPart(bone)
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
@@ -195,7 +195,7 @@ local function applyDamage(ped, damageDone, isArmorDamaged)
     if damageDone >= Config.HealthDamage then
         local isBodyHitOrWeakWeapon = checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
         if isBodyHitOrWeakWeapon and isArmorDamaged then
-            TriggerServerEvent("hospital:server:SetArmor", GetPedArmour(ped))
+            lib.callback('qbx_medical:server:setArmor', false, false, GetPedArmour(ped))
         elseif not isBodyHitOrWeakWeapon and isDamagingEvent(damageDone, weapon) then
             checkDamage(ped, bone, weapon, damageDone)
         end

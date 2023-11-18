@@ -179,7 +179,7 @@ function ResetMinorInjuries()
         BlackoutTimer = 0
     end
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
@@ -205,13 +205,13 @@ function ResetAllInjuries()
     FadeOutTimer = 0
     BlackoutTimer = 0
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
 
     CurrentDamageList = {}
-    TriggerServerEvent('hospital:server:SetWeaponDamage', CurrentDamageList)
+    lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
 
     SendBleedAlert()
     MakePedLimp()
@@ -274,7 +274,7 @@ RegisterNetEvent('hospital:client:SetPain', function()
     bone = Config.Bones[40269]
     CreateInjury(BodyParts[bone], bone, 4)
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
@@ -293,8 +293,7 @@ RegisterNetEvent('hospital:client:HealInjuries', function(type)
     else
         ResetMinorInjuries()
     end
-    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
-
+    lib.callback('qbx_medical:server:clearWeaponWounds')
     exports.qbx_core:Notify(Lang:t('success.wounds_healed'), 'success')
 end)
 
@@ -320,7 +319,7 @@ exports('getPatientStatus', getPatientStatus)
 
 ---Revives player, healing all injuries
 ---Intended to be called from client or server.
-RegisterNetEvent('hospital:client:Revive', function()
+RegisterNetEvent('qbx_medical:client:playerRevived', function()
     local ped = cache.ped
 
     if IsDead or InLaststand then
@@ -331,7 +330,6 @@ RegisterNetEvent('hospital:client:Revive', function()
         EndLastStand()
     end
 
-    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
     SetEntityMaxHealth(ped, 200)
     SetEntityHealth(ped, 200)
     ClearPedBloodDamage(ped)
@@ -339,7 +337,5 @@ RegisterNetEvent('hospital:client:Revive', function()
     ResetAllInjuries()
     ResetPedMovementClipset(ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
-    TriggerServerEvent("hospital:server:SetDeathStatus", false)
-    TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
 end)

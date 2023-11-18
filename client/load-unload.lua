@@ -19,9 +19,6 @@ local function initDeathAndLastStand(metadata)
         AllowRespawn()
     elseif metadata.inlaststand then
         StartLastStand()
-    else
-        TriggerServerEvent("hospital:server:SetDeathStatus", false)
-        TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     end
 end
 

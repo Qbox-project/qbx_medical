@@ -26,7 +26,7 @@ local function revivePlayer(player)
 	end
 	player.Functions.SetMetaData("isdead", false)
 	player.Functions.SetMetaData("inlaststand", false)
-	playerWeaponWounds[source] = nil
+	playerWeaponWounds[player.PlayerData.source] = nil
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
 end
 

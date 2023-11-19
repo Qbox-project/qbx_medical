@@ -41,7 +41,7 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 	end
 
 	revivePlayer(eventData.id)
-	TriggerClientEvent("hospital:client:HealInjuries", eventData.id, "full")
+	lib.callback('qbx_medical:client:heal', eventData.id, false, "full")
 end)
 
 ---@param data PlayerStatus
@@ -111,42 +111,22 @@ RegisterNetEvent('qbx_medical:server:onPlayerLaststandEnd', function()
 end)
 
 ---@param amount number
-lib.callback('qbx_medical:server:setArmor', function(source, amount)
+lib.callback.register('qbx_medical:server:setArmor', function(source, amount)
 	local player = exports.qbx_core:GetPlayer(source)
 	player.Functions.SetMetaData("armor", amount)
 end)
 
-RegisterNetEvent('hospital:server:resetHungerThirst', function()
-	if GetInvokingResource() then return end
-	local player = exports.qbx_core:GetPlayer(source)
-
-	if not player then return end
+local function resetHungerAndThirst(player)
+	if type(player == 'number') then
+		player = exports.qbx_core:GetPlayer(player)
+	end
 
 	player.Functions.SetMetaData('hunger', 100)
 	player.Functions.SetMetaData('thirst', 100)
-
-	TriggerClientEvent('hud:client:UpdateNeeds', source, 100, 100)
-end)
-
----Triggers the event on the player or src, if no target is specified
----@param src number playerId of the one triggering the event
----@param event string event name
----@param targetPlayerId? string playerId of the target of the event
-local function triggerEventOnPlayer(src, event, targetPlayerId)
-	if not targetPlayerId then
-		TriggerClientEvent(event, src)
-		return
-	end
-
-	local player = exports.qbx_core:GetPlayer(tonumber(targetPlayerId))
-
-	if not player then
-		TriggerClientEvent('ox_lib:notify', src, { description = Lang:t('error.not_online'), type = 'error' })
-		return
-	end
-
-	TriggerClientEvent(event, player.PlayerData.source)
+	TriggerClientEvent('hud:client:UpdateNeeds', player.PlayerData.source, 100, 100)
 end
+
+lib.callback.register('qbx_medical:server:resetHungerAndThirst', resetHungerAndThirst)
 
 lib.addCommand('revive', {
     help = Lang:t('info.revive_player_a'),
@@ -164,16 +144,6 @@ lib.addCommand('revive', {
 	revivePlayer(args.id)
 end)
 
-lib.addCommand('setpain', {
-    help = Lang:t('info.pain_level'),
-	restricted = "admin",
-	params = {
-        { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
-    }
-}, function(source, args)
-	triggerEventOnPlayer(source, 'hospital:client:SetPain', args.id)
-end)
-
 lib.addCommand('kill', {
     help =  Lang:t('info.kill'),
 	restricted = "admin",
@@ -181,7 +151,13 @@ lib.addCommand('kill', {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
-	triggerEventOnPlayer(source, 'hospital:client:KillPlayer', args.id)
+	if not args.id then args.id = source end
+	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
+	if not player then
+		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		return
+	end
+	lib.callback('qbx_medical:client:killPlayer', args.id)
 end)
 
 lib.addCommand('aheal', {
@@ -191,7 +167,13 @@ lib.addCommand('aheal', {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
-	triggerEventOnPlayer(source, 'hospital:client:adminHeal', args.id)
+	if not args.id then args.id = source end
+	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
+	if not player then
+		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		return
+	end
+	lib.callback('qbx_medical:client:heal', args.id, false, "full")
 end)
 
 lib.callback.register('qbx_medical:server:respawn', function(source)

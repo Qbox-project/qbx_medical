@@ -25,7 +25,7 @@ function EndLastStand()
     TaskPlayAnim(ped, LastStandDict, "exit", 1.0, 8.0, -1, 1, -1, false, false, false)
     InLaststand = false
     LaststandTime = 0
-    TriggerServerEvent("hospital:server:SetLaststandStatus", false)
+    TriggerServerEvent('qbx_medical:server:onPlayerLaststandEnd')
 end
 
 exports('endLastStandDeprecated', EndLastStand)
@@ -82,5 +82,4 @@ function StartLastStand()
             countdownLastStand()
         end
     end)
-    TriggerServerEvent("hospital:server:SetLaststandStatus", true)
 end

@@ -106,14 +106,7 @@ exports('getRespawnHoldTimeDeprecated', function()
     return RespawnHoldTime
 end)
 
-RegisterNetEvent('hospital:client:adminHeal', function()
-    if GetInvokingResource() then return end
-    SetEntityHealth(cache.ped, 200)
-    TriggerServerEvent("hospital:server:resetHungerThirst")
-end)
-
-RegisterNetEvent('hospital:client:KillPlayer', function()
-    if GetInvokingResource() then return end
+lib.callback('qbx_medical:client:killPlayer', function()
     SetEntityHealth(cache.ped, 0)
 end)
 
@@ -179,7 +172,7 @@ function ResetMinorInjuries()
         BlackoutTimer = 0
     end
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
@@ -205,18 +198,18 @@ function ResetAllInjuries()
     FadeOutTimer = 0
     BlackoutTimer = 0
 
-    TriggerServerEvent('hospital:server:SyncInjuries', {
+    lib.callback('qbx_medical:server:syncInjuries', false, false,{
         limbs = BodyParts,
         isBleeding = BleedLevel
     })
 
     CurrentDamageList = {}
-    TriggerServerEvent('hospital:server:SetWeaponDamage', CurrentDamageList)
+    lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
 
     SendBleedAlert()
     MakePedLimp()
     doLimbAlert()
-    TriggerServerEvent("hospital:server:resetHungerThirst")
+    lib.callback('qbx_medical:server:resetHungerAndThirst')
 end
 
 exports('resetAllInjuries', ResetAllInjuries)
@@ -263,38 +256,18 @@ function ApplyBleed(level)
     SendBleedAlert()
 end
 
----Creates random injuries on the player
-RegisterNetEvent('hospital:client:SetPain', function()
-    if GetInvokingResource() then return end
-    ApplyBleed(math.random(1, 4))
- 
-    local bone = Config.Bones[24816]
-    CreateInjury(BodyParts[bone], bone, 4)
-
-    bone = Config.Bones[40269]
-    CreateInjury(BodyParts[bone], bone, 4)
-
-    TriggerServerEvent('hospital:server:SyncInjuries', {
-        limbs = BodyParts,
-        isBleeding = BleedLevel
-    })
-end)
-
 exports('getBleedStateLabelDeprecated', function(level)
     return Config.BleedingStates[level]
 end)
 
 ---heals player wounds.
 ---@param type? "full"|any heals all wounds if full otherwise heals only major wounds.
-RegisterNetEvent('hospital:client:HealInjuries', function(type)
-    if GetInvokingResource() then return end
+lib.callback.register('qbx_medical:client:heal', function(type)
     if type == "full" then
         ResetAllInjuries()
     else
         ResetMinorInjuries()
     end
-    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
-
     exports.qbx_core:Notify(Lang:t('success.wounds_healed'), 'success')
 end)
 
@@ -320,7 +293,7 @@ exports('getPatientStatus', getPatientStatus)
 
 ---Revives player, healing all injuries
 ---Intended to be called from client or server.
-RegisterNetEvent('hospital:client:Revive', function()
+RegisterNetEvent('qbx_medical:client:playerRevived', function()
     local ped = cache.ped
 
     if IsDead or InLaststand then
@@ -331,7 +304,6 @@ RegisterNetEvent('hospital:client:Revive', function()
         EndLastStand()
     end
 
-    TriggerServerEvent("hospital:server:RestoreWeaponDamage")
     SetEntityMaxHealth(ped, 200)
     SetEntityHealth(ped, 200)
     ClearPedBloodDamage(ped)
@@ -339,7 +311,5 @@ RegisterNetEvent('hospital:client:Revive', function()
     ResetAllInjuries()
     ResetPedMovementClipset(ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
-    TriggerServerEvent("hospital:server:SetDeathStatus", false)
-    TriggerServerEvent("hospital:server:SetLaststandStatus", false)
     exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
 end)

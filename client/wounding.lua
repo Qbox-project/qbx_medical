@@ -2,9 +2,12 @@ local prevPos = vec3(0.0, 0.0, 0.0)
 
 local function getWorstInjury()
     local level = 0
-    for _, injury in pairs(Injuries) do
-        if injury.severity > level then
-            level = injury.severity
+    for _, bodyPart in pairs(BodyParts) do
+        for i = 1, #bodyPart.injuries do
+            local injury = bodyPart.injuries[i]
+            if injury.severity > level then
+                level = injury.severity
+            end
         end
     end
 
@@ -13,7 +16,7 @@ end
 
 CreateThread(function()
     while true do
-        if #Injuries > 0 then
+        if NumInjuries > 0 then
             local level = getWorstInjury()
             SetPedMoveRateOverride(cache.ped, Config.woundLevels[level].movementRate)
             Wait(5)

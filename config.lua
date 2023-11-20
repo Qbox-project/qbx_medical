@@ -1,10 +1,23 @@
 Config = {}
-Config.MovementRate = { -- Set the player movement rate based on the level of damage they have
-    0.98,
-    0.96,
-    0.94,
-    0.92,
+Config.woundLevels = {
+    {
+        movementRate = 0.98,
+        label = Lang:t('states.irritated'),
+    },
+    {
+        movementRate = 0.96,
+        label = Lang:t('states.quite_painful'),
+    },
+    {
+        movementRate = 0.94,
+        label = Lang:t('states.painful'),
+    },
+    {
+        movementRate = 0.92,
+        label = Lang:t('states.really_painful'),
+    },
 }
+
 Config.FadeOutTimer = 2 -- How many bleed ticks occur before fadeout happens
 Config.BlackoutTimer = 10 -- How many bleed ticks occur before blacking out
 Config.BleedTickDamage = 8 -- The base damage that is multiplied by bleed level everytime a bleed tick occurs
@@ -17,12 +30,6 @@ Config.BleedingStates = { -- Translate bleeding alerts
     Lang:t('states.bleed'),
     Lang:t('states.lot_bleed'),
     Lang:t('states.big_bleed'),
-}
-Config.WoundStates = { -- Translate wound alerts
-    Lang:t('states.irritated'),
-    Lang:t('states.quite_painful'),
-    Lang:t('states.painful'),
-    Lang:t('states.really_painful'),
 }
 
 Config.ArmorDamage = 5 -- Minumum damage done to armor before checking for injuries

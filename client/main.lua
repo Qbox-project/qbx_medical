@@ -18,21 +18,21 @@ Injuries = {}
 ---@alias BodyParts table<Bone, BodyPart>
 ---@type BodyParts
 BodyParts = {
-    ['HEAD'] = { label = Lang:t('body.head'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['NECK'] = { label = Lang:t('body.neck'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['SPINE'] = { label = Lang:t('body.spine'), causeLimp = true, isDamaged = false, severity = 0 },
-    ['UPPER_BODY'] = { label = Lang:t('body.upper_body'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['LOWER_BODY'] = { label = Lang:t('body.lower_body'), causeLimp = true, isDamaged = false, severity = 0 },
-    ['LARM'] = { label = Lang:t('body.left_arm'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['LHAND'] = { label = Lang:t('body.left_hand'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['LFINGER'] = { label = Lang:t('body.left_fingers'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['LLEG'] = { label = Lang:t('body.left_leg'), causeLimp = true, isDamaged = false, severity = 0 },
-    ['LFOOT'] = { label = Lang:t('body.left_foot'), causeLimp = true, isDamaged = false, severity = 0 },
-    ['RARM'] = { label = Lang:t('body.right_arm'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['RHAND'] = { label = Lang:t('body.right_hand'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['RFINGER'] = { label = Lang:t('body.right_fingers'), causeLimp = false, isDamaged = false, severity = 0 },
-    ['RLEG'] = { label = Lang:t('body.right_leg'), causeLimp = true, isDamaged = false, severity = 0 },
-    ['RFOOT'] = { label = Lang:t('body.right_foot'), causeLimp = true, isDamaged = false, severity = 0 },
+    HEAD = { label = Lang:t('body.head'), causeLimp = false, isDamaged = false, severity = 0 },
+    NECK = { label = Lang:t('body.neck'), causeLimp = false, isDamaged = false, severity = 0 },
+    SPINE = { label = Lang:t('body.spine'), causeLimp = true, isDamaged = false, severity = 0 },
+    UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false, isDamaged = false, severity = 0 },
+    LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true, isDamaged = false, severity = 0 },
+    LARM = { label = Lang:t('body.left_arm'), causeLimp = false, isDamaged = false, severity = 0 },
+    LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, isDamaged = false, severity = 0 },
+    LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, isDamaged = false, severity = 0 },
+    LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, isDamaged = false, severity = 0 },
+    LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, isDamaged = false, severity = 0 },
+    RARM = { label = Lang:t('body.right_arm'), causeLimp = false, isDamaged = false, severity = 0 },
+    RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, isDamaged = false, severity = 0 },
+    RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, isDamaged = false, severity = 0 },
+    RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, isDamaged = false, severity = 0 },
+    RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, isDamaged = false, severity = 0 },
 }
 
 BleedLevel = 0
@@ -127,7 +127,7 @@ local function doLimbAlert()
     local limbDamageMsg = ''
     if #Injuries <= Config.AlertShowInfo then
         for k, v in pairs(Injuries) do
-            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = v.label, severity = Config.WoundStates[v.severity] })
+            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = v.label, severity = Config.woundLevels[v.severity].label})
             if k < #Injuries then
                 limbDamageMsg = limbDamageMsg .. " | "
             end
@@ -284,7 +284,7 @@ end)
 local function getPatientStatus(damagedBodyParts)
     local status = {}
     for _, bodyPart in pairs(damagedBodyParts) do
-        status[#status + 1] = bodyPart.label .. " (" .. Config.WoundStates[bodyPart.severity] .. ")"
+        status[#status + 1] = bodyPart.label .. " (" .. Config.woundLevels[bodyPart.severity].label .. ")"
     end
     return status
 end

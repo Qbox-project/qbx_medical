@@ -54,7 +54,7 @@ end)
 local function getDamagedBodyParts(limbs)
 	local bodyParts = {}
 	for bone, bodyPart in pairs(limbs) do
-		if bodyPart.isDamaged then
+		if bodyPart.severity > 0 then
 			bodyParts[bone] = bodyPart
 		end
 	end

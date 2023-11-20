@@ -1,5 +1,5 @@
----@type number[] weapon hashes
-CurrentDamageList = {}
+---@type table<number, boolean> weapon hashes as a set
+WeaponsThatDamagedPlayer = {}
 
 NumInjuries = 0
 
@@ -143,7 +143,7 @@ end
 --- TODO: this export should not check any conditions, but force the ped to limp instead.
 exports('makePedLimp', MakePedLimp)
 
-function ResetMinorInjuries()
+local function resetMinorInjuries()
     for _, bodyPart in pairs(BodyParts) do
         if bodyPart.severity > 0 and bodyPart.severity <= 2 then
             bodyPart.severity = 0
@@ -168,9 +168,7 @@ function ResetMinorInjuries()
     doLimbAlert()
 end
 
-exports('resetMinorInjuries', ResetMinorInjuries)
-
-function ResetAllInjuries()
+local function resetAllInjuries()
     for _, v in pairs(BodyParts) do
         v.severity = 0
     end
@@ -187,16 +185,13 @@ function ResetAllInjuries()
         isBleeding = BleedLevel
     })
 
-    CurrentDamageList = {}
-    lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
+    WeaponsThatDamagedPlayer = {}
 
     SendBleedAlert()
     MakePedLimp()
     doLimbAlert()
     lib.callback('qbx_medical:server:resetHungerAndThirst')
 end
-
-exports('resetAllInjuries', ResetAllInjuries)
 
 function DamageBodyPart(bone, severity)
     BodyParts[bone].severity = severity
@@ -244,9 +239,9 @@ end)
 ---@param type? "full"|any heals all wounds if full otherwise heals only major wounds.
 lib.callback.register('qbx_medical:client:heal', function(type)
     if type == "full" then
-        ResetAllInjuries()
+        resetAllInjuries()
     else
-        ResetMinorInjuries()
+        resetMinorInjuries()
     end
     exports.qbx_core:Notify(Lang:t('success.wounds_healed'), 'success')
 end)
@@ -272,8 +267,8 @@ end
 exports('getPatientStatus', getPatientStatus)
 
 ---Revives player, healing all injuries
----Intended to be called from client or server.
 RegisterNetEvent('qbx_medical:client:playerRevived', function()
+    if source then return end
     local ped = cache.ped
 
     if IsDead or InLaststand then
@@ -288,7 +283,7 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     SetEntityHealth(ped, 200)
     ClearPedBloodDamage(ped)
     SetPlayerSprint(cache.playerId, true)
-    ResetAllInjuries()
+    resetAllInjuries()
     ResetPedMovementClipset(ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
     exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')

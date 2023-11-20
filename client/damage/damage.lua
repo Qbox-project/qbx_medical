@@ -21,37 +21,19 @@ local function injureBodyPart(bone)
     end
 end
 
----@param array any[]
----@param value any
----@return boolean found
-local function isInArray(array, value)
-    if not array then return false end
-
-    for i = 1, #array do
-        if array[i] == value then
-            return true
-        end
-    end
-
-    return false
-end
-
 ---Adds weapon hashes that damaged the ped that aren't already in the CurrentDamagedList and syncs to the server.
 local function findDamageCause()
-    local detected = false
     for hash, weapon in pairs(exports.qbx_core:GetWeapons()) do
-        if HasPedBeenDamagedByWeapon(cache.ped, hash, 0) and not isInArray(CurrentDamageList, hash) then
-            detected = true
+        if HasPedBeenDamagedByWeapon(cache.ped, hash, 0) and not WeaponsThatDamagedPlayer[hash] then
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
                 multiline = false,
                 args = { Lang:t('info.status'), weapon.damagereason }
             })
-            CurrentDamageList[#CurrentDamageList + 1] = hash
+            WeaponsThatDamagedPlayer[hash] = true
+            ---TODO: verify that this only executes once for the loop and can therefore return early.
+            TriggerServerEvent('qbx_medical:server:playerDamagedByWeapon', hash)
         end
-    end
-    if detected then
-        lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
     end
 end
 

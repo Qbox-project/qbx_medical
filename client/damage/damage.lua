@@ -1,23 +1,30 @@
 local playerArmor = nil
 
 ---Increases severity of an injury
----@param bodyPart BodyPart
----@param bone Bone
-local function upgradeInjury(bodyPart, bone)
-    if bodyPart.severity >= 4 then return end
+---@param bodyPartKey BodyPartKey
+local function upgradeInjury(bodyPartKey)
+    if Injuries[bodyPartKey] >= 4 then return end
+    Injuries[bodyPartKey] += 1
+end
 
-    bodyPart.severity += 1
-    DamageBodyPart(bone, bodyPart.severity)
+---creates an injury on body part with random severity between 1 and maxSeverity.
+---@param bodyPartKey BodyPartKey
+---@param maxSeverity number
+local function createInjury(bodyPartKey, maxSeverity)
+    if Injuries[bodyPartKey] then return end
+    local severity = math.random(1, maxSeverity)
+    Injuries[bodyPartKey] = severity
+    NumInjuries += 1
 end
 
 ---create/upgrade injury at bone.
----@param bone Bone
-local function injureBodyPart(bone)
-    local bodyPart = BodyParts[bone]
-    if bodyPart.severity == 0 then
-        CreateInjury(bodyPart, bone, 3)
+---@param bodyPartKey BodyPartKey
+local function injureBodyPart(bodyPartKey)
+    local severity = Injuries[bodyPartKey]
+    if not severity then
+        createInjury(bodyPartKey, 3)
     else
-        upgradeInjury(bodyPart, bone)
+        upgradeInjury(bodyPartKey)
     end
 end
 
@@ -81,24 +88,24 @@ end
 ---applies a minor bleed if player has no armor and is hit in a critical area.
 ---also makes player stagger if hit in a certain body part.
 ---@param ped number
----@param bone Bone body part where player is damaged
+---@param bodyPartKey BodyPartKey body part where player is damaged
 ---@param armor number
-local function applyImmediateMinorEffects(ped, bone, armor)
-    if Config.CriticalAreas[bone] and armor <= 0 then
+local function applyImmediateMinorEffects(ped, bodyPartKey, armor)
+    if Config.CriticalAreas[bodyPartKey] and armor <= 0 then
        ApplyBleed(1)
     end
 
-    local staggerArea = Config.StaggerAreas[bone]
+    local staggerArea = Config.StaggerAreas[bodyPartKey]
     if not staggerArea then return end
     applyStaggerEffect(ped, staggerArea.armored, staggerArea.minor, armor)
 end
 
 ---Applies bleed with probability based on armor and location hit. Also applies stagger effect.
 ---@param ped number
----@param bone Bone body part where player is damaged
+---@param bodyPartKey BodyPartKey body part where player is damaged
 ---@param armor number
-local function applyImmediateMajorEffects(ped, bone, armor)
-    local criticalArea = Config.CriticalAreas[bone]
+local function applyImmediateMajorEffects(ped, bodyPartKey, armor)
+    local criticalArea = Config.CriticalAreas[bodyPartKey]
     if criticalArea then
         if armor > 0 and criticalArea.armored then
             if math.random(100) <= math.ceil(Config.MajorArmoredBleedChance) then
@@ -117,22 +124,22 @@ local function applyImmediateMajorEffects(ped, bone, armor)
         end
     end
 
-    local staggerArea = Config.StaggerAreas[bone]
+    local staggerArea = Config.StaggerAreas[bodyPartKey]
     if not staggerArea then return end
     applyStaggerEffect(ped, staggerArea.armored, staggerArea.major, armor)
 end
 
 ---Apply bleeds and staggers effects on damage taken, taking into account armor.
 ---@param ped number
----@param bone Bone
+---@param bodyPartKey BodyPartKey
 ---@param weapon number
 ---@param damageDone number
-local function applyImmediateEffects(ped, bone, weapon, damageDone)
+local function applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
     local armor = GetPedArmour(ped)
     if Config.MinorInjurWeapons[weapon] and damageDone < Config.DamageMinorToMajor then
-        applyImmediateMinorEffects(ped, bone, armor)
+        applyImmediateMinorEffects(ped, bodyPartKey, armor)
     elseif Config.MajorInjurWeapons[weapon] or (Config.MinorInjurWeapons[weapon] and damageDone >= Config.DamageMinorToMajor) then
-        applyImmediateMajorEffects(ped, bone, armor)
+        applyImmediateMajorEffects(ped, bodyPartKey, armor)
     end
 end
 
@@ -144,14 +151,14 @@ end
 local function checkDamage(ped, boneId, weapon, damageDone)
     if not weapon then return end
 
-    local bone = Config.Bones[boneId]
-    if not bone or IsDead or InLaststand then return end
+    local bodyPartKey = Config.Bones[boneId]
+    if not bodyPartKey or IsDead or InLaststand then return end
 
-    applyImmediateEffects(ped, bone, weapon, damageDone)
-    injureBodyPart(bone)
+    applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
+    injureBodyPart(bodyPartKey)
 
     lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        limbs = BodyParts,
+        injuries = Injuries,
         isBleeding = BleedLevel
     })
 

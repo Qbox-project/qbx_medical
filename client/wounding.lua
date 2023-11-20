@@ -2,9 +2,9 @@ local prevPos = vec3(0.0, 0.0, 0.0)
 
 local function getWorstInjury()
     local level = 0
-    for _, bodyPart in pairs(BodyParts) do
-        if bodyPart.severity > level then
-            level = bodyPart.severity
+    for _, severity in pairs(Injuries) do
+        if severity > level then
+            level = severity
         end
     end
 

@@ -114,10 +114,29 @@ Config.AlwaysBleedChanceWeapons = { -- Define which weapons will always cause bl
 }
 Config.AlwaysBleedChance = 70 -- Set the chance out of 100 that if a player is hit with a weapon, that also has a random chance, it will cause bleeding
 
-Config.BodyPart = {
-    NONE = 0,
-    HEAD = 1,
-    
+---@alias BodyPartKey string
+
+---@class BodyPart
+---@field label string
+---@field causeLimp boolean
+
+---@type table<BodyPartKey, BodyPart>
+Config.BodyParts = {
+    HEAD = { label = Lang:t('body.head'), causeLimp = false },
+    NECK = { label = Lang:t('body.neck'), causeLimp = false },
+    SPINE = { label = Lang:t('body.spine'), causeLimp = true },
+    UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false },
+    LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true },
+    LARM = { label = Lang:t('body.left_arm'), causeLimp = false, },
+    LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, },
+    LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, },
+    LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, },
+    LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, },
+    RARM = { label = Lang:t('body.right_arm'), causeLimp = false, },
+    RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, },
+    RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, },
+    RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, },
+    RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, },
 }
 
 ---@type table<number, string>

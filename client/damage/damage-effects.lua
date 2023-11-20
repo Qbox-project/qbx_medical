@@ -4,10 +4,10 @@ local headCount = 0
 
 ---based off of injuries to leg bodyparts of a certain severity.
 ---@param bodyPartKey BodyPartKey
----@param bodyPart BodyPart
+---@param severity number
 ---@return boolean isLegDamaged if leg is considered damaged
-local function isLegDamaged(bodyPartKey, bodyPart)
-    return (bodyPartKey == 'LLEG' and bodyPart.severity > 1) or (bodyPartKey == 'RLEG' and bodyPart.severity > 1) or (bodyPartKey == 'LFOOT' and bodyPart.severity > 2) or (bodyPartKey == 'RFOOT' and bodyPart.severity > 2)
+local function isLegDamaged(bodyPartKey, severity)
+    return (bodyPartKey == 'LLEG' and severity > 1) or (bodyPartKey == 'RLEG' and severity > 1) or (bodyPartKey == 'LFOOT' and severity > 2) or (bodyPartKey == 'RFOOT' and severity > 2)
 end
 
 ---shake camera and ragdoll player forward
@@ -29,18 +29,18 @@ end
 
 ---checks if left arm is damaged based off of injury location and severity.
 ---@param bodyPartKey BodyPartKey
----@param bodyPart BodyPart
+---@param severity integer
 ---@return boolean isDamaged true if the left arm is damaged
-local function isLeftArmDamaged(bodyPartKey, bodyPart)
-    return (bodyPartKey == 'LARM' and bodyPart.severity > 1) or (bodyPartKey == 'LHAND' and bodyPart.severity > 1) or (bodyPartKey == 'LFINGER' and bodyPart.severity > 2)
+local function isLeftArmDamaged(bodyPartKey, severity)
+    return (bodyPartKey == 'LARM' and severity > 1) or (bodyPartKey == 'LHAND' and severity > 1) or (bodyPartKey == 'LFINGER' and severity > 2)
 end
 
 ---checks if either arm is damaged based on injury location and severity.
 ---@param bodyPartKey BodyPartKey
----@param bodyPart BodyPart
+---@param severity integer
 ---@return boolean isDamaged true if either arm is damaged
-local function isArmDamaged(bodyPartKey, bodyPart)
-    return isLeftArmDamaged(bodyPartKey, bodyPart) or (bodyPartKey == 'RARM' and bodyPart.severity > 1) or (bodyPartKey == 'RHAND' and bodyPart.severity > 1) or (bodyPartKey == 'RFINGER' and bodyPart.severity > 2)
+local function isArmDamaged(bodyPartKey, severity)
+    return isLeftArmDamaged(bodyPartKey, severity) or (bodyPartKey == 'RARM' and severity > 1) or (bodyPartKey == 'RHAND' and severity > 1) or (bodyPartKey == 'RFINGER' and severity > 2)
 end
 
 ---enforce following arm disabilities on the player for a set time period:
@@ -70,10 +70,10 @@ end
 
 ---returns whether the player's head is damaged based on injury location and severity.
 ---@param bodyPartKey BodyPartKey
----@param bodyPart BodyPart
+---@param severity integer
 ---@return boolean
-local function isHeadDamaged(bodyPartKey, bodyPart)
-    return bodyPartKey == 'HEAD' and bodyPart.severity > 2
+local function isHeadDamaged(bodyPartKey, severity)
+    return bodyPartKey == 'HEAD' and severity > 2
 end
 
 ---flash screen, fade out, ragdoll, fade in.
@@ -99,24 +99,24 @@ end
 function ApplyDamageEffects()
     local ped = cache.ped
     if IsDead or InLaststand then return end
-    for bodyPartKey, bodyPart in pairs(BodyParts) do
-        if isLegDamaged(bodyPartKey, bodyPart) then
+    for bodyPartKey, severity in pairs(Injuries) do
+        if isLegDamaged(bodyPartKey, severity) then
             if legCount >= Config.LegInjuryTimer then
                 chancePedFalls(ped)
                 legCount = 0
             else
                 legCount += 1
             end
-        elseif isArmDamaged(bodyPartKey, bodyPart) then
+        elseif isArmDamaged(bodyPartKey, severity) then
             if armCount >= Config.ArmInjuryTimer then
                 CreateThread(function()
-                    disableArms(ped, isLeftArmDamaged(bodyPartKey, bodyPart))
+                    disableArms(ped, isLeftArmDamaged(bodyPartKey, severity))
                 end)
                 armCount = 0
             else
                 armCount += 1
             end
-        elseif isHeadDamaged(bodyPartKey, bodyPart) then
+        elseif isHeadDamaged(bodyPartKey, severity) then
             if headCount >= Config.HeadInjuryTimer then
                 local chance = math.random(100)
 

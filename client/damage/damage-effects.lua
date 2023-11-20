@@ -3,10 +3,11 @@ local armCount = 0
 local headCount = 0
 
 ---based off of injuries to leg bodyparts of a certain severity.
+---@param part BodyPartKey
 ---@param injury Injury
 ---@return boolean isLegDamaged if leg is considered damaged
-local function isLegDamaged(injury)
-    return (injury.part == 'LLEG' and injury.severity > 1) or (injury.part == 'RLEG' and injury.severity > 1) or (injury.part == 'LFOOT' and injury.severity > 2) or (injury.part == 'RFOOT' and injury.severity > 2)
+local function isLegDamaged(part, injury)
+    return (part == 'LLEG' and injury.severity > 1) or (part == 'RLEG' and injury.severity > 1) or (part == 'LFOOT' and injury.severity > 2) or (part == 'RFOOT' and injury.severity > 2)
 end
 
 ---shake camera and ragdoll player forward
@@ -34,10 +35,11 @@ local function isLeftArmDamaged(injury)
 end
 
 ---checks if either arm is damaged based on injury location and severity.
+---@param part BodyPartKey
 ---@param injury Injury
 ---@return boolean isDamaged true if either arm is damaged
-local function isArmDamaged(injury)
-    return isLeftArmDamaged(injury) or (injury.part == 'RARM' and injury.severity > 1) or (injury.part == 'RHAND' and injury.severity > 1) or (injury.part == 'RFINGER' and injury.severity > 2)
+local function isArmDamaged(part, injury)
+    return isLeftArmDamaged(injury) or (part == 'RARM' and injury.severity > 1) or (part == 'RHAND' and injury.severity > 1) or (part == 'RFINGER' and injury.severity > 2)
 end
 
 ---enforce following arm disabilities on the player for a set time period:
@@ -66,10 +68,11 @@ local function disableArms(ped, leftArmDamaged)
 end
 
 ---returns whether the player's head is damaged based on injury location and severity.
+---@param part BodyPartKey
 ---@param injury Injury
 ---@return boolean
-local function isHeadDamaged(injury)
-    return injury.part == 'HEAD' and injury.severity > 2
+local function isHeadDamaged(part, injury)
+    return part == 'HEAD' and injury.severity > 2
 end
 
 ---flash screen, fade out, ragdoll, fade in.
@@ -95,33 +98,37 @@ end
 function ApplyDamageEffects()
     local ped = cache.ped
     if IsDead or InLaststand then return end
-    for _, injury in pairs(Injuries) do
-        if isLegDamaged(injury) then
-            if legCount >= Config.LegInjuryTimer then
-                chancePedFalls(ped)
-                legCount = 0
-            else
-                legCount += 1
-            end
-        elseif isArmDamaged(injury) then
-            if armCount >= Config.ArmInjuryTimer then
-                CreateThread(function()
-                    disableArms(ped, isLeftArmDamaged(injury))
-                end)
-                armCount = 0
-            else
-                armCount += 1
-            end
-        elseif isHeadDamaged(injury) then
-            if headCount >= Config.HeadInjuryTimer then
-                local chance = math.random(100)
+    for bodyPartKey, bodyPart in pairs(BodyParts) do
+        for i = 1, #bodyPart.injuries do
+            local injury = bodyPart.injuries[i]
 
-                if chance <= Config.HeadInjuryChance then
-                    playBrainDamageEffectAndRagdoll(ped)
+            if isLegDamaged(bodyPartKey, injury) then
+                if legCount >= Config.LegInjuryTimer then
+                    chancePedFalls(ped)
+                    legCount = 0
+                else
+                    legCount += 1
                 end
-                headCount = 0
-            else
-                headCount += 1
+            elseif isArmDamaged(bodyPartKey, injury) then
+                if armCount >= Config.ArmInjuryTimer then
+                    CreateThread(function()
+                        disableArms(ped, isLeftArmDamaged(injury))
+                    end)
+                    armCount = 0
+                else
+                    armCount += 1
+                end
+            elseif isHeadDamaged(bodyPartKey, injury) then
+                if headCount >= Config.HeadInjuryTimer then
+                    local chance = math.random(100)
+
+                    if chance <= Config.HeadInjuryChance then
+                        playBrainDamageEffectAndRagdoll(ped)
+                    end
+                    headCount = 0
+                else
+                    headCount += 1
+                end
             end
         end
     end

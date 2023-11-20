@@ -8,10 +8,8 @@ local function upgradeInjury(bodyPart, bone)
 
     bodyPart.severity += 1
     DamageBodyPart(bone, bodyPart.severity)
-    for _, injury in pairs(Injuries) do
-        if injury.part == bone then
-            injury.severity = bodyPart.severity
-        end
+    for i = 1, #bodyPart.injuries do
+        bodyPart.injuries[i].severity = bodyPart.severity
     end
 end
 

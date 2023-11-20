@@ -46,7 +46,7 @@ Config.LegInjuryChance = { -- The chance, in percent, that leg injury side-effec
 Config.DeathTime = 300 -- How long the timer is for players to bleed out completely and respawn at the hospital
 Config.LaststandReviveInterval = 360
 
----@enum WeaponClasse
+---@enum WeaponClass
 Config.WeaponClasses = { -- Define gta weapon classe numbers
     SMALL_CALIBER = 1,
     MEDIUM_CALIBER = 2,
@@ -114,6 +114,13 @@ Config.AlwaysBleedChanceWeapons = { -- Define which weapons will always cause bl
 }
 Config.AlwaysBleedChance = 70 -- Set the chance out of 100 that if a player is hit with a weapon, that also has a random chance, it will cause bleeding
 
+Config.BodyPart = {
+    NONE = 0,
+    HEAD = 1,
+    
+}
+
+---@type table<number, string>
 Config.Bones = { -- Correspond bone hash numbers to their label
     [0]     = 'NONE',
     [31085] = 'HEAD',

@@ -15,7 +15,7 @@ CreateThread(function()
     while true do
         if #Injuries > 0 then
             local level = getWorstInjury()
-            SetPedMoveRateOverride(cache.ped, Config.MovementRate[level])
+            SetPedMoveRateOverride(cache.ped, Config.woundLevels[level].movementRate)
             Wait(5)
         else
             Wait(1000)

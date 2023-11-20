@@ -28,10 +28,11 @@ local function chancePedFalls(ped)
 end
 
 ---checks if left arm is damaged based off of injury location and severity.
+---@param part BodyPartKey
 ---@param injury Injury
 ---@return boolean isDamaged true if the left arm is damaged
-local function isLeftArmDamaged(injury)
-    return (injury.part == 'LARM' and injury.severity > 1) or (injury.part == 'LHAND' and injury.severity > 1) or (injury.part == 'LFINGER' and injury.severity > 2)
+local function isLeftArmDamaged(part, injury)
+    return (part == 'LARM' and injury.severity > 1) or (part == 'LHAND' and injury.severity > 1) or (part == 'LFINGER' and injury.severity > 2)
 end
 
 ---checks if either arm is damaged based on injury location and severity.
@@ -39,7 +40,7 @@ end
 ---@param injury Injury
 ---@return boolean isDamaged true if either arm is damaged
 local function isArmDamaged(part, injury)
-    return isLeftArmDamaged(injury) or (part == 'RARM' and injury.severity > 1) or (part == 'RHAND' and injury.severity > 1) or (part == 'RFINGER' and injury.severity > 2)
+    return isLeftArmDamaged(part, injury) or (part == 'RARM' and injury.severity > 1) or (part == 'RHAND' and injury.severity > 1) or (part == 'RFINGER' and injury.severity > 2)
 end
 
 ---enforce following arm disabilities on the player for a set time period:
@@ -112,7 +113,7 @@ function ApplyDamageEffects()
             elseif isArmDamaged(bodyPartKey, injury) then
                 if armCount >= Config.ArmInjuryTimer then
                     CreateThread(function()
-                        disableArms(ped, isLeftArmDamaged(injury))
+                        disableArms(ped, isLeftArmDamaged(bodyPartKey, injury))
                     end)
                     armCount = 0
                 else

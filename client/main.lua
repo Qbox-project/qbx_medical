@@ -2,9 +2,7 @@
 CurrentDamageList = {}
 
 ---@class Injury
----@field part Bone body part
 ---@field severity integer higher numbers are worse injuries
----@field label string
 
 NumInjuries = 0
 
@@ -233,8 +231,6 @@ function CreateInjury(bodyPart, bone, maxSeverity)
     local severity = math.random(1, maxSeverity)
     DamageBodyPart(bone, severity)
     bodyPart.injuries[bodyPart.injuries + 1] = {
-        part = bone,
-        label = bodyPart.label,
         severity = severity,
     }
 end

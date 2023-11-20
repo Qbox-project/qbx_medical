@@ -14,7 +14,7 @@ end
 ---@param bone Bone
 local function injureBodyPart(bone)
     local bodyPart = BodyParts[bone]
-    if not bodyPart.isDamaged then
+    if bodyPart.severity == 0 then
         CreateInjury(bodyPart, bone, 3)
     else
         upgradeInjury(bodyPart, bone)

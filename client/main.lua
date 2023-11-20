@@ -6,29 +6,27 @@ NumInjuries = 0
 ---@class BodyPart
 ---@field label string
 ---@field causeLimp boolean
----@field isDamaged boolean
 ---@field severity integer
 
 ---@alias BodyPartKey string
 
----@alias BodyParts table<BodyPartKey, BodyPart>
----@type BodyParts
+---@type table<BodyPartKey, BodyPart>
 BodyParts = {
-    HEAD = { label = Lang:t('body.head'), causeLimp = false, isDamaged = false, severity = 0 },
-    NECK = { label = Lang:t('body.neck'), causeLimp = false, isDamaged = false, severity = 0 },
-    SPINE = { label = Lang:t('body.spine'), causeLimp = true, isDamaged = false, severity = 0 },
-    UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false, isDamaged = false, severity = 0 },
-    LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true, isDamaged = false, severity = 0 },
-    LARM = { label = Lang:t('body.left_arm'), causeLimp = false, isDamaged = false, severity = 0, },
-    LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, isDamaged = false, severity = 0, },
-    LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, isDamaged = false, severity = 0, },
-    LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, isDamaged = false, severity = 0, },
-    LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, isDamaged = false, severity = 0, },
-    RARM = { label = Lang:t('body.right_arm'), causeLimp = false, isDamaged = false, severity = 0, },
-    RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, isDamaged = false, severity = 0, },
-    RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, isDamaged = false, severity = 0, },
-    RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, isDamaged = false, severity = 0, },
-    RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, isDamaged = false, severity = 0, },
+    HEAD = { label = Lang:t('body.head'), causeLimp = false, severity = 0 },
+    NECK = { label = Lang:t('body.neck'), causeLimp = false, severity = 0 },
+    SPINE = { label = Lang:t('body.spine'), causeLimp = true, severity = 0 },
+    UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false, severity = 0 },
+    LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true, severity = 0 },
+    LARM = { label = Lang:t('body.left_arm'), causeLimp = false, severity = 0, },
+    LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, severity = 0, },
+    LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, severity = 0, },
+    LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, severity = 0, },
+    LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, severity = 0, },
+    RARM = { label = Lang:t('body.right_arm'), causeLimp = false, severity = 0, },
+    RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, severity = 0, },
+    RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, severity = 0, },
+    RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, severity = 0, },
+    RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, severity = 0, },
 }
 
 BleedLevel = 0
@@ -105,7 +103,7 @@ end)
 ---@return boolean isInjuryCausingLimp if injury causes a limp and is damaged.
 local function isInjuryCausingLimp()
     for _, v in pairs(BodyParts) do
-        if v.causeLimp and v.isDamaged then
+        if v.causeLimp and v.severity > 0 then
             return true
         end
     end
@@ -147,8 +145,7 @@ exports('makePedLimp', MakePedLimp)
 
 function ResetMinorInjuries()
     for _, bodyPart in pairs(BodyParts) do
-        if bodyPart.isDamaged and bodyPart.severity <= 2 then
-            bodyPart.isDamaged = false
+        if bodyPart.severity > 0 and bodyPart.severity <= 2 then
             bodyPart.severity = 0
         end
     end
@@ -175,7 +172,6 @@ exports('resetMinorInjuries', ResetMinorInjuries)
 
 function ResetAllInjuries()
     for _, v in pairs(BodyParts) do
-        v.isDamaged = false
         v.severity = 0
     end
     
@@ -203,7 +199,6 @@ end
 exports('resetAllInjuries', ResetAllInjuries)
 
 function DamageBodyPart(bone, severity)
-    BodyParts[bone].isDamaged = true
     BodyParts[bone].severity = severity
 end
 
@@ -212,7 +207,7 @@ end
 ---@param bone Bone
 ---@param maxSeverity number
 function CreateInjury(bodyPart, bone, maxSeverity)
-    if bodyPart.isDamaged then return end
+    if bodyPart.severity > 0 then return end
 
     local severity = math.random(1, maxSeverity)
     DamageBodyPart(bone, severity)

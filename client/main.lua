@@ -93,12 +93,12 @@ local function doLimbAlert()
 
     local limbDamageMsg = ''
     if NumInjuries <= Config.AlertShowInfo then
-        local injuriesI = 0
+        local i = 0
         for bodyPartKey, severity in pairs(Injuries) do
             local bodyPart = Config.BodyParts[bodyPartKey]
             limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = Config.woundLevels[severity].label})
-            injuriesI += 1
-            if injuriesI < NumInjuries then
+            i += 1
+            if i < NumInjuries then
                 limbDamageMsg = limbDamageMsg .. " | "
             end
         end
@@ -123,6 +123,7 @@ local function resetMinorInjuries()
     for bodyPartKey, severity in pairs(Injuries) do
         if severity <= 2 then
             Injuries[bodyPartKey] = nil
+            NumInjuries -= 1
         end
     end
 

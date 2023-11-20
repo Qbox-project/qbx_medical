@@ -3,31 +3,8 @@ WeaponsThatDamagedPlayer = {}
 
 NumInjuries = 0
 
----@class BodyPart
----@field label string
----@field causeLimp boolean
----@field severity integer
-
----@alias BodyPartKey string
-
----@type table<BodyPartKey, BodyPart>
-BodyParts = {
-    HEAD = { label = Lang:t('body.head'), causeLimp = false, severity = 0 },
-    NECK = { label = Lang:t('body.neck'), causeLimp = false, severity = 0 },
-    SPINE = { label = Lang:t('body.spine'), causeLimp = true, severity = 0 },
-    UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false, severity = 0 },
-    LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true, severity = 0 },
-    LARM = { label = Lang:t('body.left_arm'), causeLimp = false, severity = 0, },
-    LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, severity = 0, },
-    LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, severity = 0, },
-    LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, severity = 0, },
-    LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, severity = 0, },
-    RARM = { label = Lang:t('body.right_arm'), causeLimp = false, severity = 0, },
-    RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, severity = 0, },
-    RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, severity = 0, },
-    RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, severity = 0, },
-    RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, severity = 0, },
-}
+---@type table<BodyPartKey, integer>
+Injuries = {}
 
 BleedLevel = 0
 BleedTickTimer, AdvanceBleedTimer = 0, 0
@@ -102,8 +79,8 @@ end)
 
 ---@return boolean isInjuryCausingLimp if injury causes a limp and is damaged.
 local function isInjuryCausingLimp()
-    for _, v in pairs(BodyParts) do
-        if v.causeLimp and v.severity > 0 then
+    for bodyPartKey in pairs(Injuries) do
+        if Config.BodyParts[bodyPartKey].causeLimp then
             return true
         end
     end
@@ -117,13 +94,12 @@ local function doLimbAlert()
     local limbDamageMsg = ''
     if NumInjuries <= Config.AlertShowInfo then
         local injuriesI = 0
-        for _, bodyPart in pairs(BodyParts) do
-            if bodyPart.severity > 0 then
-                limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = Config.woundLevels[bodyPart.severity].label})
-                injuriesI += 1
-                if injuriesI < NumInjuries then
-                    limbDamageMsg = limbDamageMsg .. " | "
-                end
+        for bodyPartKey, severity in pairs(Injuries) do
+            local bodyPart = Config.BodyParts[bodyPartKey]
+            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = Config.woundLevels[severity].label})
+            injuriesI += 1
+            if injuriesI < NumInjuries then
+                limbDamageMsg = limbDamageMsg .. " | "
             end
         end
     else
@@ -144,9 +120,9 @@ end
 exports('makePedLimp', MakePedLimp)
 
 local function resetMinorInjuries()
-    for _, bodyPart in pairs(BodyParts) do
-        if bodyPart.severity > 0 and bodyPart.severity <= 2 then
-            bodyPart.severity = 0
+    for bodyPartKey, severity in pairs(Injuries) do
+        if severity <= 2 then
+            Injuries[bodyPartKey] = nil
         end
     end
 
@@ -159,7 +135,7 @@ local function resetMinorInjuries()
     end
 
     lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        limbs = BodyParts,
+        injuries = Injuries,
         isBleeding = BleedLevel
     })
 
@@ -169,10 +145,7 @@ local function resetMinorInjuries()
 end
 
 local function resetAllInjuries()
-    for _, v in pairs(BodyParts) do
-        v.severity = 0
-    end
-    
+    Injuries = {}
     NumInjuries = 0
     BleedLevel = 0
     BleedTickTimer = 0
@@ -181,7 +154,7 @@ local function resetAllInjuries()
     BlackoutTimer = 0
 
     lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        limbs = BodyParts,
+        injuries = Injuries,
         isBleeding = BleedLevel
     })
 
@@ -192,27 +165,6 @@ local function resetAllInjuries()
     doLimbAlert()
     lib.callback('qbx_medical:server:resetHungerAndThirst')
 end
-
-function DamageBodyPart(bone, severity)
-    BodyParts[bone].severity = severity
-end
-
----creates an injury on body part with random severity between 1 and maxSeverity.
----@param bodyPart BodyPart
----@param bone Bone
----@param maxSeverity number
-function CreateInjury(bodyPart, bone, maxSeverity)
-    if bodyPart.severity > 0 then return end
-
-    local severity = math.random(1, maxSeverity)
-    DamageBodyPart(bone, severity)
-    bodyPart.severity = severity
-    NumInjuries += 1
-end
-
-exports('createInjury', function(bodyPart, bone, maxSeverity)
-    CreateInjury(bodyPart, bone, maxSeverity)
-end)
 
 ---notify the player of bleeding to their body.
 function SendBleedAlert()
@@ -254,12 +206,12 @@ CreateThread(function()
 end)
 
 ---Convert wounded body part data to a human readable form
----@param damagedBodyParts BodyParts
 ---@return string[]
-local function getPatientStatus(damagedBodyParts)
+local function getPatientStatus()
     local status = {}
-    for _, bodyPart in pairs(damagedBodyParts) do
-        status[#status + 1] = bodyPart.label .. " (" .. Config.woundLevels[bodyPart.severity].label .. ")"
+    for bodyPartKey, severity in pairs(Injuries) do
+        local bodyPart = Config.BodyParts[bodyPartKey]
+        status[#status + 1] = bodyPart.label .. " (" .. Config.woundLevels[severity].label .. ")"
     end
     return status
 end

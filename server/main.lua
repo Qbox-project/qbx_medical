@@ -1,5 +1,5 @@
 ---@class PlayerStatus
----@field limbs BodyParts
+---@field injuries table<BodyPartKey, integer>
 ---@field isBleeding number
 
 ---@alias Source number
@@ -47,18 +47,6 @@ lib.callback.register('qbx_medical:server:syncInjuries', function(source, data)
 	playerStatus[source] = data
 end)
 
----@param limbs BodyParts
----@return BodyParts
-local function getDamagedBodyParts(limbs)
-	local bodyParts = {}
-	for bone, bodyPart in pairs(limbs) do
-		if bodyPart.severity > 0 then
-			bodyParts[bone] = bodyPart
-		end
-	end
-	return bodyParts
-end
-
 ---@param playerId number
 lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 	local playerSource = exports.qbx_core:GetPlayer(playerId).PlayerData.source
@@ -81,7 +69,7 @@ lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 	local playerInjuries = playerStatus[playerSource]
 	if playerInjuries then
 		damage.bleedLevel = playerInjuries.isBleeding or 0
-		damage.damagedBodyParts = getDamagedBodyParts(playerInjuries.limbs)
+		damage.damagedBodyParts = playerInjuries.injuries
 	end
 
 	damage.weaponWounds = WeaponsThatDamagedPlayers[playerSource] or {}

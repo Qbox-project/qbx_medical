@@ -233,6 +233,7 @@ function CreateInjury(bodyPart, bone, maxSeverity)
     bodyPart.injuries[bodyPart.injuries + 1] = {
         severity = severity,
     }
+    NumInjuries += 1
 end
 
 exports('createInjury', function(bodyPart, bone, maxSeverity)

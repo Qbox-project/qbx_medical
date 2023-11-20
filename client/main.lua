@@ -1,5 +1,5 @@
----@type number[] weapon hashes
-CurrentDamageList = {}
+---@type table<number, boolean> weapon hashes as a set
+WeaponsThatDamagedPlayer = {}
 
 NumInjuries = 0
 
@@ -187,8 +187,8 @@ function ResetAllInjuries()
         isBleeding = BleedLevel
     })
 
-    CurrentDamageList = {}
-    lib.callback('qbx_medical:server:SetWeaponWounds', false, false, CurrentDamageList)
+    WeaponsThatDamagedPlayer = {}
+    lib.callback('qbx_medical:server:SetWeaponWounds', false, false, WeaponsThatDamagedPlayer)
 
     SendBleedAlert()
     MakePedLimp()

@@ -2,21 +2,19 @@
 ---@field limbs BodyParts
 ---@field isBleeding number
 
----@type table<source, PlayerStatus>
+---@alias Source number
+
+---@type table<Source, PlayerStatus>
 local playerStatus = {}
 
----@type table<source, number[]> weapon hashes
-local playerWeaponWounds = {}
+---@type table<Source, table<number, boolean>> weapon hashes
+local WeaponsThatDamagedPlayers = {}
 
 local triggerEventHooks = require 'modules.hooks.server'
 
----@param data number[] weapon hashes
-lib.callback.register('qbx_medical:server:setWeaponWounds', function(source, data)
-	playerWeaponWounds[source] = data
-end)
-
-lib.callback.register('qbx_medical:server:clearWeaponWounds', function(source)
-	playerWeaponWounds[source] = nil
+RegisterNetEvent('qbx_medical:server:playerDamagedByWeapon', function(hash)
+	if WeaponsThatDamagedPlayers[source][hash] then return end
+	WeaponsThatDamagedPlayers[source][hash] = true
 end)
 
 ---@param player table|number
@@ -26,7 +24,7 @@ local function revivePlayer(player)
 	end
 	player.Functions.SetMetaData("isdead", false)
 	player.Functions.SetMetaData("inlaststand", false)
-	playerWeaponWounds[player.PlayerData.source] = nil
+	WeaponsThatDamagedPlayers[player.PlayerData.source] = nil
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
 end
 
@@ -86,7 +84,7 @@ lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 		damage.damagedBodyParts = getDamagedBodyParts(playerInjuries.limbs)
 	end
 
-	damage.weaponWounds = playerWeaponWounds[playerSource] or {}
+	damage.weaponWounds = WeaponsThatDamagedPlayers[playerSource] or {}
 	return damage
 end)
 

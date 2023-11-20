@@ -23,20 +23,17 @@ end
 
 ---Adds weapon hashes that damaged the ped that aren't already in the CurrentDamagedList and syncs to the server.
 local function findDamageCause()
-    local detected = false
-    for hash, weapon in pairs(exports.qbx_core:GetWeapons()) do
+    for hash in pairs(exports.qbx_core:GetWeapons()) do
         if HasPedBeenDamagedByWeapon(cache.ped, hash, 0) and not WeaponsThatDamagedPlayer[hash] then
-            detected = true
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
                 multiline = false,
                 args = { Lang:t('info.status'), weapon.damagereason }
             })
             WeaponsThatDamagedPlayer[hash] = true
+            ---TODO: verify that this only executes once for the loop and can therefore return early.
+            TriggerServerEvent('qbx_medical:server:playerDamagedByWeapon', hash)
         end
-    end
-    if detected then
-        lib.callback('qbx_medical:server:SetWeaponWounds', false, false, WeaponsThatDamagedPlayer)
     end
 end
 

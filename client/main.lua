@@ -8,8 +8,6 @@ local playerState = LocalPlayer.state
 ---@type table<BodyPartKey, integer?>
 Injuries = {}
 
-local BODY_PART_STATE_BAG_PREFIX = 'qbx_medical:injuries:'
-
 for bodyPartKey in pairs(Config.BodyParts) do
     local bodyPartStateBag = BODY_PART_STATE_BAG_PREFIX .. bodyPartKey
     Injuries[bodyPartKey] = playerState[bodyPartStateBag]
@@ -22,14 +20,14 @@ function SetInjury(bodyPartKey, severity)
     playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, severity, true)
 end
 
-BleedLevel = playerState['qbx_medical:bleedLevel'] or 0
+BleedLevel = playerState[BLEED_LEVEL_STATE_BAG] or 0
 
-AddStateBagChangeHandler('qbx_medical:bleedLevel', ('player:%s'):format(cache.serverId), function(_, _, value)
+AddStateBagChangeHandler(BLEED_LEVEL_STATE_BAG, ('player:%s'):format(cache.serverId), function(_, _, value)
     BleedLevel = value
 end)
 
 function SetBleedLevel(level)
-    playerState:set('qbx_medical:bleedLevel', level, true)
+    playerState:set(BLEED_LEVEL_STATE_BAG, level, true)
 end
 
 BleedTickTimer, AdvanceBleedTimer = 0, 0

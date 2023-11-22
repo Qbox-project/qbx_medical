@@ -16,9 +16,9 @@ local playerState
 
 AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
 	playerState = Player(source).state
-	playerState:set('qbx_medical:bleedLevel', 0, true)
+	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)
 	for bodyPartKey in pairs(Config.BodyParts) do
-		playerState:set('qbx_medical:injuries:' .. bodyPartKey, nil, true)
+		playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, nil, true)
 	end
 end)
 

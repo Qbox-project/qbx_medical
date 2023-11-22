@@ -151,7 +151,7 @@ local function checkDamage(ped, boneId, weapon, damageDone)
     if not weapon then return end
 
     local bodyPartKey = Config.Bones[boneId]
-    if not bodyPartKey or IsDead or InLaststand then return end
+    if not bodyPartKey or DeathState ~= Config.DeathState.ALIVE then return end
 
     applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
     injureBodyPart(bodyPartKey)

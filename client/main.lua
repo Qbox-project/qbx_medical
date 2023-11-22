@@ -36,8 +36,8 @@ FadeOutTimer, BlackoutTimer = 0, 0
 ---@type number
 Hp = nil
 
-IsDead = false
-InLaststand = false
+DeathState = Config.DeathState.ALIVE
+
 DeathTime = 0
 LaststandTime = 0
 RespawnHoldTime = 5
@@ -59,19 +59,19 @@ exports('setHp', function(hp)
 end)
 
 exports('isDead', function()
-    return IsDead
+    return DeathState == Config.DeathState.DEAD
 end)
 
 exports('setIsDeadDeprecated', function(isDead)
-    IsDead = isDead
+    DeathState = isDead and Config.DeathState.DEAD or Config.DeathState.ALIVE
 end)
 
 exports('getLaststand', function()
-    return InLaststand
+    return DeathState == Config.DeathState.LAST_STAND
 end)
 
 exports('setLaststand', function(inLaststand)
-    InLaststand = inLaststand
+    DeathState = inLaststand and Config.DeathState.LAST_STAND or Config.DeathState.ALIVE
 end)
 
 exports('getDeathTime', function()
@@ -110,7 +110,7 @@ end
 
 ---notify the player of damage to their body.
 local function doLimbAlert()
-    if IsDead or InLaststand or NumInjuries == 0 then return end
+    if DeathState ~= Config.DeathState.ALIVE or NumInjuries == 0 then return end
 
     local limbDamageMsg = ''
     if NumInjuries <= Config.AlertShowInfo then
@@ -182,7 +182,7 @@ end
 
 ---notify the player of bleeding to their body.
 function SendBleedAlert()
-    if IsDead or BleedLevel == 0 then return end
+    if DeathState == Config.DeathState.DEAD or BleedLevel == 0 then return end
     exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[BleedLevel]}), 'inform')
 end
 
@@ -241,10 +241,10 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     if source then return end
     local ped = cache.ped
 
-    if IsDead or InLaststand then
+    if DeathState ~= Config.DeathState.ALIVE then
         local pos = GetEntityCoords(ped, true)
         NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), true, false)
-        IsDead = false
+        DeathState = Config.DeathState.ALIVE
         SetEntityInvincible(ped, false)
         EndLastStand()
     end

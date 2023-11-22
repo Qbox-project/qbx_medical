@@ -23,7 +23,6 @@ end
 function EndLastStand()
     local ped = cache.ped
     TaskPlayAnim(ped, LastStandDict, "exit", 1.0, 8.0, -1, 1, -1, false, false, false)
-    InLaststand = false
     LaststandTime = 0
     TriggerServerEvent('qbx_medical:server:onPlayerLaststandEnd')
 end
@@ -75,10 +74,10 @@ function StartLastStand()
     ResurrectPlayer()
     SetEntityHealth(ped, 150)
     PlayUnescortedLastStandAnimation()
-    InLaststand = true
+    DeathState = Config.DeathState.LAST_STAND
     TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
     CreateThread(function()
-        while InLaststand do
+        while DeathState == Config.DeathState.LAST_STAND do
             countdownLastStand()
         end
     end)

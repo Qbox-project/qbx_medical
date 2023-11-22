@@ -77,8 +77,13 @@ end
 ---@param level number
 local function removeBleed(level)
     if BleedLevel == 0 then return end
-    BleedLevel -= level
-    BleedLevel = (BleedLevel < 0) and 0 or BleedLevel
+    local newBleedLevel = BleedLevel - level
+    if newBleedLevel < 0 then
+        SetBleedLevel(0)
+    else
+        SetBleedLevel(newBleedLevel)
+    end
+
     SendBleedAlert()
 end
 

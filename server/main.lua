@@ -12,6 +12,16 @@ local WeaponsThatDamagedPlayers = {}
 
 local triggerEventHooks = require 'modules.hooks.server'
 
+local playerState
+
+AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
+	playerState = Player(source).state
+	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)
+	for bodyPartKey in pairs(Config.BodyParts) do
+		playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, nil, true)
+	end
+end)
+
 RegisterNetEvent('qbx_medical:server:playerDamagedByWeapon', function(hash)
 	if WeaponsThatDamagedPlayers[source][hash] then return end
 	WeaponsThatDamagedPlayers[source][hash] = true
@@ -42,11 +52,7 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 	lib.callback('qbx_medical:client:heal', eventData.id, false, "full")
 end)
 
----@param data PlayerStatus
-lib.callback.register('qbx_medical:server:syncInjuries', function(source, data)
-	playerStatus[source] = data
-end)
-
+--- TODO: Redo this completely using statebags
 ---@param playerId number
 lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 	local playerSource = exports.qbx_core:GetPlayer(playerId).PlayerData.source

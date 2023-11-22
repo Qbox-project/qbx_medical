@@ -3,10 +3,33 @@ WeaponsThatDamagedPlayer = {}
 
 NumInjuries = 0
 
----@type table<BodyPartKey, integer>
+local playerState = LocalPlayer.state
+
+---@type table<BodyPartKey, integer?>
 Injuries = {}
 
-BleedLevel = 0
+for bodyPartKey in pairs(Config.BodyParts) do
+    local bodyPartStateBag = BODY_PART_STATE_BAG_PREFIX .. bodyPartKey
+    Injuries[bodyPartKey] = playerState[bodyPartStateBag]
+    AddStateBagChangeHandler(bodyPartStateBag, ('player:%s'):format(cache.serverId), function(_, _, value)
+        Injuries[bodyPartKey] = value
+    end)
+end
+
+function SetInjury(bodyPartKey, severity)
+    playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, severity, true)
+end
+
+BleedLevel = playerState[BLEED_LEVEL_STATE_BAG] or 0
+
+AddStateBagChangeHandler(BLEED_LEVEL_STATE_BAG, ('player:%s'):format(cache.serverId), function(_, _, value)
+    BleedLevel = value
+end)
+
+function SetBleedLevel(level)
+    playerState:set(BLEED_LEVEL_STATE_BAG, level, true)
+end
+
 BleedTickTimer, AdvanceBleedTimer = 0, 0
 FadeOutTimer, BlackoutTimer = 0, 0
 
@@ -25,9 +48,7 @@ exports('getBleedLevel', function()
     return BleedLevel
 end)
 
-exports('setBleedLevel', function(bleedLevel)
-    BleedLevel = bleedLevel
-end)
+exports('setBleedLevel', SetBleedLevel)
 
 exports('getHp', function()
     return Hp
@@ -122,23 +143,18 @@ exports('makePedLimp', MakePedLimp)
 local function resetMinorInjuries()
     for bodyPartKey, severity in pairs(Injuries) do
         if severity <= 2 then
-            Injuries[bodyPartKey] = nil
+            SetInjury(bodyPartKey, nil)
             NumInjuries -= 1
         end
     end
 
     if BleedLevel <= 2 then
-        BleedLevel = 0
+        SetBleedLevel(0)
         BleedTickTimer = 0
         AdvanceBleedTimer = 0
         FadeOutTimer = 0
         BlackoutTimer = 0
     end
-
-    lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        injuries = Injuries,
-        isBleeding = BleedLevel
-    })
 
     SendBleedAlert()
     MakePedLimp()
@@ -146,18 +162,15 @@ local function resetMinorInjuries()
 end
 
 local function resetAllInjuries()
-    Injuries = {}
+    for bodyPartKey in pairs(Config.BodyParts) do
+        SetInjury(bodyPartKey, nil)
+    end
     NumInjuries = 0
-    BleedLevel = 0
+    SetBleedLevel(0)
     BleedTickTimer = 0
     AdvanceBleedTimer = 0
     FadeOutTimer = 0
     BlackoutTimer = 0
-
-    lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        injuries = Injuries,
-        isBleeding = BleedLevel
-    })
 
     WeaponsThatDamagedPlayer = {}
 
@@ -179,8 +192,12 @@ exports('sendBleedAlert', SendBleedAlert)
 ---@param level 1|2|3|4 speed of the bleed
 function ApplyBleed(level)
     if BleedLevel == 4 then return end
-    BleedLevel += level
-    BleedLevel = (BleedLevel >= 4) and 4 or BleedLevel
+    local newBleedLevel = level + BleedLevel
+    if newBleedLevel > 4 then
+        SetBleedLevel(4)
+    else
+        SetBleedLevel(newBleedLevel)
+    end
     SendBleedAlert()
 end
 

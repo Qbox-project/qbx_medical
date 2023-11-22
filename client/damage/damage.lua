@@ -3,17 +3,16 @@ local playerArmor = nil
 ---Increases severity of an injury
 ---@param bodyPartKey BodyPartKey
 local function upgradeInjury(bodyPartKey)
-    if Injuries[bodyPartKey] >= 4 then return end
-    Injuries[bodyPartKey] += 1
+    local severity = Injuries[bodyPartKey]
+    if severity >= 4 then return end
+    SetInjury(bodyPartKey, severity + 1)
 end
 
----creates an injury on body part with random severity between 1 and maxSeverity.
+---creates an injury on body part with random severity between 1 and 3.
 ---@param bodyPartKey BodyPartKey
----@param maxSeverity number
-local function createInjury(bodyPartKey, maxSeverity)
-    if Injuries[bodyPartKey] then return end
-    local severity = math.random(1, maxSeverity)
-    Injuries[bodyPartKey] = severity
+local function createInjury(bodyPartKey)
+    local severity = math.random(1, 3)
+    SetInjury(bodyPartKey, severity)
     NumInjuries += 1
 end
 
@@ -22,7 +21,7 @@ end
 local function injureBodyPart(bodyPartKey)
     local severity = Injuries[bodyPartKey]
     if not severity then
-        createInjury(bodyPartKey, 3)
+        createInjury(bodyPartKey)
     else
         upgradeInjury(bodyPartKey)
     end
@@ -156,12 +155,6 @@ local function checkDamage(ped, boneId, weapon, damageDone)
 
     applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
     injureBodyPart(bodyPartKey)
-
-    lib.callback('qbx_medical:server:syncInjuries', false, false,{
-        injuries = Injuries,
-        isBleeding = BleedLevel
-    })
-
     MakePedLimp()
 end
 

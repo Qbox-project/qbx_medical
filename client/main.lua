@@ -30,13 +30,21 @@ function SetBleedLevel(level)
     playerState:set(BLEED_LEVEL_STATE_BAG, level, true)
 end
 
+DeathState = playerState[DEATH_STATE_STATE_BAG] or Config.DeathState.ALIVE
+
+AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, ('player:%s'):format(cache.serverId), function(_, _, value)
+    DeathState = value
+end)
+
+function SetDeathState(deathState)
+    playerState:set(DEATH_STATE_STATE_BAG, deathState, true)
+end
+
 BleedTickTimer, AdvanceBleedTimer = 0, 0
 FadeOutTimer, BlackoutTimer = 0, 0
 
 ---@type number
 Hp = nil
-
-DeathState = Config.DeathState.ALIVE
 
 DeathTime = 0
 LaststandTime = 0
@@ -63,7 +71,7 @@ exports('isDead', function()
 end)
 
 exports('setIsDeadDeprecated', function(isDead)
-    DeathState = isDead and Config.DeathState.DEAD or Config.DeathState.ALIVE
+    SetDeathState(isDead and Config.DeathState.DEAD or Config.DeathState.ALIVE)
 end)
 
 exports('getLaststand', function()
@@ -71,7 +79,7 @@ exports('getLaststand', function()
 end)
 
 exports('setLaststand', function(inLaststand)
-    DeathState = inLaststand and Config.DeathState.LAST_STAND or Config.DeathState.ALIVE
+    SetDeathState(inLaststand and Config.DeathState.LAST_STAND or Config.DeathState.ALIVE)
 end)
 
 exports('getDeathTime', function()
@@ -244,7 +252,7 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     if DeathState ~= Config.DeathState.ALIVE then
         local pos = GetEntityCoords(ped, true)
         NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), true, false)
-        DeathState = Config.DeathState.ALIVE
+        SetDeathState(Config.DeathState.ALIVE)
         SetEntityInvincible(ped, false)
         EndLastStand()
     end

@@ -23,7 +23,7 @@ exports('playDeadAnimation', playDeadAnimation)
 ---put player in death animation and make invincible
 function OnDeath()
     if DeathState == Config.DeathState.DEAD then return end
-    DeathState = Config.DeathState.DEAD
+    SetDeathState(Config.DeathState.DEAD)
     TriggerServerEvent('qbx_medical:server:playerDied')
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
     local player = cache.ped

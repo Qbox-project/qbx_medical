@@ -16,10 +16,18 @@ local playerState
 
 AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
 	playerState = Player(source).state
+	playerState:set(DEATH_STATE_STATE_BAG, Config.DeathState.ALIVE, true)
 	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)
 	for bodyPartKey in pairs(Config.BodyParts) do
 		playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, nil, true)
 	end
+end)
+
+AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, nil, function(bagName, _, value)
+    local playerId = string.sub(bagName, 8)
+	local player = exports.qbx_core:GetPlayer(playerId)
+	player.Functions.SetMetaData("isdead", value == Config.DeathState.DEAD)
+	player.Functions.SetMetaData("inlaststand", value == Config.DeathState.LAST_STAND)
 end)
 
 RegisterNetEvent('qbx_medical:server:playerDamagedByWeapon', function(hash)
@@ -32,8 +40,6 @@ local function revivePlayer(player)
 	if type(player) == "number" then
 		player = exports.qbx_core:GetPlayer(player)
 	end
-	player.Functions.SetMetaData("isdead", false)
-	player.Functions.SetMetaData("inlaststand", false)
 	WeaponsThatDamagedPlayers[player.PlayerData.source] = nil
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
 end
@@ -80,26 +86,6 @@ lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
 
 	damage.weaponWounds = WeaponsThatDamagedPlayers[playerSource] or {}
 	return damage
-end)
-
-RegisterNetEvent('qbx_medical:server:playerDied', function()
-	if GetInvokingResource() then return end
-	local src = source
-	local player = exports.qbx_core:GetPlayer(src)
-	if not player then return end
-	player.Functions.SetMetaData("isdead", true)
-end)
-
-RegisterNetEvent('qbx_medical:server:onPlayerLaststand', function()
-	if GetInvokingResource() then return end
-	local player = exports.qbx_core:GetPlayer(source)
-	player.Functions.SetMetaData("inlaststand", true)
-end)
-
-RegisterNetEvent('qbx_medical:server:onPlayerLaststandEnd', function()
-	if GetInvokingResource() then return end
-	local player = exports.qbx_core:GetPlayer(source)
-	player.Functions.SetMetaData("inlaststand", false)
 end)
 
 ---@param amount number

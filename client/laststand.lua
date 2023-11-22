@@ -74,7 +74,7 @@ function StartLastStand()
     ResurrectPlayer()
     SetEntityHealth(ped, 150)
     PlayUnescortedLastStandAnimation()
-    DeathState = Config.DeathState.LAST_STAND
+    SetDeathState(Config.DeathState.LAST_STAND)
     TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
     CreateThread(function()
         while DeathState == Config.DeathState.LAST_STAND do

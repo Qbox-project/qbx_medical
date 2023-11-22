@@ -98,7 +98,7 @@ end
 ---applies disabling status effects based on injuries to specific body parts
 function ApplyDamageEffects()
     local ped = cache.ped
-    if IsDead or InLaststand then return end
+    if DeathState ~= Config.DeathState.ALIVE then return end
     for bodyPartKey, severity in pairs(Injuries) do
         if isLegDamaged(bodyPartKey, severity) then
             if legCount >= Config.LegInjuryTimer then

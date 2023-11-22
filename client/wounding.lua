@@ -90,7 +90,7 @@ end
 exports('removeBleed', removeBleed)
 
 local function handleBleeding()
-    if IsDead or InLaststand or BleedLevel <= 0 then return end
+    if DeathState ~= Config.DeathState.ALIVE or BleedLevel <= 0 then return end
     if FadeOutTimer + 1 == Config.FadeOutTimer then
         if BlackoutTimer + 1 == Config.BlackoutTimer then
             makePlayerBlackout()

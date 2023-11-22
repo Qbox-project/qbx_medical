@@ -320,3 +320,10 @@ Config.Weapons = { -- Correspond weapon names to their class number
     [`WEAPON_BZGAS`] = Config.WeaponClasses.SUFFOCATING,
     [`WEAPON_SMOKEGRENADE`] = Config.WeaponClasses.SUFFOCATING,
 }
+
+---@enum DeathState
+Config.DeathState = {
+    ALIVE = 1,
+    LAST_STAND = 2,
+    DEAD = 3,
+}

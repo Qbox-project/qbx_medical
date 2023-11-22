@@ -22,8 +22,8 @@ exports('playDeadAnimation', playDeadAnimation)
 
 ---put player in death animation and make invincible
 function OnDeath()
-    if IsDead then return end
-    IsDead = true
+    if DeathState == Config.DeathState.DEAD then return end
+    DeathState = Config.DeathState.DEAD
     TriggerServerEvent('qbx_medical:server:playerDied')
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
     local player = cache.ped
@@ -51,7 +51,7 @@ end
 function AllowRespawn()
     allowRespawn = true
     RespawnHoldTime = 5
-    while IsDead do
+    while DeathState == Config.DeathState.DEAD do
         Wait(1000)
         DeathTime -= 1
         if DeathTime <= 0 then
@@ -98,9 +98,9 @@ AddEventHandler('gameEventTriggered', function(event, data)
     if event ~= "CEventNetworkEntityDamage" then return end
     local victim, attacker, victimDied, weapon = data[1], data[2], data[4], data[7]
     if not IsEntityAPed(victim) or not victimDied or NetworkGetPlayerIndexFromPed(victim) ~= cache.playerId or not IsEntityDead(cache.ped) then return end
-    if not InLaststand then
+    if DeathState ~= Config.DeathState.LAST_STAND then
         StartLastStand()
-    elseif not IsDead then
+    elseif DeathState ~= Config.DeathState.DEAD then
         EndLastStand()
         logDeath(victim, attacker, weapon)
         DeathTime = 0

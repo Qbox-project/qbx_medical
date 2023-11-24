@@ -52,20 +52,6 @@ RespawnHoldTime = 5
 LastStandDict = "combat@damage@writhe"
 LastStandAnim = "writhe_loop"
 
-exports('getBleedLevel', function()
-    return BleedLevel
-end)
-
-exports('setBleedLevel', SetBleedLevel)
-
-exports('getHp', function()
-    return Hp
-end)
-
-exports('setHp', function(hp)
-    Hp = hp
-end)
-
 exports('isDead', function()
     return DeathState == Config.DeathState.DEAD
 end)
@@ -74,24 +60,12 @@ exports('getLaststand', function()
     return DeathState == Config.DeathState.LAST_STAND
 end)
 
-exports('setLaststand', function(inLaststand)
-    SetDeathState(inLaststand and Config.DeathState.LAST_STAND or Config.DeathState.ALIVE)
-end)
-
 exports('getDeathTime', function()
     return DeathTime
 end)
 
-exports('setDeathTime', function(value)
-    DeathTime = value
-end)
-
 exports('getLaststandTime', function()
     return LaststandTime
-end)
-
-exports('setLaststandTime', function(value)
-    LaststandTime = value
 end)
 
 exports('getRespawnHoldTimeDeprecated', function()

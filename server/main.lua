@@ -46,6 +46,23 @@ local function revivePlayer(player)
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
 end
 
+---removes all ailments, sets to full health, and fills up hunger and thirst.
+---@param src Source
+local function heal(src)
+	WeaponsThatDamagedPlayers[src] = nil
+	lib.callback('qbx_medical:client:heal', src, false, "full")
+end
+
+exports('Heal', heal)
+
+---Removes any injuries with severity 2 or lower. Stops bleeding if bleed level is less than 3.
+---@param src Source
+local function healPartially(src)
+	lib.callback('qbx_medical:client:heal', src, false, "partial")
+end
+
+exports('HealPartially', healPartially)
+
 ---Compatibility with txAdmin Menu's heal options.
 ---This is an admin only server side event that will pass the target player id or -1.
 ---@class EventData
@@ -57,7 +74,7 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 	end
 
 	revivePlayer(eventData.id)
-	lib.callback('qbx_medical:client:heal', eventData.id, false, "full")
+	heal(eventData.id)
 end)
 
 local function getPlayerInjuries(state)
@@ -159,7 +176,7 @@ lib.addCommand('aheal', {
 		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
 		return
 	end
-	lib.callback('qbx_medical:client:heal', args.id, false, "full")
+	heal(args.id)
 end)
 
 lib.callback.register('qbx_medical:server:respawn', function(source)

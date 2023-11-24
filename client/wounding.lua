@@ -1,4 +1,5 @@
 local prevPos = vec3(0.0, 0.0, 0.0)
+local enableBleeding = true
 
 local function getWorstInjury()
     local level = 0
@@ -134,7 +135,25 @@ local function checkBleeding()
     end
 end
 
-exports('checkBleedingDeprecated', checkBleeding)
+--- enables all systems associated with bleeds
+exports('EnableBleeding', function()
+    enableBleeding = true
+end)
+
+--- prevents existing bleeds from increasing, disables damage taken from bleeding, and disables ill effects from blood loss such as blacking out
+exports('DisableBleeding', function()
+    enableBleeding = false
+end)
+
+CreateThread(function()
+    Wait(2500)
+    while true do
+        Wait(1000)
+        if enableBleeding then
+            checkBleeding()
+        end
+    end
+end)
 
 local function savePlayerPos()
     prevPos = GetEntityCoords(cache.ped, true)

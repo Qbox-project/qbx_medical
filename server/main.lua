@@ -9,8 +9,6 @@ local WeaponsThatDamagedPlayers = {}
 
 local triggerEventHooks = require 'modules.hooks.server'
 
-local playerState
-
 local function getDeathState(src)
 	local player = exports.qbx_core:GetPlayer(src)
 	return player.PlayerData.metadata.isdead and Config.DeathState.DEAD
@@ -19,7 +17,7 @@ local function getDeathState(src)
 end
 
 AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
-	playerState = Player(source).state
+	local playerState = Player(source).state
 	playerState:set(DEATH_STATE_STATE_BAG, getDeathState(source), true)
 	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)
 	for bodyPartKey in pairs(Config.BodyParts) do

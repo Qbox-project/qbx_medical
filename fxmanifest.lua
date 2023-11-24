@@ -17,11 +17,21 @@ shared_scripts {
 
 client_scripts {
     '@qbx_core/modules/playerdata.lua',
-    'client/**/*.lua',
+    'client/damage/damage.lua',
+    'client/dead.lua',
+    'client/laststand.lua',
+    'client/load-unload.lua',
+    'client/main.lua',
+    'client/setdownedstate.lua',
+    'client/wounding.lua',
 }
 
 server_scripts {
     'server/main.lua',
+}
+
+files {
+    'client/damage/apply-damage-effects.lua'
 }
 
 dependencies {

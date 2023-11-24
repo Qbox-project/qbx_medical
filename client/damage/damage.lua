@@ -1,4 +1,5 @@
 local playerArmor = nil
+local damageEffectsEnabled = true
 
 ---Increases severity of an injury
 ---@param bodyPartKey BodyPartKey
@@ -218,4 +219,23 @@ local function checkForDamage()
     playerArmor = armor
 end
 
-exports('checkForDamageDeprecated', checkForDamage)
+local applyDamageEffects = require 'client.damage.apply-damage-effects'
+
+---Checks the player for damage, applies injuries, and damage effects
+CreateThread(function()
+    while true do
+        checkForDamage()
+        if damageEffectsEnabled then
+            applyDamageEffects()
+        end
+        Wait(100)
+    end
+end)
+
+exports('EnableDamageEffects', function()
+    damageEffectsEnabled = true
+end)
+
+exports('DisableDamageEffects', function()
+    damageEffectsEnabled = false
+end)

@@ -96,7 +96,7 @@ local function playBrainDamageEffectAndRagdoll(ped)
 end
 
 ---applies disabling status effects based on injuries to specific body parts
-function ApplyDamageEffects()
+return function()
     local ped = cache.ped
     if DeathState ~= Config.DeathState.ALIVE then return end
     for bodyPartKey, severity in pairs(Injuries) do
@@ -130,5 +130,3 @@ function ApplyDamageEffects()
         end
     end
 end
-
-exports('applyDamageEffectsDeprecated', ApplyDamageEffects)

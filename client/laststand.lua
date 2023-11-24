@@ -27,8 +27,6 @@ function EndLastStand()
     TriggerServerEvent('qbx_medical:server:onPlayerLaststandEnd')
 end
 
-exports('endLastStandDeprecated', EndLastStand)
-
 local function logPlayerKiller()
     local ped = cache.ped
     local player = cache.playerId
@@ -52,7 +50,6 @@ local function countdownLastStand()
     
     if LaststandTime - 1 > 0 then
         LaststandTime -= 1
-        Config.DeathTime = LaststandTime
     else
         exports.qbx_core:Notify(Lang:t('error.bled_out'), 'error')
         EndLastStand()

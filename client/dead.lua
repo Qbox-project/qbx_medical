@@ -98,9 +98,9 @@ AddEventHandler('gameEventTriggered', function(event, data)
     if event ~= "CEventNetworkEntityDamage" then return end
     local victim, attacker, victimDied, weapon = data[1], data[2], data[4], data[7]
     if not IsEntityAPed(victim) or not victimDied or NetworkGetPlayerIndexFromPed(victim) ~= cache.playerId or not IsEntityDead(cache.ped) then return end
-    if DeathState ~= Config.DeathState.LAST_STAND then
+    if DeathState == Config.DeathState.ALIVE then
         StartLastStand()
-    elseif DeathState ~= Config.DeathState.DEAD then
+    elseif DeathState == Config.DeathState.LAST_STAND then
         EndLastStand()
         logDeath(victim, attacker, weapon)
         DeathTime = 0

@@ -70,10 +70,6 @@ exports('isDead', function()
     return DeathState == Config.DeathState.DEAD
 end)
 
-exports('setIsDeadDeprecated', function(isDead)
-    SetDeathState(isDead and Config.DeathState.DEAD or Config.DeathState.ALIVE)
-end)
-
 exports('getLaststand', function()
     return DeathState == Config.DeathState.LAST_STAND
 end)
@@ -208,10 +204,6 @@ function ApplyBleed(level)
     end
     SendBleedAlert()
 end
-
-exports('getBleedStateLabelDeprecated', function(level)
-    return Config.BleedingStates[level]
-end)
 
 ---heals player wounds.
 ---@param type? "full"|any heals all wounds if full otherwise heals only major wounds.

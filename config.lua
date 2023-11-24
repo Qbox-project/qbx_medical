@@ -43,7 +43,6 @@ Config.LegInjuryChance = { -- The chance, in percent, that leg injury side-effec
     Running = 50,
     Walking = 15
 }
-Config.DeathTime = 300 -- How long the timer is for players to bleed out completely and respawn at the hospital
 Config.LaststandReviveInterval = 360
 
 ---@enum WeaponClass

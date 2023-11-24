@@ -231,19 +231,6 @@ CreateThread(function()
     end
 end)
 
----Convert wounded body part data to a human readable form
----@return string[]
-local function getPatientStatus()
-    local status = {}
-    for bodyPartKey, severity in pairs(Injuries) do
-        local bodyPart = Config.BodyParts[bodyPartKey]
-        status[#status + 1] = bodyPart.label .. " (" .. Config.woundLevels[severity].label .. ")"
-    end
-    return status
-end
-
-exports('getPatientStatus', getPatientStatus)
-
 ---Revives player, healing all injuries
 RegisterNetEvent('qbx_medical:client:playerRevived', function()
     if source then return end

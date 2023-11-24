@@ -4,9 +4,6 @@
 
 ---@alias Source number
 
----@type table<Source, PlayerStatus>
-local playerStatus = {}
-
 ---@type table<Source, table<number, boolean>> weapon hashes
 local WeaponsThatDamagedPlayers = {}
 
@@ -65,35 +62,41 @@ AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
 	lib.callback('qbx_medical:client:heal', eventData.id, false, "full")
 end)
 
---- TODO: Redo this completely using statebags
----@param playerId number
-lib.callback.register('hospital:GetPlayerStatus', function(_, playerId)
-	local playerSource = exports.qbx_core:GetPlayer(playerId).PlayerData.source
+local function getPlayerInjuries(state)
+	local injuries = {}
+	for bodyPartKey in pairs(Config.BodyParts) do
+		injuries[bodyPartKey] = state[BODY_PART_STATE_BAG_PREFIX .. bodyPartKey]
+	end
+	return injuries
+end
 
-	---@class PlayerDamage
-	---@field damagedBodyParts BodyParts
-	---@field bleedLevel number
-	---@field weaponWounds number[]
+---Get human readable info on a player's health
+---@param src Source
+---@return {injuries: string[], bleedLevel: integer, bleedState: string, damageCauses: table<number, true>}
+local function getPlayerStatus(src)
+	local state = Player(src).state
+	local bleedLevel = state[BLEED_LEVEL_STATE_BAG]
+	local injuries = getPlayerInjuries(state)
 
-	---@type PlayerDamage
-	local damage = {
-		damagedBodyParts = {},
-		bleedLevel = 0,
-		weaponWounds = {}
+	local injuryStatuses = {}
+	local i = 0
+	for bodyPartKey, severity in pairs(injuries) do
+        local bodyPart = Config.BodyParts[bodyPartKey]
+		i += 1
+        injuryStatuses[i] = bodyPart.label .. " (" .. Config.woundLevels[severity].label .. ")"
+    end
+
+	local status = {
+		injuries = injuryStatuses,
+		bleedLevel = bleedLevel,
+		bleedState = Config.BleedingStates[bleedLevel],
+		damageCauses = WeaponsThatDamagedPlayers[src] or {}
 	}
-	if not playerSource then
-		return damage
-	end
 
-	local playerInjuries = playerStatus[playerSource]
-	if playerInjuries then
-		damage.bleedLevel = playerInjuries.isBleeding or 0
-		damage.damagedBodyParts = playerInjuries.injuries
-	end
+	return status
+end
 
-	damage.weaponWounds = WeaponsThatDamagedPlayers[playerSource] or {}
-	return damage
-end)
+exports('GetPlayerStatus', getPlayerStatus)
 
 ---@param amount number
 lib.callback.register('qbx_medical:server:setArmor', function(source, amount)

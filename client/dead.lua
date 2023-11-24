@@ -29,7 +29,15 @@ function OnDeath()
     local player = cache.ped
 
     WaitForPlayerToStopMoving()
-
+    
+    CreateThread(function()
+        while DeathState == Config.DeathState.DEAD do
+            DisableControls()
+            SetCurrentPedWeapon(cache.ped, `WEAPON_UNARMED`, true)
+        end
+        Wait(0)
+    end)
+    
     ResurrectPlayer()
     playDeadAnimation()
     SetEntityInvincible(player, true)

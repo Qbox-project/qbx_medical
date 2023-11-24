@@ -58,7 +58,6 @@ local function countdownLastStand()
         OnDeath()
         AllowRespawn()
     end
-    Wait(1000)
 end
 
 ---put player in last stand mode and notify EMS.
@@ -76,6 +75,14 @@ function StartLastStand()
     CreateThread(function()
         while DeathState == Config.DeathState.LAST_STAND do
             countdownLastStand()
+            Wait(1000)
+        end
+    end)
+
+    CreateThread(function()
+        while DeathState == Config.DeathState.LAST_STAND do
+            DisableControls()
+            Wait(0)
         end
     end)
 end

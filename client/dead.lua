@@ -1,3 +1,4 @@
+local sharedConfig = require 'config.shared'
 local allowRespawn = false
 
 local function playDeadAnimation()
@@ -22,8 +23,8 @@ exports('playDeadAnimation', playDeadAnimation)
 
 ---put player in death animation and make invincible
 function OnDeath()
-    if DeathState == Config.DeathState.DEAD then return end
-    SetDeathState(Config.DeathState.DEAD)
+    if DeathState == sharedConfig.deathState.DEAD then return end
+    SetDeathState(sharedConfig.deathState.DEAD)
     TriggerServerEvent('qbx_medical:server:playerDied')
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
     local player = cache.ped
@@ -31,7 +32,7 @@ function OnDeath()
     WaitForPlayerToStopMoving()
     
     CreateThread(function()
-        while DeathState == Config.DeathState.DEAD do
+        while DeathState == sharedConfig.deathState.DEAD do
             DisableControls()
             SetCurrentPedWeapon(cache.ped, `WEAPON_UNARMED`, true)
         end
@@ -59,7 +60,7 @@ end
 function AllowRespawn()
     allowRespawn = true
     RespawnHoldTime = 5
-    while DeathState == Config.DeathState.DEAD do
+    while DeathState == sharedConfig.deathState.DEAD do
         Wait(1000)
         DeathTime -= 1
         if DeathTime <= 0 then
@@ -106,9 +107,9 @@ AddEventHandler('gameEventTriggered', function(event, data)
     if event ~= "CEventNetworkEntityDamage" then return end
     local victim, attacker, victimDied, weapon = data[1], data[2], data[4], data[7]
     if not IsEntityAPed(victim) or not victimDied or NetworkGetPlayerIndexFromPed(victim) ~= cache.playerId or not IsEntityDead(cache.ped) then return end
-    if DeathState == Config.DeathState.ALIVE then
+    if DeathState == sharedConfig.deathState.ALIVE then
         StartLastStand()
-    elseif DeathState == Config.DeathState.LAST_STAND then
+    elseif DeathState == sharedConfig.deathState.LAST_STAND then
         EndLastStand()
         logDeath(victim, attacker, weapon)
         DeathTime = 0

@@ -1,3 +1,6 @@
+local config = require 'config.client'
+local sharedConfig = require 'config.shared'
+
 ---blocks until ped is no longer moving
 ---@param ped number
 function WaitForPlayerToStopMoving()
@@ -66,21 +69,21 @@ function StartLastStand()
     Wait(1000)
     WaitForPlayerToStopMoving()
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
-    LaststandTime = Config.LaststandReviveInterval
+    LaststandTime = config.laststandReviveInterval
     ResurrectPlayer()
     SetEntityHealth(ped, 150)
     PlayUnescortedLastStandAnimation()
-    SetDeathState(Config.DeathState.LAST_STAND)
+    SetDeathState(sharedConfig.deathState.LAST_STAND)
     TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
     CreateThread(function()
-        while DeathState == Config.DeathState.LAST_STAND do
+        while DeathState == sharedConfig.deathState.LAST_STAND do
             countdownLastStand()
             Wait(1000)
         end
     end)
 
     CreateThread(function()
-        while DeathState == Config.DeathState.LAST_STAND do
+        while DeathState == sharedConfig.deathState.LAST_STAND do
             DisableControls()
             Wait(0)
         end

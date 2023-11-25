@@ -1,3 +1,5 @@
+local config = require 'config.client'
+
 ---Initialize health and armor settings on the player's ped
 ---@param ped number
 ---@param playerId number
@@ -14,7 +16,7 @@ end
 ---@param metadata any
 local function initDeathAndLastStand(metadata)
     if metadata.isdead then
-        DeathTime = Config.LaststandReviveInterval
+        DeathTime = config.laststandReviveInterval
         OnDeath()
         AllowRespawn()
     elseif metadata.inlaststand then

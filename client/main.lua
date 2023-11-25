@@ -1,3 +1,6 @@
+local config = require 'config.client'
+local sharedConfig = require 'config.shared'
+
 ---@type table<number, boolean> weapon hashes as a set
 WeaponsThatDamagedPlayer = {}
 
@@ -8,7 +11,7 @@ local playerState = LocalPlayer.state
 ---@type table<BodyPartKey, integer?>
 Injuries = {}
 
-for bodyPartKey in pairs(Config.BodyParts) do
+for bodyPartKey in pairs(sharedConfig.bodyParts) do
     local bodyPartStateBag = BODY_PART_STATE_BAG_PREFIX .. bodyPartKey
     Injuries[bodyPartKey] = playerState[bodyPartStateBag]
     AddStateBagChangeHandler(bodyPartStateBag, ('player:%s'):format(cache.serverId), function(_, _, value)
@@ -30,7 +33,7 @@ function SetBleedLevel(level)
     playerState:set(BLEED_LEVEL_STATE_BAG, level, true)
 end
 
-DeathState = playerState[DEATH_STATE_STATE_BAG] or Config.DeathState.ALIVE
+DeathState = playerState[DEATH_STATE_STATE_BAG] or sharedConfig.deathState.ALIVE
 
 AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, ('player:%s'):format(cache.serverId), function(_, _, value)
     DeathState = value
@@ -53,11 +56,11 @@ LastStandDict = "combat@damage@writhe"
 LastStandAnim = "writhe_loop"
 
 exports('isDead', function()
-    return DeathState == Config.DeathState.DEAD
+    return DeathState == sharedConfig.deathState.DEAD
 end)
 
 exports('getLaststand', function()
-    return DeathState == Config.DeathState.LAST_STAND
+    return DeathState == sharedConfig.deathState.LAST_STAND
 end)
 
 exports('getDeathTime', function()
@@ -79,7 +82,7 @@ end)
 ---@return boolean isInjuryCausingLimp if injury causes a limp and is damaged.
 local function isInjuryCausingLimp()
     for bodyPartKey in pairs(Injuries) do
-        if Config.BodyParts[bodyPartKey].causeLimp then
+        if sharedConfig.bodyParts[bodyPartKey].causeLimp then
             return true
         end
     end
@@ -88,14 +91,14 @@ end
 
 ---notify the player of damage to their body.
 local function doLimbAlert()
-    if DeathState ~= Config.DeathState.ALIVE or NumInjuries == 0 then return end
+    if DeathState ~= sharedConfig.deathState.ALIVE or NumInjuries == 0 then return end
 
     local limbDamageMsg = ''
-    if NumInjuries <= Config.AlertShowInfo then
+    if NumInjuries <= config.alertShowInfo then
         local i = 0
         for bodyPartKey, severity in pairs(Injuries) do
-            local bodyPart = Config.BodyParts[bodyPartKey]
-            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = Config.woundLevels[severity].label})
+            local bodyPart = sharedConfig.bodyParts[bodyPartKey]
+            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = sharedConfig.woundLevels[severity].label})
             i += 1
             if i < NumInjuries then
                 limbDamageMsg = limbDamageMsg .. " | "
@@ -140,7 +143,7 @@ local function resetMinorInjuries()
 end
 
 local function resetAllInjuries()
-    for bodyPartKey in pairs(Config.BodyParts) do
+    for bodyPartKey in pairs(sharedConfig.bodyParts) do
         SetInjury(bodyPartKey, nil)
     end
     NumInjuries = 0
@@ -160,8 +163,8 @@ end
 
 ---notify the player of bleeding to their body.
 function SendBleedAlert()
-    if DeathState == Config.DeathState.DEAD or BleedLevel == 0 then return end
-    exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = Config.BleedingStates[BleedLevel]}), 'inform')
+    if DeathState == sharedConfig.deathState.DEAD or BleedLevel == 0 then return end
+    exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = sharedConfig.bleedingStates[BleedLevel]}), 'inform')
 end
 
 exports('sendBleedAlert', SendBleedAlert)
@@ -192,7 +195,7 @@ end)
 
 CreateThread(function()
     while true do
-        Wait((1000 * Config.MessageTimer))
+        Wait((1000 * config.messageTimer))
         doLimbAlert()
     end
 end)
@@ -202,10 +205,10 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     if source then return end
     local ped = cache.ped
 
-    if DeathState ~= Config.DeathState.ALIVE then
+    if DeathState ~= sharedConfig.deathState.ALIVE then
         local pos = GetEntityCoords(ped, true)
         NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), true, false)
-        SetDeathState(Config.DeathState.ALIVE)
+        SetDeathState(sharedConfig.deathState.ALIVE)
         SetEntityInvincible(ped, false)
         EndLastStand()
     end

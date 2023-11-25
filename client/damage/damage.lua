@@ -50,14 +50,14 @@ end
 ---@param weapon number
 ---@return boolean
 local function checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
-    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == Config.WeaponClasses.NOTHING
+    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == config.weaponClasses.NOTHING
 end
 
 ---gets the weapon class of the weapon that damaged the player.
 ---@param ped number player's ped
 ---@return integer|nil weaponClass as defined by config.lua, or nil if player hasn't been damaged.
 local function getDamagingWeapon(ped)
-    for k, v in pairs(Config.Weapons) do
+    for k, v in pairs(config.weapons) do
         if HasPedBeenDamagedByWeapon(ped, k, 0) then
             return v
         end
@@ -70,9 +70,9 @@ end
 ---@return boolean isDamagingEvent true if player should have disabilities from damage.
 local function isDamagingEvent(damageDone, weapon)
     local luck = math.random(100)
-    local multi = damageDone / Config.HealthDamage
+    local multi = damageDone / config.healthDamage
 
-    return luck < (Config.HealthDamage * multi) or (damageDone >= Config.ForceInjury or multi > Config.MaxInjuryChanceMulti or Config.ForceInjuryWeapons[weapon])
+    return luck < (config.healthDamage * multi) or (damageDone >= config.forceInjury or multi > config.maxInjuryChanceMulti or config.forceInjuryWeapons[weapon])
 end
 
 ---Sets a ragdoll effect probablistically on the player's ped.
@@ -91,11 +91,11 @@ end
 ---@param bodyPartKey BodyPartKey body part where player is damaged
 ---@param armor number
 local function applyImmediateMinorEffects(ped, bodyPartKey, armor)
-    if Config.CriticalAreas[bodyPartKey] and armor <= 0 then
+    if config.criticalAreas[bodyPartKey] and armor <= 0 then
        ApplyBleed(1)
     end
 
-    local staggerArea = Config.StaggerAreas[bodyPartKey]
+    local staggerArea = config.staggerAreas[bodyPartKey]
     if not staggerArea then return end
     applyStaggerEffect(ped, staggerArea.armored, staggerArea.minor, armor)
 end
@@ -105,10 +105,10 @@ end
 ---@param bodyPartKey BodyPartKey body part where player is damaged
 ---@param armor number
 local function applyImmediateMajorEffects(ped, bodyPartKey, armor)
-    local criticalArea = Config.CriticalAreas[bodyPartKey]
+    local criticalArea = config.criticalAreas[bodyPartKey]
     if criticalArea then
         if armor > 0 and criticalArea.armored then
-            if math.random(100) <= math.ceil(Config.MajorArmoredBleedChance) then
+            if math.random(100) <= math.ceil(config.majorArmoredBleedChance) then
                 ApplyBleed(1)
             end
         else
@@ -116,15 +116,15 @@ local function applyImmediateMajorEffects(ped, bodyPartKey, armor)
         end
     else
         if armor > 0 then
-            if math.random(100) < (Config.MajorArmoredBleedChance) then
+            if math.random(100) < (config.majorArmoredBleedChance) then
                 ApplyBleed(1)
             end
-        elseif math.random(100) < (Config.MajorArmoredBleedChance * 2) then
+        elseif math.random(100) < (config.majorArmoredBleedChance * 2) then
             ApplyBleed(1)
         end
     end
 
-    local staggerArea = Config.StaggerAreas[bodyPartKey]
+    local staggerArea = config.staggerAreas[bodyPartKey]
     if not staggerArea then return end
     applyStaggerEffect(ped, staggerArea.armored, staggerArea.major, armor)
 end
@@ -136,9 +136,9 @@ end
 ---@param damageDone number
 local function applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
     local armor = GetPedArmour(ped)
-    if Config.MinorInjurWeapons[weapon] and damageDone < Config.DamageMinorToMajor then
+    if config.minorInjurWeapons[weapon] and damageDone < config.majorInjurWeapons then
         applyImmediateMinorEffects(ped, bodyPartKey, armor)
-    elseif Config.MajorInjurWeapons[weapon] or (Config.MinorInjurWeapons[weapon] and damageDone >= Config.DamageMinorToMajor) then
+    elseif config.majorInjurWeapons[weapon] or (config.minorInjurWeapons[weapon] and damageDone >= config.majorInjurWeapons) then
         applyImmediateMajorEffects(ped, bodyPartKey, armor)
     end
 end
@@ -151,8 +151,8 @@ end
 local function checkDamage(ped, boneId, weapon, damageDone)
     if not weapon then return end
 
-    local bodyPartKey = Config.Bones[boneId]
-    if not bodyPartKey or DeathState ~= Config.DeathState.ALIVE then return end
+    local bodyPartKey = config.bones[boneId]
+    if not bodyPartKey or DeathState ~= sharedConfig.deathState.ALIVE then return end
 
     applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
     injureBodyPart(bodyPartKey)
@@ -165,20 +165,20 @@ end
 ---@param isArmorDamaged boolean
 local function applyDamage(ped, damageDone, isArmorDamaged)
     local hit, bone = GetPedLastDamageBone(ped)
-    local bodypart = Config.Bones[bone]
+    local bodypart = config.bones[bone]
     local weapon = getDamagingWeapon(ped)
 
     if not hit or bodypart == 'NONE' or not weapon then return end
 
-    if damageDone >= Config.HealthDamage then
+    if damageDone >= config.healthDamage then
         local isBodyHitOrWeakWeapon = checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
         if isBodyHitOrWeakWeapon and isArmorDamaged then
             lib.callback('qbx_medical:server:setArmor', false, false, GetPedArmour(ped))
         elseif not isBodyHitOrWeakWeapon and isDamagingEvent(damageDone, weapon) then
             checkDamage(ped, bone, weapon, damageDone)
         end
-    elseif Config.AlwaysBleedChanceWeapons[weapon]
-        and math.random(100) < Config.AlwaysBleedChance
+    elseif config.alwaysBleedChanceWeapons[weapon]
+        and math.random(100) < config.alwaysBleedChance
         and not checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon) then
         ApplyBleed(1)
     end
@@ -205,7 +205,7 @@ local function checkForDamage()
 
     initHealthAndArmorIfNotSet(health, armor)
 
-    local isArmorDamaged = (playerArmor ~= armor and armor < (playerArmor - Config.ArmorDamage) and armor > 0) -- Players armor was damaged
+    local isArmorDamaged = (playerArmor ~= armor and armor < (playerArmor - config.armorDamage) and armor > 0) -- Players armor was damaged
     local isHealthDamaged = (Hp ~= health) -- Players health was damaged
 
     if isArmorDamaged or isHealthDamaged then
@@ -219,14 +219,12 @@ local function checkForDamage()
     playerArmor = armor
 end
 
-local applyDamageEffects = require 'client.damage.apply-damage-effects'
-
 ---Checks the player for damage, applies injuries, and damage effects
 CreateThread(function()
     while true do
         checkForDamage()
         if damageEffectsEnabled then
-            applyDamageEffects()
+            ApplyDamageEffects()
         end
         Wait(100)
     end

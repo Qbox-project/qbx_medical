@@ -1,3 +1,20 @@
+---@enum WeaponClass
+local weaponClasses = { -- Define gta weapon classe numbers
+    SMALL_CALIBER = 1,
+    MEDIUM_CALIBER = 2,
+    HIGH_CALIBER = 3,
+    SHOTGUN = 4,
+    CUTTING = 5,
+    LIGHT_IMPACT = 6,
+    HEAVY_IMPACT = 7,
+    EXPLOSIVE = 8,
+    FIRE = 9,
+    SUFFOCATING = 10,
+    OTHER = 11,
+    WILDLIFE = 12,
+    NOTHING = 13,
+}
+
 return {
     fadeOutTimer = 2, -- How many bleed ticks occur before fadeout happens
     blackoutTimer = 10, -- How many bleed ticks occur before blacking out
@@ -18,23 +35,6 @@ return {
         walking = 15,
     },
     laststandReviveInterval = 360,
-
-    ---@enum WeaponClass
-    weaponClasses = { -- Define gta weapon classe numbers
-        SMALL_CALIBER = 1,
-        MEDIUM_CALIBER = 2,
-        HIGH_CALIBER = 3,
-        SHOTGUN = 4,
-        CUTTING = 5,
-        LIGHT_IMPACT = 6,
-        HEAVY_IMPACT = 7,
-        EXPLOSIVE = 8,
-        FIRE = 9,
-        SUFFOCATING = 10,
-        OTHER = 11,
-        WILDLIFE = 12,
-        NOTHING = 13,
-    },
 
     forceInjury = 35, -- Maximum amount of damage a player can take before limb damage & effects are forced to occur
     healthDamage = 5, -- Minimum damage done to health before checking for injuries

@@ -35,8 +35,8 @@ function OnDeath()
         while DeathState == sharedConfig.deathState.DEAD do
             DisableControls()
             SetCurrentPedWeapon(cache.ped, `WEAPON_UNARMED`, true)
+            Wait(0)
         end
-        Wait(0)
     end)
     
     ResurrectPlayer()
@@ -117,3 +117,18 @@ AddEventHandler('gameEventTriggered', function(event, data)
         AllowRespawn()
     end
 end)
+
+function DisableControls()
+    DisableAllControlActions(0)
+    EnableControlAction(0, 1, true)
+    EnableControlAction(0, 2, true)
+    EnableControlAction(0, 245, true)
+    EnableControlAction(0, 38, true)
+    EnableControlAction(0, 0, true)
+    EnableControlAction(0, 322, true)
+    EnableControlAction(0, 288, true)
+    EnableControlAction(0, 213, true)
+    EnableControlAction(0, 249, true)
+    EnableControlAction(0, 46, true)
+    EnableControlAction(0, 47, true)
+end

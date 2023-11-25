@@ -1,3 +1,5 @@
+local config = require 'config.client'
+local sharedConfig = require 'config.shared'
 local legCount = 0
 local armCount = 0
 local headCount = 0
@@ -21,7 +23,7 @@ end
 ---@param ped number
 local function chancePedFalls(ped)
     if IsPedRagdoll(ped) or not IsPedOnFoot(ped) then return end
-    local chance = (IsPedRunning(ped) or IsPedSprinting(ped)) and Config.LegInjuryChance.Running or Config.LegInjuryChance.Walking
+    local chance = (IsPedRunning(ped) or IsPedSprinting(ped)) and config.legInjuryChance.running or config.legInjuryChance.walking
     local rand = math.random(100)
     if rand > chance then return end
     makePedFall(ped)
@@ -96,19 +98,19 @@ local function playBrainDamageEffectAndRagdoll(ped)
 end
 
 ---applies disabling status effects based on injuries to specific body parts
-return function()
+function ApplyDamageEffects()
     local ped = cache.ped
-    if DeathState ~= Config.DeathState.ALIVE then return end
+    if DeathState ~= sharedConfig.deathState.ALIVE then return end
     for bodyPartKey, severity in pairs(Injuries) do
         if isLegDamaged(bodyPartKey, severity) then
-            if legCount >= Config.LegInjuryTimer then
+            if legCount >= config.legInjuryTimer then
                 chancePedFalls(ped)
                 legCount = 0
             else
                 legCount += 1
             end
         elseif isArmDamaged(bodyPartKey, severity) then
-            if armCount >= Config.ArmInjuryTimer then
+            if armCount >= config.armInjuryTimer then
                 CreateThread(function()
                     disableArms(ped, isLeftArmDamaged(bodyPartKey, severity))
                 end)
@@ -117,10 +119,10 @@ return function()
                 armCount += 1
             end
         elseif isHeadDamaged(bodyPartKey, severity) then
-            if headCount >= Config.HeadInjuryTimer then
+            if headCount >= config.headInjuryTimer then
                 local chance = math.random(100)
 
-                if chance <= Config.HeadInjuryChance then
+                if chance <= config.headInjuryChance then
                     playBrainDamageEffectAndRagdoll(ped)
                 end
                 headCount = 0

@@ -1,3 +1,5 @@
+local config = require 'config.client'
+local sharedConfig = require 'config.shared'
 local prevPos = vec3(0.0, 0.0, 0.0)
 local enableBleeding = true
 
@@ -16,7 +18,7 @@ CreateThread(function()
     while true do
         if NumInjuries > 0 then
             local level = getWorstInjury()
-            SetPedMoveRateOverride(cache.ped, Config.woundLevels[level].movementRate)
+            SetPedMoveRateOverride(cache.ped, sharedConfig.woundLevels[level].movementRate)
             Wait(5)
         else
             Wait(1000)
@@ -57,7 +59,7 @@ exports('makePlayerFadeOut', makePlayerFadeOut)
 local function applyBleedEffects()
     local ped = cache.ped
     if not QBX.PlayerData then return end
-    local bleedDamage = BleedLevel * Config.BleedTickDamage
+    local bleedDamage = BleedLevel * config.bleedDamageTimer
     ApplyDamageToPed(ped, bleedDamage, false)
     SendBleedAlert()
     Hp -= bleedDamage
@@ -66,7 +68,7 @@ local function applyBleedEffects()
     local coords = GetOffsetFromEntityInWorldCoords(ped, randX, randY, 0)
     TriggerServerEvent("evidence:server:CreateBloodDrop", QBX.PlayerData.citizenid, QBX.PlayerData.metadata.bloodtype, coords)
 
-    if AdvanceBleedTimer >= Config.AdvanceBleedTimer then
+    if AdvanceBleedTimer >= config.advanceBleedTimer then
         ApplyBleed(1)
         AdvanceBleedTimer = 0
     else
@@ -91,9 +93,9 @@ end
 exports('removeBleed', removeBleed)
 
 local function handleBleeding()
-    if DeathState ~= Config.DeathState.ALIVE or BleedLevel <= 0 then return end
-    if FadeOutTimer + 1 == Config.FadeOutTimer then
-        if BlackoutTimer + 1 == Config.BlackoutTimer then
+    if DeathState ~= sharedConfig.deathState.ALIVE or BleedLevel <= 0 then return end
+    if FadeOutTimer + 1 == config.fadeOutTimer then
+        if BlackoutTimer + 1 == config.blackoutTimer then
             makePlayerBlackout()
             BlackoutTimer = 0
         else
@@ -110,12 +112,12 @@ end
 
 ---@param ped number
 local function bleedTick(ped)
-    if math.floor(BleedTickTimer % (Config.BleedTickRate / 10)) == 0 then
+    if math.floor(BleedTickTimer % (config.bleedTickRate / 10)) == 0 then
         local currPos = GetEntityCoords(ped, true)
         local moving = #(prevPos.xy - currPos.xy)
         if (moving > 1 and not cache.vehicle) and BleedLevel > 2 then
-            AdvanceBleedTimer += Config.BleedMovementAdvance
-            BleedTickTimer += Config.BleedMovementTick
+            AdvanceBleedTimer += config.bleedMovementAdvance
+            BleedTickTimer += config.bleedMovementTick
             prevPos = currPos
         else
             BleedTickTimer += 1
@@ -127,7 +129,7 @@ end
 local function checkBleeding()
     if BleedLevel == 0 then return end
     local player = cache.ped
-    if BleedTickTimer >= Config.BleedTickRate then
+    if BleedTickTimer >= config.bleedTickRate then
         handleBleeding()
         BleedTickTimer = 0
     else

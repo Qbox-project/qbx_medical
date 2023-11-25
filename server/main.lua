@@ -1,3 +1,4 @@
+local sharedConfig = require 'config.shared'
 ---@class PlayerStatus
 ---@field injuries table<BodyPartKey, integer>
 ---@field isBleeding number
@@ -11,16 +12,16 @@ local triggerEventHooks = require 'modules.hooks.server'
 
 local function getDeathState(src)
 	local player = exports.qbx_core:GetPlayer(src)
-	return player.PlayerData.metadata.isdead and Config.DeathState.DEAD
-		or player.PlayerData.metadata.inlaststand and Config.DeathState.LAST_STAND
-		or Config.DeathState.ALIVE
+	return player.PlayerData.metadata.isdead and sharedConfig.deathState.DEAD
+		or player.PlayerData.metadata.inlaststand and sharedConfig.deathState.LAST_STAND
+		or sharedConfig.deathState.ALIVE
 end
 
 AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
 	local playerState = Player(source).state
 	playerState:set(DEATH_STATE_STATE_BAG, getDeathState(source), true)
 	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)
-	for bodyPartKey in pairs(Config.BodyParts) do
+	for bodyPartKey in pairs(sharedConfig.bodyParts) do
 		playerState:set(BODY_PART_STATE_BAG_PREFIX .. bodyPartKey, nil, true)
 	end
 end)
@@ -28,8 +29,8 @@ end)
 AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, nil, function(bagName, _, value)
 	local playerId = GetPlayerFromStateBagName(bagName)
 	local player = exports.qbx_core:GetPlayer(playerId)
-	player.Functions.SetMetaData("isdead", value == Config.DeathState.DEAD)
-	player.Functions.SetMetaData("inlaststand", value == Config.DeathState.LAST_STAND)
+	player.Functions.SetMetaData("isdead", value == sharedConfig.deathState.DEAD)
+	player.Functions.SetMetaData("inlaststand", value == sharedConfig.deathState.LAST_STAND)
 end)
 
 RegisterNetEvent('qbx_medical:server:playerDamagedByWeapon', function(hash)
@@ -79,7 +80,7 @@ end)
 
 local function getPlayerInjuries(state)
 	local injuries = {}
-	for bodyPartKey in pairs(Config.BodyParts) do
+	for bodyPartKey in pairs(sharedConfig.bodyParts) do
 		injuries[bodyPartKey] = state[BODY_PART_STATE_BAG_PREFIX .. bodyPartKey]
 	end
 	return injuries
@@ -96,15 +97,15 @@ local function getPlayerStatus(src)
 	local injuryStatuses = {}
 	local i = 0
 	for bodyPartKey, severity in pairs(injuries) do
-        local bodyPart = Config.BodyParts[bodyPartKey]
+        local bodyPart = sharedConfig.bodyParts[bodyPartKey]
 		i += 1
-        injuryStatuses[i] = bodyPart.label .. " (" .. Config.woundLevels[severity].label .. ")"
+        injuryStatuses[i] = bodyPart.label .. " (" .. sharedConfig.woundLevels[severity].label .. ")"
     end
 
 	local status = {
 		injuries = injuryStatuses,
 		bleedLevel = bleedLevel,
-		bleedState = Config.BleedingStates[bleedLevel],
+		bleedState = sharedConfig.bleedingStates[bleedLevel],
 		damageCauses = WeaponsThatDamagedPlayers[src] or {}
 	}
 

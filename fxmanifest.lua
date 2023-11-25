@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QBX_Medical'
+description 'qbx_medical'
 repository 'https://github.com/Qbox-project/qbx_medical'
 version '1.0.0'
 
@@ -11,12 +11,12 @@ shared_scripts {
     '@qbx_core/shared/locale.lua',
     'locales/en.lua',
     'locales/*.lua',
-    'config.lua',
     'shared/**/*.lua',
 }
 
 client_scripts {
     '@qbx_core/modules/playerdata.lua',
+    'client/damage/apply-damage-effects.lua',
     'client/damage/damage.lua',
     'client/dead.lua',
     'client/laststand.lua',
@@ -31,7 +31,8 @@ server_scripts {
 }
 
 files {
-    'client/damage/apply-damage-effects.lua'
+    'config/client.lua',
+    'config/shared.lua',
 }
 
 dependencies {

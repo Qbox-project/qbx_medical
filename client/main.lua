@@ -202,7 +202,6 @@ end)
 
 ---Revives player, healing all injuries
 RegisterNetEvent('qbx_medical:client:playerRevived', function()
-    if source then return end
     local ped = cache.ped
 
     if DeathState ~= sharedConfig.deathState.ALIVE then

@@ -1,3 +1,5 @@
+local config = require 'config.client'
+local sharedConfig = require 'config.shared'
 local playerArmor = nil
 local damageEffectsEnabled = true
 

@@ -75,7 +75,7 @@ exports('getRespawnHoldTimeDeprecated', function()
     return RespawnHoldTime
 end)
 
-lib.callback('qbx_medical:client:killPlayer', function()
+lib.callback('qbx_medical:client:killPlayer', false, function()
     SetEntityHealth(cache.ped, 0)
 end)
 

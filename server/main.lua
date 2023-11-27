@@ -10,7 +10,7 @@ local sharedConfig = require 'config.shared'
 
 ---@alias Source number
 
-local triggerEventHooks = require 'modules.hooks.server'
+local triggerEventHooks = require '@qbx_core.modules.hooks'
 
 local function getDeathState(src)
 	local player = exports.qbx_core:GetPlayer(src)
@@ -178,7 +178,7 @@ lib.addCommand('aheal', {
 end)
 
 lib.callback.register('qbx_medical:server:respawn', function(source)
-	if not triggerEventHooks('respawn', source) then return false end
+	if not triggerEventHooks('respawn', {source = source}) then return false end
 	TriggerEvent('qbx_medical:server:playerRespawned', source)
 	return true
 end)

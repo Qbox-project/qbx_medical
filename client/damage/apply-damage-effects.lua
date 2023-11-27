@@ -101,24 +101,24 @@ end
 function ApplyDamageEffects()
     local ped = cache.ped
     if DeathState ~= sharedConfig.deathState.ALIVE then return end
-    for bodyPartKey, severity in pairs(Injuries) do
-        if isLegDamaged(bodyPartKey, severity) then
+    for bodyPartKey, injury in pairs(Injuries) do
+        if isLegDamaged(bodyPartKey, injury.severity) then
             if legCount >= config.legInjuryTimer then
                 chancePedFalls(ped)
                 legCount = 0
             else
                 legCount += 1
             end
-        elseif isArmDamaged(bodyPartKey, severity) then
+        elseif isArmDamaged(bodyPartKey, injury.severity) then
             if armCount >= config.armInjuryTimer then
                 CreateThread(function()
-                    disableArms(ped, isLeftArmDamaged(bodyPartKey, severity))
+                    disableArms(ped, isLeftArmDamaged(bodyPartKey, injury.severity))
                 end)
                 armCount = 0
             else
                 armCount += 1
             end
-        elseif isHeadDamaged(bodyPartKey, severity) then
+        elseif isHeadDamaged(bodyPartKey, injury.severity) then
             if headCount >= config.headInjuryTimer then
                 local chance = math.random(100)
 

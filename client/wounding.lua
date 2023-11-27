@@ -5,9 +5,9 @@ local enableBleeding = true
 
 local function getWorstInjury()
     local level = 0
-    for _, severity in pairs(Injuries) do
-        if severity > level then
-            level = severity
+    for _, injury in pairs(Injuries) do
+        if injury.severity > level then
+            level = injury.severity
         end
     end
 

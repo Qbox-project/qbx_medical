@@ -8,7 +8,7 @@ NumInjuries = 0
 
 local playerState = LocalPlayer.state
 
----@type table<BodyPartKey, integer?>
+---@type table<BodyPartKey, Injury>
 Injuries = {}
 
 for bodyPartKey in pairs(sharedConfig.bodyParts) do
@@ -96,9 +96,9 @@ local function doLimbAlert()
     local limbDamageMsg = ''
     if NumInjuries <= config.alertShowInfo then
         local i = 0
-        for bodyPartKey, severity in pairs(Injuries) do
+        for bodyPartKey, injury in pairs(Injuries) do
             local bodyPart = sharedConfig.bodyParts[bodyPartKey]
-            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = sharedConfig.woundLevels[severity].label})
+            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = sharedConfig.woundLevels[injury.severity].label})
             i += 1
             if i < NumInjuries then
                 limbDamageMsg = limbDamageMsg .. " | "
@@ -122,8 +122,8 @@ end
 exports('makePedLimp', MakePedLimp)
 
 local function resetMinorInjuries()
-    for bodyPartKey, severity in pairs(Injuries) do
-        if severity <= 2 then
+    for bodyPartKey, injury in pairs(Injuries) do
+        if injury.severity <= 2 then
             SetInjury(bodyPartKey, nil)
             NumInjuries -= 1
         end

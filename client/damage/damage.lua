@@ -2,47 +2,35 @@ local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local playerArmor = nil
 local damageEffectsEnabled = true
+local WEAPONS = exports.qbx_core:GetWeapons()
 
 ---Increases severity of an injury
 ---@param bodyPartKey BodyPartKey
 local function upgradeInjury(bodyPartKey)
-    local severity = Injuries[bodyPartKey]
-    if severity >= 4 then return end
-    SetInjury(bodyPartKey, severity + 1)
+    local injury = Injuries[bodyPartKey]
+    if injury.severity >= 4 then return end
+    injury.severity += 1
+    SetInjury(bodyPartKey, injury)
 end
 
 ---creates an injury on body part with random severity between 1 and 3.
 ---@param bodyPartKey BodyPartKey
-local function createInjury(bodyPartKey)
+---@param weaponHash number
+local function createInjury(bodyPartKey, weaponHash)
     local severity = math.random(1, 3)
-    SetInjury(bodyPartKey, severity)
+    SetInjury(bodyPartKey, {severity = severity, weaponHash = weaponHash} )
     NumInjuries += 1
 end
 
 ---create/upgrade injury at bone.
 ---@param bodyPartKey BodyPartKey
-local function injureBodyPart(bodyPartKey)
+---@param weaponHash number
+local function injureBodyPart(bodyPartKey, weaponHash)
     local severity = Injuries[bodyPartKey]
     if not severity then
-        createInjury(bodyPartKey)
+        createInjury(bodyPartKey, weaponHash)
     else
         upgradeInjury(bodyPartKey)
-    end
-end
-
----Adds weapon hashes that damaged the ped that aren't already in the CurrentDamagedList and syncs to the server.
-local function findDamageCause()
-    for hash, weapon in pairs(exports.qbx_core:GetWeapons()) do
-        if HasPedBeenDamagedByWeapon(cache.ped, hash, 0) and not WeaponsThatDamagedPlayer[hash] then
-            TriggerEvent('chat:addMessage', {
-                color = { 255, 0, 0 },
-                multiline = false,
-                args = { Lang:t('info.status'), weapon.damagereason }
-            })
-            WeaponsThatDamagedPlayer[hash] = true
-            ---TODO: verify that this only executes once for the loop and can therefore return early.
-            TriggerServerEvent('qbx_medical:server:playerDamagedByWeapon', hash)
-        end
     end
 end
 
@@ -57,11 +45,11 @@ end
 
 ---gets the weapon class of the weapon that damaged the player.
 ---@param ped number player's ped
----@return integer|nil weaponClass as defined by config.lua, or nil if player hasn't been damaged.
+---@return integer? hash of weapon that damaged player, or nil if player hasn't been damaged.
 local function getDamagingWeapon(ped)
-    for k, v in pairs(config.weapons) do
-        if HasPedBeenDamagedByWeapon(ped, k, 0) then
-            return v
+    for hash in pairs(config.weapons) do
+        if HasPedBeenDamagedByWeapon(ped, hash, 0) then
+            return hash
         end
     end
 end
@@ -70,11 +58,11 @@ end
 ---Otherwise, the probability of a damaging event goes up from 0 as the damageDone increases above the minimum threshold.
 ---@param damageDone number hitpoints lost
 ---@return boolean isDamagingEvent true if player should have disabilities from damage.
-local function isDamagingEvent(damageDone, weapon)
+local function isDamagingEvent(damageDone, weaponClass)
     local luck = math.random(100)
     local multi = damageDone / config.healthDamage
 
-    return luck < (config.healthDamage * multi) or (damageDone >= config.forceInjury or multi > config.maxInjuryChanceMulti or config.forceInjuryWeapons[weapon])
+    return luck < (config.healthDamage * multi) or (damageDone >= config.forceInjury or multi > config.maxInjuryChanceMulti or config.forceInjuryWeapons[weaponClass])
 end
 
 ---Sets a ragdoll effect probablistically on the player's ped.
@@ -134,13 +122,13 @@ end
 ---Apply bleeds and staggers effects on damage taken, taking into account armor.
 ---@param ped number
 ---@param bodyPartKey BodyPartKey
----@param weapon number
+---@param weaponClass WeaponClass
 ---@param damageDone number
-local function applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
+local function applyImmediateEffects(ped, bodyPartKey, weaponClass, damageDone)
     local armor = GetPedArmour(ped)
-    if config.minorInjurWeapons[weapon] and damageDone < config.majorInjurWeapons then
+    if config.minorInjurWeapons[weaponClass] and damageDone < config.majorInjurWeapons then
         applyImmediateMinorEffects(ped, bodyPartKey, armor)
-    elseif config.majorInjurWeapons[weapon] or (config.minorInjurWeapons[weapon] and damageDone >= config.majorInjurWeapons) then
+    elseif config.majorInjurWeapons[weaponClass] or (config.minorInjurWeapons[weaponClass] and damageDone >= config.majorInjurWeapons) then
         applyImmediateMajorEffects(ped, bodyPartKey, armor)
     end
 end
@@ -148,16 +136,17 @@ end
 ---Apply bleeds, injure the body part hit, make ped limp/stagger
 ---@param ped number
 ---@param boneId integer
----@param weapon number
+---@param weaponHash number
+---@param weaponClass WeaponClass
 ---@param damageDone number
-local function checkDamage(ped, boneId, weapon, damageDone)
-    if not weapon then return end
+local function checkDamage(ped, boneId, weaponHash, weaponClass, damageDone)
+    if not weaponClass then return end
 
     local bodyPartKey = config.bones[boneId]
     if not bodyPartKey or DeathState ~= sharedConfig.deathState.ALIVE then return end
 
-    applyImmediateEffects(ped, bodyPartKey, weapon, damageDone)
-    injureBodyPart(bodyPartKey)
+    applyImmediateEffects(ped, bodyPartKey, weaponClass, damageDone)
+    injureBodyPart(bodyPartKey, weaponHash)
     MakePedLimp()
 end
 
@@ -165,25 +154,28 @@ end
 ---@param ped number
 ---@param damageDone number
 ---@param isArmorDamaged boolean
+---@return number? weaponHash
 local function applyDamage(ped, damageDone, isArmorDamaged)
     local hit, bone = GetPedLastDamageBone(ped)
     local bodypart = config.bones[bone]
-    local weapon = getDamagingWeapon(ped)
-
-    if not hit or bodypart == 'NONE' or not weapon then return end
+    local weaponHash = getDamagingWeapon(ped)
+    if not hit or bodypart == 'NONE' or not weaponHash then return end
+    local weaponClass = config.weapons[weaponHash]
 
     if damageDone >= config.healthDamage then
-        local isBodyHitOrWeakWeapon = checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
+        local isBodyHitOrWeakWeapon = checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weaponClass)
         if isBodyHitOrWeakWeapon and isArmorDamaged then
             lib.callback('qbx_medical:server:setArmor', false, false, GetPedArmour(ped))
-        elseif not isBodyHitOrWeakWeapon and isDamagingEvent(damageDone, weapon) then
-            checkDamage(ped, bone, weapon, damageDone)
+        elseif not isBodyHitOrWeakWeapon and isDamagingEvent(damageDone, weaponClass) then
+            checkDamage(ped, bone, weaponHash, weaponClass, damageDone)
         end
-    elseif config.alwaysBleedChanceWeapons[weapon]
+    elseif config.alwaysBleedChanceWeapons[weaponClass]
         and math.random(100) < config.alwaysBleedChance
-        and not checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon) then
+        and not checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weaponClass) then
         ApplyBleed(1)
     end
+
+    return weaponHash
 end
 
 ---If the player health and armor haven't already been set, initialize them.
@@ -212,8 +204,15 @@ local function checkForDamage()
 
     if isArmorDamaged or isHealthDamaged then
         local damageDone = (Hp - health)
-        applyDamage(ped, damageDone, isArmorDamaged)
-        findDamageCause()
+        local weaponHash = applyDamage(ped, damageDone, isArmorDamaged)
+        if weaponHash and not WeaponsThatDamagedPlayer[weaponHash] then
+            TriggerEvent('chat:addMessage', {
+                color = { 255, 0, 0 },
+                multiline = false,
+                args = { Lang:t('info.status'), WEAPONS[weaponHash].damagereason }
+            })
+            WeaponsThatDamagedPlayer[weaponHash] = true
+        end
         ClearEntityLastDamageEntity(ped)
     end
 

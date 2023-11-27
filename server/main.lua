@@ -1,12 +1,14 @@
 local sharedConfig = require 'config.shared'
+
+---@class Injury
+---@field severity integer
+---@field weaponHash number
+
 ---@class PlayerStatus
----@field injuries table<BodyPartKey, integer>
+---@field injuries table<BodyPartKey, Injury>
 ---@field isBleeding number
 
 ---@alias Source number
-
----@type table<Source, table<number, boolean>> weapon hashes
-local WeaponsThatDamagedPlayers = {}
 
 local triggerEventHooks = require 'modules.hooks.server'
 
@@ -31,11 +33,6 @@ AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, nil, function(bagName, _, value)
 	local player = exports.qbx_core:GetPlayer(playerId)
 	player.Functions.SetMetaData("isdead", value == sharedConfig.deathState.DEAD)
 	player.Functions.SetMetaData("inlaststand", value == sharedConfig.deathState.LAST_STAND)
-end)
-
-RegisterNetEvent('qbx_medical:server:playerDamagedByWeapon', function(hash)
-	if WeaponsThatDamagedPlayers[source][hash] then return end
-	WeaponsThatDamagedPlayers[source][hash] = true
 end)
 
 ---@param player table|number
@@ -95,18 +92,20 @@ local function getPlayerStatus(src)
 	local injuries = getPlayerInjuries(state)
 
 	local injuryStatuses = {}
+	local weaponsThatDamagedPlayer = {}
 	local i = 0
-	for bodyPartKey, severity in pairs(injuries) do
+	for bodyPartKey, injury in pairs(injuries) do
         local bodyPart = sharedConfig.bodyParts[bodyPartKey]
 		i += 1
-        injuryStatuses[i] = bodyPart.label .. " (" .. sharedConfig.woundLevels[severity].label .. ")"
-    end
+        injuryStatuses[i] = bodyPart.label .. " (" .. sharedConfig.woundLevels[injury.severity].label .. ")"
+		weaponsThatDamagedPlayer[injury.weaponHash] = true
+	end
 
 	local status = {
 		injuries = injuryStatuses,
 		bleedLevel = bleedLevel,
 		bleedState = sharedConfig.bleedingStates[bleedLevel],
-		damageCauses = WeaponsThatDamagedPlayers[src] or {}
+		damageCauses = weaponsThatDamagedPlayer
 	}
 
 	return status

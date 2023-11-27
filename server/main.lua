@@ -40,14 +40,12 @@ local function revivePlayer(player)
 	if type(player) == "number" then
 		player = exports.qbx_core:GetPlayer(player)
 	end
-	WeaponsThatDamagedPlayers[player.PlayerData.source] = nil
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
 end
 
 ---removes all ailments, sets to full health, and fills up hunger and thirst.
 ---@param src Source
 local function heal(src)
-	WeaponsThatDamagedPlayers[src] = nil
 	lib.callback('qbx_medical:client:heal', src, false, "full")
 end
 

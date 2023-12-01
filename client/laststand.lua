@@ -5,8 +5,8 @@ local sharedConfig = require 'config.shared'
 ---@param ped number
 function WaitForPlayerToStopMoving()
     local ped = cache.ped
-    local TimeOut = 300
-    while GetEntitySpeed(ped) > 0.5 or IsPedRagdoll(ped) and TimeOut > 1 do TimeOut -= 1 Wait(10) end
+    local TimeOut = 10000
+    while GetEntitySpeed(ped) > 0.5 or IsPedRagdoll(ped) and TimeOut > 1 do TimeOut -= 10 Wait(10) end
 end
 
 --- low level GTA resurrection

@@ -40,7 +40,7 @@ end
 ---@param weapon number
 ---@return boolean
 local function checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
-    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == config.weaponClasses.NOTHING
+    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == config.weaponClasses['NOTHING']
 end
 
 ---gets the weapon class of the weapon that damaged the player.

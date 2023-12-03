@@ -1,4 +1,6 @@
 return {
+    weaponClasses = weaponClasses,
+    
     woundLevels = {
         {
             movementRate = 0.98,

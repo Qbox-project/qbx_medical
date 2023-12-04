@@ -16,6 +16,7 @@ local weaponClasses = { -- Define gta weapon classe numbers
 }
 
 return {
+    weaponClasses = weaponClasses,
     fadeOutTimer = 2, -- How many bleed ticks occur before fadeout happens
     blackoutTimer = 10, -- How many bleed ticks occur before blacking out
     bleedDamageTimer = 8, -- The base damage that is multiplied by bleed level everytime a bleed tick occurs

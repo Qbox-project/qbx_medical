@@ -19,7 +19,7 @@ local function getDeathState(src)
 		or sharedConfig.deathState.ALIVE
 end
 
-AddEventHandler('QBCore:Server:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Server:OnPlayerLoaded', function()
 	local playerState = Player(source).state
 	playerState:set(DEATH_STATE_STATE_BAG, getDeathState(source), true)
 	playerState:set(BLEED_LEVEL_STATE_BAG, 0, true)

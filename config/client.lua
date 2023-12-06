@@ -12,7 +12,7 @@ local weaponClasses = { -- Define gta weapon classe numbers
     SUFFOCATING = 10,
     OTHER = 11,
     WILDLIFE = 12,
-    NOTHING = 13,
+    NONE = 13,
 }
 
 return {

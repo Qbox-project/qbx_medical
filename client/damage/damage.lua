@@ -34,13 +34,13 @@ local function injureBodyPart(bodyPartKey, weaponHash)
     end
 end
 
----returns true if player took damage in their upper body or if the weapon class is nothing.
+---returns true if player took damage in their upper body or if the weapon class is NONE
 ---@param isArmorDamaged boolean
 ---@param bodypart string
 ---@param weapon number
 ---@return boolean
 local function checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weapon)
-    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == config.weaponClasses.NOTHING
+    return isArmorDamaged and (bodypart == 'SPINE' or bodypart == 'UPPER_BODY') or weapon == config.weaponClasses.NONE
 end
 
 ---gets the weapon class of the weapon that damaged the player.

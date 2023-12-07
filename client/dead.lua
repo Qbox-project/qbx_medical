@@ -25,6 +25,7 @@ exports('playDeadAnimation', playDeadAnimation)
 function OnDeath()
     if DeathState == sharedConfig.deathState.DEAD then return end
     SetDeathState(sharedConfig.deathState.DEAD)
+    TriggerEvent('qbx_medical:client:onPlayerDied')
     TriggerServerEvent('qbx_medical:server:playerDied')
     TriggerServerEvent("InteractSound_SV:PlayOnSource", "demo", 0.1)
     local player = cache.ped

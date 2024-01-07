@@ -29,9 +29,7 @@ local function onPlayerLoaded()
     pcall(function() exports.spawnmanager:setAutoSpawn(false) end)
     CreateThread(function()
         Wait(1000)
-        local ped = cache.ped
-        local playerId = cache.playerId
-        initHealthAndArmor(ped, playerId, QBX.PlayerData.metadata)
+        initHealthAndArmor(cache.ped, cache.playerId, QBX.PlayerData.metadata)
         initDeathAndLastStand(QBX.PlayerData.metadata)
     end)
 end
@@ -39,6 +37,6 @@ end
 AddEventHandler('QBCore:Client:OnPlayerLoaded', onPlayerLoaded)
 
 AddEventHandler('onResourceStart', function(resourceName)
-    if GetCurrentResourceName() ~= resourceName then return end
+    if cache.resource ~= resourceName then return end
     onPlayerLoaded()
 end)

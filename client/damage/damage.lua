@@ -193,9 +193,8 @@ end
 
 ---detects if player took damage, applies injuries, and updates health/armor values
 local function checkForDamage()
-    local ped = cache.ped
-    local health = GetEntityHealth(ped)
-    local armor = GetPedArmour(ped)
+    local health = GetEntityHealth(cache.ped)
+    local armor = GetPedArmour(cache.ped)
 
     initHealthAndArmorIfNotSet(health, armor)
 
@@ -204,7 +203,7 @@ local function checkForDamage()
 
     if isArmorDamaged or isHealthDamaged then
         local damageDone = (Hp - health)
-        local weaponHash = applyDamage(ped, damageDone, isArmorDamaged)
+        local weaponHash = applyDamage(cache.ped, damageDone, isArmorDamaged)
         if weaponHash and not WeaponsThatDamagedPlayer[weaponHash] then
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
@@ -213,7 +212,7 @@ local function checkForDamage()
             })
             WeaponsThatDamagedPlayer[weaponHash] = true
         end
-        ClearEntityLastDamageEntity(ped)
+        ClearEntityLastDamageEntity(cache.ped)
     end
 
     Hp = health

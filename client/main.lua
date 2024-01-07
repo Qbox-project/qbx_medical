@@ -52,8 +52,8 @@ Hp = nil
 DeathTime = 0
 LaststandTime = 0
 RespawnHoldTime = 5
-LastStandDict = "combat@damage@writhe"
-LastStandAnim = "writhe_loop"
+LastStandDict = 'combat@damage@writhe'
+LastStandAnim = 'writhe_loop'
 
 exports('isDead', function()
     return DeathState == sharedConfig.deathState.DEAD
@@ -101,7 +101,7 @@ local function doLimbAlert()
             limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = sharedConfig.woundLevels[injury.severity].label})
             i += 1
             if i < NumInjuries then
-                limbDamageMsg = limbDamageMsg .. " | "
+                limbDamageMsg = limbDamageMsg .. ' | '
             end
         end
     else
@@ -113,8 +113,8 @@ end
 ---sets ped animation to limping and prevents running.
 function MakePedLimp()
     if not isInjuryCausingLimp() then return end
-    lib.requestAnimSet("move_m@injured")
-    SetPedMovementClipset(cache.ped, "move_m@injured", 1)
+    lib.requestAnimSet('move_m@injured', 5000)
+    SetPedMovementClipset(cache.ped, 'move_m@injured', 1)
     SetPlayerSprint(cache.playerId, false)
 end
 
@@ -183,9 +183,9 @@ function ApplyBleed(level)
 end
 
 ---heals player wounds.
----@param type? "full"|any heals all wounds if full otherwise heals only major wounds.
+---@param type? 'full'|any heals all wounds if full otherwise heals only major wounds.
 lib.callback.register('qbx_medical:client:heal', function(type)
-    if type == "full" then
+    if type == 'full' then
         resetAllInjuries()
     else
         resetMinorInjuries()
@@ -202,22 +202,20 @@ end)
 
 ---Revives player, healing all injuries
 RegisterNetEvent('qbx_medical:client:playerRevived', function()
-    local ped = cache.ped
-
     if DeathState ~= sharedConfig.deathState.ALIVE then
-        local pos = GetEntityCoords(ped, true)
-        NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(ped), true, false)
+        local pos = GetEntityCoords(cache.ped, true)
+        NetworkResurrectLocalPlayer(pos.x, pos.y, pos.z, GetEntityHeading(cache.ped), true, false)
         SetDeathState(sharedConfig.deathState.ALIVE)
-        SetEntityInvincible(ped, false)
+        SetEntityInvincible(cache.ped, false)
         EndLastStand()
     end
 
-    SetEntityMaxHealth(ped, 200)
-    SetEntityHealth(ped, 200)
-    ClearPedBloodDamage(ped)
+    SetEntityMaxHealth(cache.ped, 200)
+    SetEntityHealth(cache.ped, 200)
+    ClearPedBloodDamage(cache.ped)
     SetPlayerSprint(cache.playerId, true)
     resetAllInjuries()
-    ResetPedMovementClipset(ped, 0.0)
+    ResetPedMovementClipset(cache.ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
     exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
 end)

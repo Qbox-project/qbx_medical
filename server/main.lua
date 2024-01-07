@@ -31,13 +31,13 @@ end)
 AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, nil, function(bagName, _, value)
 	local playerId = GetPlayerFromStateBagName(bagName)
 	local player = exports.qbx_core:GetPlayer(playerId)
-	player.Functions.SetMetaData("isdead", value == sharedConfig.deathState.DEAD)
-	player.Functions.SetMetaData("inlaststand", value == sharedConfig.deathState.LAST_STAND)
+	player.Functions.SetMetaData('isdead', value == sharedConfig.deathState.DEAD)
+	player.Functions.SetMetaData('inlaststand', value == sharedConfig.deathState.LAST_STAND)
 end)
 
 ---@param player table|number
 local function revivePlayer(player)
-	if type(player) == "number" then
+	if type(player) == 'number' then
 		player = exports.qbx_core:GetPlayer(player)
 	end
 	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
@@ -46,7 +46,7 @@ end
 ---removes all ailments, sets to full health, and fills up hunger and thirst.
 ---@param src Source
 local function heal(src)
-	lib.callback('qbx_medical:client:heal', src, false, "full")
+	lib.callback('qbx_medical:client:heal', src, false, 'full')
 end
 
 exports('Heal', heal)
@@ -54,7 +54,7 @@ exports('Heal', heal)
 ---Removes any injuries with severity 2 or lower. Stops bleeding if bleed level is less than 3.
 ---@param src Source
 local function healPartially(src)
-	lib.callback('qbx_medical:client:heal', src, false, "partial")
+	lib.callback('qbx_medical:client:heal', src, false, 'partial')
 end
 
 exports('HealPartially', healPartially)
@@ -65,7 +65,7 @@ exports('HealPartially', healPartially)
 ---@field id number
 ---@param eventData EventData
 AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
-	if GetInvokingResource() ~= "monitor" or type(eventData) ~= "table" or type(eventData.id) ~= "number" then
+	if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' or type(eventData.id) ~= 'number' then
 		return
 	end
 
@@ -95,7 +95,7 @@ local function getPlayerStatus(src)
 	for bodyPartKey, injury in pairs(injuries) do
         local bodyPart = sharedConfig.bodyParts[bodyPartKey]
 		i += 1
-        injuryStatuses[i] = bodyPart.label .. " (" .. sharedConfig.woundLevels[injury.severity].label .. ")"
+        injuryStatuses[i] = bodyPart.label .. ' (' .. sharedConfig.woundLevels[injury.severity].label .. ')'
 		weaponsThatDamagedPlayer[injury.weaponHash] = true
 	end
 
@@ -114,7 +114,7 @@ exports('GetPlayerStatus', getPlayerStatus)
 ---@param amount number
 lib.callback.register('qbx_medical:server:setArmor', function(source, amount)
 	local player = exports.qbx_core:GetPlayer(source)
-	player.Functions.SetMetaData("armor", amount)
+	player.Functions.SetMetaData('armor', amount)
 end)
 
 local function resetHungerAndThirst(player)
@@ -131,7 +131,7 @@ lib.callback.register('qbx_medical:server:resetHungerAndThirst', resetHungerAndT
 
 lib.addCommand('revive', {
     help = Lang:t('info.revive_player_a'),
-	restricted = "admin",
+	restricted = 'group.admin',
 	params = {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
@@ -139,7 +139,7 @@ lib.addCommand('revive', {
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
 		return
 	end
 	revivePlayer(args.id)
@@ -147,7 +147,7 @@ end)
 
 lib.addCommand('kill', {
     help =  Lang:t('info.kill'),
-	restricted = "admin",
+	restricted = 'group.admin',
 	params = {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
@@ -155,7 +155,7 @@ lib.addCommand('kill', {
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
 		return
 	end
 	lib.callback('qbx_medical:client:killPlayer', args.id)
@@ -163,7 +163,7 @@ end)
 
 lib.addCommand('aheal', {
     help =  Lang:t('info.heal_player_a'),
-	restricted = "admin",
+	restricted = 'group.admin',
 	params = {
         { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
     }
@@ -171,7 +171,7 @@ lib.addCommand('aheal', {
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		TriggerClientEvent('ox_lib:notify', source, { description = Lang:t('error.not_online'), type = 'error' })
+		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
 		return
 	end
 	heal(args.id)

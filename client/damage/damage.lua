@@ -126,9 +126,9 @@ end
 ---@param damageDone number
 local function applyImmediateEffects(ped, bodyPartKey, weaponClass, damageDone)
     local armor = GetPedArmour(ped)
-    if config.minorInjurWeapons[weaponClass] and damageDone < config.majorInjurWeapons[weaponClass] then
+    if config.minorInjurWeapons[weaponClass] and damageDone < config.damageMinorToMajor then
         applyImmediateMinorEffects(ped, bodyPartKey, armor)
-    elseif config.majorInjurWeapons[weaponClass] or (config.minorInjurWeapons[weaponClass] and damageDone >= config.minorInjurWeapons[weaponClass]) then
+    elseif config.majorInjurWeapons[weaponClass] or (config.minorInjurWeapons[weaponClass] and damageDone >= config.damageMinorToMajor) then
         applyImmediateMajorEffects(ped, bodyPartKey, armor)
     end
 end

@@ -5,8 +5,8 @@ local config = require 'config.client'
 ---@param playerId number
 ---@param playerMetadata any
 local function initHealthAndArmor(ped, playerId, playerMetadata)
-    SetEntityHealth(ped, playerMetadata.health)
     SetEntityMaxHealth(ped, 200)
+    SetEntityHealth(ped, playerMetadata.health)
     SetPlayerHealthRechargeMultiplier(playerId, 0.0)
     SetPlayerHealthRechargeLimit(playerId, 0.0)
     SetPedArmour(ped, playerMetadata.armor)

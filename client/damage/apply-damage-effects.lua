@@ -56,10 +56,9 @@ local function disableArms(ped, leftArmDamaged)
             DisableControlAction(0, 63, true) -- veh turn left
         end
 
-        local playerId = cache.playerId
-        if IsPlayerFreeAiming(playerId) then
+        if IsPlayerFreeAiming(cache.playerId) then
             if leftArmDamaged then
-                DisablePlayerFiring(playerId, true) -- Disable weapon firing
+                DisablePlayerFiring(cache.playerId, true) -- Disable weapon firing
             else
                 DisableControlAction(0, 25, true) -- Disable weapon aiming
             end
@@ -99,12 +98,11 @@ end
 
 ---applies disabling status effects based on injuries to specific body parts
 function ApplyDamageEffects()
-    local ped = cache.ped
     if DeathState ~= sharedConfig.deathState.ALIVE then return end
     for bodyPartKey, injury in pairs(Injuries) do
         if isLegDamaged(bodyPartKey, injury.severity) then
             if legCount >= config.legInjuryTimer then
-                chancePedFalls(ped)
+                chancePedFalls(cache.ped)
                 legCount = 0
             else
                 legCount += 1
@@ -112,7 +110,7 @@ function ApplyDamageEffects()
         elseif isArmDamaged(bodyPartKey, injury.severity) then
             if armCount >= config.armInjuryTimer then
                 CreateThread(function()
-                    disableArms(ped, isLeftArmDamaged(bodyPartKey, injury.severity))
+                    disableArms(cache.ped, isLeftArmDamaged(bodyPartKey, injury.severity))
                 end)
                 armCount = 0
             else
@@ -123,7 +121,7 @@ function ApplyDamageEffects()
                 local chance = math.random(100)
 
                 if chance <= config.headInjuryChance then
-                    playBrainDamageEffectAndRagdoll(ped)
+                    playBrainDamageEffectAndRagdoll(cache.ped)
                 end
                 headCount = 0
             else

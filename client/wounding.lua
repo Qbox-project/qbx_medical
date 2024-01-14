@@ -27,7 +27,6 @@ CreateThread(function()
 end)
 
 local function makePlayerBlackout()
-    local ped = cache.ped
     SetFlash(0, 0, 100, 7000, 100)
 
     DoScreenFadeOut(500)
@@ -35,9 +34,9 @@ local function makePlayerBlackout()
         Wait(0)
     end
 
-    if not IsPedRagdoll(ped) and IsPedOnFoot(ped) and not IsPedSwimming(ped) then
+    if not IsPedRagdoll(cache.ped) and IsPedOnFoot(cache.ped) and not IsPedSwimming(cache.ped) then
         ShakeGameplayCam('SMALL_EXPLOSION_SHAKE', 0.08) -- change this float to increase/decrease camera shake
-        SetPedToRagdollWithFall(ped, 7500, 9000, 1, GetEntityForwardVector(ped), 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        SetPedToRagdollWithFall(cache.ped, 7500, 9000, 1, GetEntityForwardVector(cache.ped), 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     end
 
     Wait(1500)
@@ -57,16 +56,15 @@ end
 exports('makePlayerFadeOut', makePlayerFadeOut)
 
 local function applyBleedEffects()
-    local ped = cache.ped
     if not QBX.PlayerData then return end
     local bleedDamage = BleedLevel * config.bleedDamageTimer
-    ApplyDamageToPed(ped, bleedDamage, false)
+    ApplyDamageToPed(cache.ped, bleedDamage, false)
     SendBleedAlert()
     Hp -= bleedDamage
     local randX = math.random() + math.random(-1, 1)
     local randY = math.random() + math.random(-1, 1)
-    local coords = GetOffsetFromEntityInWorldCoords(ped, randX, randY, 0)
-    TriggerServerEvent("evidence:server:CreateBloodDrop", QBX.PlayerData.citizenid, QBX.PlayerData.metadata.bloodtype, coords)
+    local coords = GetOffsetFromEntityInWorldCoords(cache.ped, randX, randY, 0)
+    TriggerServerEvent('evidence:server:CreateBloodDrop', QBX.PlayerData.citizenid, QBX.PlayerData.metadata.bloodtype, coords)
 
     if AdvanceBleedTimer >= config.advanceBleedTimer then
         ApplyBleed(1)
@@ -128,12 +126,11 @@ end
 
 local function checkBleeding()
     if BleedLevel == 0 then return end
-    local player = cache.ped
     if BleedTickTimer >= config.bleedTickRate then
         handleBleeding()
         BleedTickTimer = 0
     else
-        bleedTick(player)
+        bleedTick(cache.ped)
     end
 end
 
@@ -163,6 +160,6 @@ end
 
 AddEventHandler('QBCore:Client:OnPlayerLoaded', savePlayerPos)
 AddEventHandler('onResourceStart', function(resourceName)
-    if GetCurrentResourceName() ~= resourceName then return end
+    if cache.resource ~= resourceName then return end
     savePlayerPos()
 end)

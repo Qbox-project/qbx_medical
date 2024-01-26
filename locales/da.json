@@ -1,0 +1,58 @@
+local Translations = {
+    fejl = {
+        bled_out = 'Du er blødt ud...',
+    },
+    success = {
+        wounds_healed = 'Dine sår er helet!',
+    },
+    info = {
+        self_death = 'Sig selv eller en NPC',
+        wep_unknown = 'Ukendt',
+        status = 'Statuskontrol',
+        healthy = 'Du er helt rask igen!',
+        pain_message = 'Din %{limb} føles %{severity}',
+        many_places = 'Du har smerte mange steder...',
+        bleed_alert = 'Du er %{bleedstate}',
+        revive_player_a = 'Genopliv en spiller eller dig selv (Kun administrator)',
+        player_id = 'Spiller ID (kan være tomt)',
+        pain_level = 'Indstil din eller en spillers smerteniveau (Kun administrator)',
+        kill = 'Dræb en spiller eller dig selv (Kun administrator)',
+        heal_player_a = 'Helbred en spiller eller dig selv (Kun administrator)',
+    },
+    states = {
+        irritated = 'irriteret',
+        quite_painful = 'ret smertefuldt',
+        painful = 'smertefuldt',
+        really_painful = 'virkelig smertefuldt',
+        little_bleed = 'bløder lidt...',
+        bleed = 'bløder...',
+        lot_bleed = 'bløder meget...',
+        big_bleed = 'bløder meget meget...',
+    },
+    body = {
+        head = 'Hoved',
+        neck = 'Hals',
+        spine = 'Rygsøjle',
+        upper_body = 'Øverste krop',
+        lower_body = 'Nederste krop',
+        left_arm = 'Venstre arm',
+        left_hand = 'Venstre hånd',
+        left_fingers = 'Venstre fingre',
+        left_leg = 'Venstre ben',
+        left_foot = 'Venstre fod',
+        right_arm = 'Højre arm',
+        right_hand = 'Højre hånd',
+        right_fingers = 'Højre fingre',
+        right_leg = 'Højre ben',
+        right_foot = 'Højre fod',
+    },
+    logs = {
+        death_log_title = "%{playername} (%{playerid}) er død",
+        death_log_message = "%{killername} har dræbt %{playername} med et **%{weaponlabel}** (%{weaponname})",
+    }
+}
+
+Lang = Lang or Locale:new({
+    phrases = Translations,
+    warnOnMissing = true
+})

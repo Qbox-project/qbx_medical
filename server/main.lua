@@ -33,6 +33,7 @@ AddStateBagChangeHandler(DEATH_STATE_STATE_BAG, nil, function(bagName, _, value)
 	local player = exports.qbx_core:GetPlayer(playerId)
 	player.Functions.SetMetaData('isdead', value == sharedConfig.deathState.DEAD)
 	player.Functions.SetMetaData('inlaststand', value == sharedConfig.deathState.LAST_STAND)
+	Player(playerId).state:set("isDead", value == sharedConfig.deathState.DEAD or value == sharedConfig.deathState.LAST_STAND, true)
 end)
 
 ---@param player table|number

@@ -1,6 +1,6 @@
 local sharedConfig = require 'config.shared'
-local allowRespawn = false
 local WEAPONS = exports.qbx_core:GetWeapons()
+local allowRespawn = false
 
 local function playDeadAnimation()
     local deadAnimDict = 'dead'

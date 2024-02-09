@@ -1,4 +1,6 @@
+local WEAPONS = exports.qbx_core:GetWeapons()
 local sharedConfig = require 'config.shared'
+local logger = require '@qbx_core.modules.logger'
 
 ---@class Injury
 ---@field severity integer
@@ -182,4 +184,22 @@ lib.callback.register('qbx_medical:server:respawn', function(source)
 	if not triggerEventHooks('respawn', {source = source}) then return false end
 	TriggerEvent('qbx_medical:server:playerRespawned', source)
 	return true
+end)
+
+---log the death of a player along with the attacker and the weapon used.
+---@param victim number ped
+---@param attacker number ped
+---@param weapon string weapon hash
+lib.callback.register('qbx_medical:server:logDeath', function(_, victim, attacker, weapon)
+	local playerId = NetworkGetPlayerIndexFromPed(victim)
+    local playerName = GetPlayerName(playerId) .. ' ' .. '(' .. GetPlayerServerId(playerId) .. ')' or Lang:t('info.self_death')
+    local killerId = NetworkGetPlayerIndexFromPed(attacker)
+    local killerName = GetPlayerName(killerId) .. ' ' .. '(' .. GetPlayerServerId(killerId) .. ')' or Lang:t('info.self_death')
+    local weaponLabel = WEAPONS[weapon].label or 'Unknown'
+    local weaponName = WEAPONS[weapon].name or 'Unknown'
+	logger.log({
+		source = 'qbx_medical',
+		event = 'logDeath',
+		message = ('%s has killed %s with a %s | %s'):format(killerName, playerName, weaponLabel, weaponName),
+	  })
 end)

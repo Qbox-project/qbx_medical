@@ -1,5 +1,4 @@
 local sharedConfig = require 'config.shared'
-local WEAPONS = exports.qbx_core:GetWeapons()
 local allowRespawn = false
 
 local function playDeadAnimation()
@@ -28,7 +27,6 @@ function OnDeath()
     TriggerEvent('qbx_medical:client:onPlayerDied')
     TriggerServerEvent('qbx_medical:server:onPlayerDied')
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
-    local player = cache.ped
 
     WaitForPlayerToStopMoving()
 
@@ -42,8 +40,8 @@ function OnDeath()
 
     ResurrectPlayer()
     playDeadAnimation()
-    SetEntityInvincible(player, true)
-    SetEntityHealth(player, GetEntityMaxHealth(player))
+    SetEntityInvincible(cache.ped, true)
+    SetEntityHealth(cache.ped, GetEntityMaxHealth(cache.ped))
 end
 
 exports('killPlayer', OnDeath)
@@ -87,20 +85,6 @@ exports('disableRespawn', function()
     allowRespawn = false
 end)
 
----log the death of a player along with the attacker and the weapon used.
----@param victim number ped
----@param attacker number ped
----@param weapon string weapon hash
-local function logDeath(victim, attacker, weapon)
-    local playerId = NetworkGetPlayerIndexFromPed(victim)
-    local playerName = GetPlayerName(playerId) .. ' ' .. '(' .. GetPlayerServerId(playerId) .. ')' or Lang:t('info.self_death')
-    local killerId = NetworkGetPlayerIndexFromPed(attacker)
-    local killerName = GetPlayerName(killerId) .. ' ' .. '(' .. GetPlayerServerId(killerId) .. ')' or Lang:t('info.self_death')
-    local weaponLabel = WEAPONS[weapon].label or 'Unknown'
-    local weaponName = WEAPONS[weapon].name or 'Unknown'
-    TriggerServerEvent('qb-log:server:CreateLog', 'death', Lang:t('logs.death_log_title', { playername = playerName, playerid = GetPlayerServerId(playerId) }), 'red', Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName }))
-end
-
 ---when player is killed by another player, set last stand mode, or if already in last stand mode, set player to dead mode.
 ---@param event string
 ---@param data table
@@ -112,7 +96,7 @@ AddEventHandler('gameEventTriggered', function(event, data)
         StartLastStand()
     elseif DeathState == sharedConfig.deathState.LAST_STAND then
         EndLastStand()
-        logDeath(victim, attacker, weapon)
+        lib.callback('qbx_medical:server:logDeath', false, false, victim, attacker, weapon)
         DeathTime = 0
         OnDeath()
         AllowRespawn()

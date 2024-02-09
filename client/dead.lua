@@ -1,5 +1,6 @@
 local sharedConfig = require 'config.shared'
 local allowRespawn = false
+local WEAPONS = exports.qbx_core:GetWeapons()
 
 local function playDeadAnimation()
     local deadAnimDict = 'dead'
@@ -85,6 +86,21 @@ exports('disableRespawn', function()
     allowRespawn = false
 end)
 
+---log the death of a player along with the attacker and the weapon used.
+---@param victim number ped
+---@param attacker number ped
+---@param weapon string weapon hash
+local function logDeath(victim, attacker, weapon)
+    local playerId = NetworkGetPlayerIndexFromPed(victim)
+    local playerName = GetPlayerName(playerId) .. ' ' .. '(' .. GetPlayerServerId(playerId) .. ')' or Lang:t('info.self_death')
+    local killerId = NetworkGetPlayerIndexFromPed(attacker)
+    local killerName = GetPlayerName(killerId) .. ' ' .. '(' .. GetPlayerServerId(killerId) .. ')' or Lang:t('info.self_death')
+    local weaponLabel = WEAPONS[weapon].label or 'Unknown'
+    local weaponName = WEAPONS[weapon].name or 'Unknown'
+    local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
+    lib.callback('qbx_medical:server:logDeath', false, false, message)
+end
+
 ---when player is killed by another player, set last stand mode, or if already in last stand mode, set player to dead mode.
 ---@param event string
 ---@param data table
@@ -96,7 +112,7 @@ AddEventHandler('gameEventTriggered', function(event, data)
         StartLastStand()
     elseif DeathState == sharedConfig.deathState.LAST_STAND then
         EndLastStand()
-        lib.callback('qbx_medical:server:logDeath', false, false, victim, attacker, weapon)
+        logDeath(victim, attacker, weapon)
         DeathTime = 0
         OnDeath()
         AllowRespawn()

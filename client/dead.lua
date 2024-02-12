@@ -98,7 +98,7 @@ local function logDeath(victim, attacker, weapon)
     local weaponLabel = WEAPONS[weapon].label or 'Unknown'
     local weaponName = WEAPONS[weapon].name or 'Unknown'
     local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
-    lib.callback('qbx_medical:server:logDeath', false, false, message)
+    lib.callback.await('qbx_medical:server:logDeath', false, message)
 end
 
 ---when player is killed by another player, set last stand mode, or if already in last stand mode, set player to dead mode.

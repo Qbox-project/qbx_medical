@@ -1,4 +1,5 @@
 local sharedConfig = require 'config.shared'
+local logger = require '@qbx_core.modules.logger'
 
 ---@class Injury
 ---@field severity integer
@@ -182,4 +183,8 @@ lib.callback.register('qbx_medical:server:respawn', function(source)
 	if not triggerEventHooks('respawn', {source = source}) then return false end
 	TriggerEvent('qbx_medical:server:playerRespawned', source)
 	return true
+end)
+
+lib.callback.register('qbx_medical:server:logDeath', function(_, message)
+	logger.log({source = 'qbx_medical', event = 'logDeath', message = message})
 end)

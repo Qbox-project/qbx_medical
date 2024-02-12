@@ -89,7 +89,7 @@ return {
         [weaponClasses.CUTTING] = true,
         [weaponClasses.WILDLIFE] = false,
     },
-    
+
     alwaysBleedChance = 70, -- Set the chance out of 100 that if a player is hit with a weapon, that also has a random chance, it will cause bleeding
 
     ---@type table<number, string>

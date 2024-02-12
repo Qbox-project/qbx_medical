@@ -28,7 +28,6 @@ function OnDeath()
     TriggerEvent('qbx_medical:client:onPlayerDied')
     TriggerServerEvent('qbx_medical:server:onPlayerDied')
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
-    local player = cache.ped
 
     WaitForPlayerToStopMoving()
 
@@ -42,8 +41,8 @@ function OnDeath()
 
     ResurrectPlayer()
     playDeadAnimation()
-    SetEntityInvincible(player, true)
-    SetEntityHealth(player, GetEntityMaxHealth(player))
+    SetEntityInvincible(cache.ped, true)
+    SetEntityHealth(cache.ped, GetEntityMaxHealth(cache.ped))
 end
 
 exports('killPlayer', OnDeath)
@@ -98,7 +97,8 @@ local function logDeath(victim, attacker, weapon)
     local killerName = GetPlayerName(killerId) .. ' ' .. '(' .. GetPlayerServerId(killerId) .. ')' or Lang:t('info.self_death')
     local weaponLabel = WEAPONS[weapon].label or 'Unknown'
     local weaponName = WEAPONS[weapon].name or 'Unknown'
-    TriggerServerEvent('qb-log:server:CreateLog', 'death', Lang:t('logs.death_log_title', { playername = playerName, playerid = GetPlayerServerId(playerId) }), 'red', Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName }))
+    local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
+    lib.callback.await('qbx_medical:server:logDeath', false, message)
 end
 
 ---when player is killed by another player, set last stand mode, or if already in last stand mode, set player to dead mode.

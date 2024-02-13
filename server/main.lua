@@ -120,7 +120,7 @@ lib.callback.register('qbx_medical:server:setArmor', function(source, amount)
 end)
 
 local function resetHungerAndThirst(player)
-	if type(player == 'number') then
+	if type(player) == 'number' then
 		player = exports.qbx_core:GetPlayer(player)
 	end
 

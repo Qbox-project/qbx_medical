@@ -1,6 +1,8 @@
 local isEscorted = false
 local vehicleDict = 'veh@low@front_ps@idle_duck'
 local vehicleAnim = 'sit'
+local LastStandCuffedDict = 'dead'
+local LastStandCuffedAnim = 'dead_f'
 
 function PlayUnescortedLastStandAnimation()
     if cache.vehicle then
@@ -9,9 +11,11 @@ function PlayUnescortedLastStandAnimation()
             TaskPlayAnim(cache.ped, vehicleDict, vehicleAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end
     else
-        lib.requestAnimDict(LastStandDict, 5000)
-        if not IsEntityPlayingAnim(cache.ped, LastStandDict, LastStandAnim, 3) then
-            TaskPlayAnim(cache.ped, LastStandDict, LastStandAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
+        local dict = not QBX.PlayerData.metadata.ishandcuffed and LastStandDict or LastStandCuffedDict
+        local anim = not QBX.PlayerData.metadata.ishandcuffed and LastStandAnim or LastStandCuffedAnim
+        lib.requestAnimDict(dict, 5000)
+        if not IsEntityPlayingAnim(cache.ped, dict, anim, 3) then
+            TaskPlayAnim(cache.ped, dict, anim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end
     end
 end
@@ -24,9 +28,11 @@ local function playEscortedLastStandAnimation(ped)
             StopAnimTask(ped, vehicleDict, vehicleAnim, 3)
         end
     else
-        lib.requestAnimDict(LastStandDict, 5000)
-        if IsEntityPlayingAnim(ped, LastStandDict, LastStandAnim, 3) then
-            StopAnimTask(ped, LastStandDict, LastStandAnim, 3)
+        local dict = not QBX.PlayerData.metadata.ishandcuffed and LastStandDict or LastStandCuffedDict
+        local anim = not QBX.PlayerData.metadata.ishandcuffed and LastStandAnim or LastStandCuffedAnim
+        lib.requestAnimDict(dict, 5000)
+        if IsEntityPlayingAnim(ped, dict, anim, 3) then
+            StopAnimTask(ped, dict, anim, 3)
         end
     end
 end

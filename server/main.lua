@@ -185,6 +185,6 @@ lib.callback.register('qbx_medical:server:respawn', function(source)
 	return true
 end)
 
-lib.callback.register('qbx_medical:server:logDeath', function(_, event, message)
+lib.callback.register('qbx_medical:server:log', function(_, event, message)
 	logger.log({source = 'qbx_medical', event = event, message = message})
 end)

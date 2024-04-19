@@ -61,6 +61,7 @@ end
 ---put player in last stand mode and notify EMS.
 function StartLastStand()
     Wait(1000)
+    TriggerEvent('ox_inventory:disarm', cache.playerId, true)
     WaitForPlayerToStopMoving()
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
     LaststandTime = config.laststandReviveInterval

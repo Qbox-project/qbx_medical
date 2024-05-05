@@ -2,27 +2,27 @@ return {
     woundLevels = {
         {
             movementRate = 0.98,
-            label = Lang:t('states.irritated'),
+            label = locale('states.irritated'),
         },
         {
             movementRate = 0.96,
-            label = Lang:t('states.quite_painful'),
+            label = locale('states.quite_painful'),
         },
         {
             movementRate = 0.94,
-            label = Lang:t('states.painful'),
+            label = locale('states.painful'),
         },
         {
             movementRate = 0.92,
-            label = Lang:t('states.really_painful'),
+            label = locale('states.really_painful'),
         },
     },
 
     bleedingStates = { -- Translate bleeding alerts
-        Lang:t('states.little_bleed'),
-        Lang:t('states.bleed'),
-        Lang:t('states.lot_bleed'),
-        Lang:t('states.big_bleed'),
+        locale('states.little_bleed'),
+        locale('states.bleed'),
+        locale('states.lot_bleed'),
+        locale('states.big_bleed'),
     },
 
     ---@alias BodyPartKey string
@@ -33,21 +33,21 @@ return {
 
     ---@type table<BodyPartKey, BodyPart>
     bodyParts = {
-        HEAD = { label = Lang:t('body.head'), causeLimp = false },
-        NECK = { label = Lang:t('body.neck'), causeLimp = false },
-        SPINE = { label = Lang:t('body.spine'), causeLimp = true },
-        UPPER_BODY = { label = Lang:t('body.upper_body'), causeLimp = false },
-        LOWER_BODY = { label = Lang:t('body.lower_body'), causeLimp = true },
-        LARM = { label = Lang:t('body.left_arm'), causeLimp = false, },
-        LHAND = { label = Lang:t('body.left_hand'), causeLimp = false, },
-        LFINGER = { label = Lang:t('body.left_fingers'), causeLimp = false, },
-        LLEG = { label = Lang:t('body.left_leg'), causeLimp = true, },
-        LFOOT = { label = Lang:t('body.left_foot'), causeLimp = true, },
-        RARM = { label = Lang:t('body.right_arm'), causeLimp = false, },
-        RHAND = { label = Lang:t('body.right_hand'), causeLimp = false, },
-        RFINGER = { label = Lang:t('body.right_fingers'), causeLimp = false, },
-        RLEG = { label = Lang:t('body.right_leg'), causeLimp = true, },
-        RFOOT = { label = Lang:t('body.right_foot'), causeLimp = true, },
+        HEAD = { label = locale('body.head'), causeLimp = false },
+        NECK = { label = locale('body.neck'), causeLimp = false },
+        SPINE = { label = locale('body.spine'), causeLimp = true },
+        UPPER_BODY = { label = locale('body.upper_body'), causeLimp = false },
+        LOWER_BODY = { label = locale('body.lower_body'), causeLimp = true },
+        LARM = { label = locale('body.left_arm'), causeLimp = false, },
+        LHAND = { label = locale('body.left_hand'), causeLimp = false, },
+        LFINGER = { label = locale('body.left_fingers'), causeLimp = false, },
+        LLEG = { label = locale('body.left_leg'), causeLimp = true, },
+        LFOOT = { label = locale('body.left_foot'), causeLimp = true, },
+        RARM = { label = locale('body.right_arm'), causeLimp = false, },
+        RHAND = { label = locale('body.right_hand'), causeLimp = false, },
+        RFINGER = { label = locale('body.right_fingers'), causeLimp = false, },
+        RLEG = { label = locale('body.right_leg'), causeLimp = true, },
+        RFOOT = { label = locale('body.right_foot'), causeLimp = true, },
     },
 
     ---@enum DeathState

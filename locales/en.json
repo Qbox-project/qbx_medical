@@ -1,0 +1,53 @@
+{
+    "error": {
+        "bled_out": "You bled out..."
+    },
+    "success": {
+        "wounds_healed": "Your wounds have been healed!"
+    },
+    "info": {
+        "self_death": "Either self or an NPC",
+        "wep_unknown": "Unknown",
+        "status": "Check Status",
+        "healthy": "You are now in perfect health!",
+        "pain_message": "Your %{limb} is %{severity}",
+        "many_places": "You are in pain in multiple places...",
+        "bleed_alert": "You are %{bleedstate}",
+        "revive_player_a": "Revive someone or yourself (Admin Only)",
+        "player_id": "Player ID (Can be empty)",
+        "pain_level": "Set pain level of a player or yourself (Admin Only)",
+        "kill": "Kill a player or yourself (Admin Only)",
+        "heal_player_a": "Heal a player or yourself (Admin Only)"
+    },
+    "states": {
+        "irritated": "irritated",
+        "quite_painful": "quite painful",
+        "painful": "painful",
+        "really_painful": "really painful",
+        "little_bleed": "bleeding a little...",
+        "bleed": "bleeding...",
+        "lot_bleed": "bleeding a lot...",
+        "big_bleed": "bleeding heavily..."
+    },
+    "body": {
+        "head": "Head",
+        "neck": "Neck",
+        "spine": "Spine",
+        "upper_body": "Upper Body",
+        "lower_body": "Lower Body",
+        "left_arm": "Left Arm",
+        "left_hand": "Left Hand",
+        "left_fingers": "Left Fingers",
+        "left_leg": "Left Leg",
+        "left_foot": "Left Foot",
+        "right_arm": "Right Arm",
+        "right_hand": "Right Hand",
+        "right_fingers": "Right Fingers",
+        "right_leg": "Right Leg",
+        "right_foot": "Right Foot"
+    },
+    "logs": {
+        "death_log_title": "%{playername} (%{playerid}) has died",
+        "death_log_message": "%{killername} killed %{playername} with **%{weaponlabel}** (%{weaponname})"
+    }
+}

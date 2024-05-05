@@ -38,6 +38,8 @@ dependencies {
     'ox_lib',
     'qbx_core',
 }
-
+ox_libs {
+    'locale'
+}
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'

@@ -1,3 +1,4 @@
+lib.locale()
 return {
     woundLevels = {
         {

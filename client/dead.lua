@@ -1,5 +1,5 @@
 local sharedConfig = require 'config.shared'
-local WEAPONS = exports.qbx_core:GetWeapons()
+local qbShared = require '@qbx_core.shared.main'
 local allowRespawn = false
 
 local function playDeadAnimation()
@@ -95,8 +95,8 @@ local function logDeath(victim, attacker, weapon)
     local playerName = (' %s (%d)'):format(GetPlayerName(playerId), GetPlayerServerId(playerId)) or Lang:t('info.self_death')
     local killerId = NetworkGetPlayerIndexFromPed(attacker)
     local killerName = ('%s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or Lang:t('info.self_death')
-    local weaponLabel = WEAPONS[weapon].label or 'Unknown'
-    local weaponName = WEAPONS[weapon].name or 'Unknown'
+    local weaponLabel = qbShared.WeaponHashes[weapon].label or 'Unknown'
+    local weaponName = qbShared.WeaponHashes[weapon].name or 'Unknown'
     local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
 
     lib.callback.await('qbx_medical:server:log', false, 'logDeath', message)

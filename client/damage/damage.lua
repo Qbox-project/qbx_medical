@@ -2,7 +2,7 @@ local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local playerArmor = nil
 local damageEffectsEnabled = true
-local WEAPONS = exports.qbx_core:GetWeapons()
+local damageReasons = require 'config.damage_reasons'
 
 ---Increases severity of an injury
 ---@param bodyPartKey BodyPartKey
@@ -208,7 +208,7 @@ local function checkForDamage()
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
                 multiline = false,
-                args = { Lang:t('info.status'), WEAPONS[weaponHash].damagereason }
+                args = { Lang:t('info.status'), damageReasons[weaponHash] }
             })
             WeaponsThatDamagedPlayer[weaponHash] = true
         end

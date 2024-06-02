@@ -1,6 +1,6 @@
 local config = require 'config.client'
 local sharedConfig = require 'config.shared'
-local WEAPONS = exports.qbx_core:GetWeapons()
+local qbShared = require '@qbx_core.shared.main'
 
 ---blocks until ped is no longer moving
 function WaitForPlayerToStopMoving()
@@ -36,7 +36,7 @@ local function logPlayerKiller()
 
     local killerId = NetworkGetPlayerIndexFromPed(killer)
     local killerName = killerId ~= -1 and (' %s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or Lang:t('info.self_death')
-    local weaponItem = WEAPONS[killerWeapon]
+    local weaponItem = qbShared.WeaponHashes[killerWeapon]
     local weaponLabel = Lang:t('info.wep_unknown') or (weaponItem and weaponItem.label)
     local weaponName = Lang:t('info.wep_unknown') or (weaponItem and weaponItem.name)
     local message = Lang:t('logs.death_log_message', { killername = killerName, playername = GetPlayerName(cache.playerId), weaponlabel = weaponLabel, weaponname = weaponName })

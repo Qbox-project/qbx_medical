@@ -45,7 +45,7 @@ local function playLastStandAnimation()
     end
 end
 
-exports('playLastStandAnimationDeprecated', playLastStandAnimation)
+exports('PlayLastStandAnimationDeprecated', playLastStandAnimation)
 
 ---@param bool boolean
 ---TODO: this event name should be changed within qb-policejob to be generic

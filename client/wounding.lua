@@ -43,7 +43,7 @@ local function makePlayerBlackout()
     DoScreenFadeIn(1000)
 end
 
-exports('makePlayerBlackout', makePlayerBlackout)
+exports('MakePlayerBlackout', makePlayerBlackout)
 
 local function makePlayerFadeOut()
     DoScreenFadeOut(500)
@@ -53,7 +53,7 @@ local function makePlayerFadeOut()
     DoScreenFadeIn(500)
 end
 
-exports('makePlayerFadeOut', makePlayerFadeOut)
+exports('MakePlayerFadeOut', makePlayerFadeOut)
 
 local function applyBleedEffects()
     if not QBX.PlayerData then return end
@@ -88,7 +88,7 @@ local function removeBleed(level)
     SendBleedAlert()
 end
 
-exports('removeBleed', removeBleed)
+exports('RemoveBleed', removeBleed)
 
 local function handleBleeding()
     if DeathState ~= sharedConfig.deathState.ALIVE or BleedLevel <= 0 then return end

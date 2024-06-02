@@ -165,7 +165,7 @@ local function applyDamage(ped, damageDone, isArmorDamaged)
     if damageDone >= config.healthDamage then
         local isBodyHitOrWeakWeapon = checkBodyHitOrWeakWeapon(isArmorDamaged, bodypart, weaponClass)
         if isBodyHitOrWeakWeapon and isArmorDamaged then
-            lib.callback('qbx_medical:server:setArmor', false, false, GetPedArmour(ped))
+            lib.callback.await('qbx_medical:server:setArmor', false, GetPedArmour(ped))
         elseif not isBodyHitOrWeakWeapon and isDamagingEvent(damageDone, weaponClass) then
             checkDamage(ped, bone, weaponHash, weaponClass, damageDone)
         end

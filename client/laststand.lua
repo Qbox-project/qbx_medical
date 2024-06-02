@@ -5,7 +5,9 @@ local WEAPONS = exports.qbx_core:GetWeapons()
 ---blocks until ped is no longer moving
 function WaitForPlayerToStopMoving()
     local timeOut = 10000
-    while GetEntitySpeed(cache.ped) > 1.0 or IsPedRagdoll(cache.ped) and timeOut > 1 do timeOut -= 10 Wait(10) end
+    while GetEntitySpeed(cache.ped) > 0.1 and IsPedRagdoll(cache.ped) and timeOut > 1 do
+        timeOut -= 10 Wait(10)
+    end
 end
 
 --- low level GTA resurrection
@@ -52,22 +54,19 @@ local function countdownLastStand()
         exports.qbx_core:Notify(Lang:t('error.bled_out'), 'error')
         EndLastStand()
         logPlayerKiller()
-        DeathTime = 0
+        DeathTime = config.deathTime
         OnDeath()
-        AllowRespawn()
     end
 end
 
 ---put player in last stand mode and notify EMS.
 function StartLastStand()
-    Wait(1000)
     TriggerEvent('ox_inventory:disarm', cache.playerId, true)
     WaitForPlayerToStopMoving()
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
     LaststandTime = config.laststandReviveInterval
     ResurrectPlayer()
     SetEntityHealth(cache.ped, 150)
-    PlayUnescortedLastStandAnimation()
     SetDeathState(sharedConfig.deathState.LAST_STAND)
     TriggerEvent('qbx_medical:client:onPlayerLaststand')
     TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
@@ -81,7 +80,10 @@ function StartLastStand()
     CreateThread(function()
         while DeathState == sharedConfig.deathState.LAST_STAND do
             DisableControls()
+            PlayLastStandAnimation()
             Wait(0)
         end
     end)
 end
+
+exports('StartLastStand', StartLastStand)

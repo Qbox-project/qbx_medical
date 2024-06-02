@@ -55,23 +55,23 @@ RespawnHoldTime = 5
 LastStandDict = 'combat@damage@writhe'
 LastStandAnim = 'writhe_loop'
 
-exports('isDead', function()
+exports('IsDead', function()
     return DeathState == sharedConfig.deathState.DEAD
 end)
 
-exports('getLaststand', function()
+exports('GetLaststand', function()
     return DeathState == sharedConfig.deathState.LAST_STAND
 end)
 
-exports('getDeathTime', function()
+exports('GetDeathTime', function()
     return DeathTime
 end)
 
-exports('getLaststandTime', function()
+exports('GetLaststandTime', function()
     return LaststandTime
 end)
 
-exports('getRespawnHoldTimeDeprecated', function()
+exports('GetRespawnHoldTimeDeprecated', function()
     return RespawnHoldTime
 end)
 
@@ -119,7 +119,7 @@ function MakePedLimp()
 end
 
 --- TODO: this export should not check any conditions, but force the ped to limp instead.
-exports('makePedLimp', MakePedLimp)
+exports('MakePedLimp', MakePedLimp)
 
 local function resetMinorInjuries()
     for bodyPartKey, injury in pairs(Injuries) do
@@ -167,7 +167,7 @@ function SendBleedAlert()
     exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = sharedConfig.bleedingStates[BleedLevel]}), 'inform')
 end
 
-exports('sendBleedAlert', SendBleedAlert)
+exports('SendBleedAlert', SendBleedAlert)
 
 ---adds a bleed to the player and alerts them. Total bleed level maxes at 4.
 ---@param level 1|2|3|4 speed of the bleed

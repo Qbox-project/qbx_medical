@@ -50,7 +50,7 @@ exports('Revive', revivePlayer)
 ---removes all ailments, sets to full health, and fills up hunger and thirst.
 ---@param src Source
 local function heal(src)
-	lib.callback('qbx_medical:client:heal', src, false, 'full')
+	lib.callback.await('qbx_medical:client:heal', src, 'full')
 end
 
 exports('Heal', heal)
@@ -58,7 +58,7 @@ exports('Heal', heal)
 ---Removes any injuries with severity 2 or lower. Stops bleeding if bleed level is less than 3.
 ---@param src Source
 local function healPartially(src)
-	lib.callback('qbx_medical:client:heal', src, false, 'partial')
+	lib.callback.await('qbx_medical:client:heal', src, 'partial')
 end
 
 exports('HealPartially', healPartially)
@@ -162,7 +162,7 @@ lib.addCommand('kill', {
 		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
 		return
 	end
-	lib.callback('qbx_medical:client:killPlayer', args.id)
+	lib.callback.await('qbx_medical:client:killPlayer', args.id)
 end)
 
 lib.addCommand('aheal', {

@@ -41,6 +41,7 @@ end)
 
 function SetDeathState(deathState)
     playerState:set(DEATH_STATE_STATE_BAG, deathState, true)
+    DeathState = deathState
 end
 
 BleedTickTimer, AdvanceBleedTimer = 0, 0
@@ -59,7 +60,7 @@ exports('IsDead', function()
     return DeathState == sharedConfig.deathState.DEAD
 end)
 
-exports('GetLaststand', function()
+exports('IsLaststand', function()
     return DeathState == sharedConfig.deathState.LAST_STAND
 end)
 
@@ -69,6 +70,14 @@ end)
 
 exports('GetLaststandTime', function()
     return LaststandTime
+end)
+
+exports('IncrementDeathTime', function(seconds)
+    DeathTime += seconds
+end)
+
+exports('IncrementLaststandTime', function(seconds)
+    LaststandTime += seconds
 end)
 
 exports('GetRespawnHoldTimeDeprecated', function()
@@ -158,7 +167,7 @@ local function resetAllInjuries()
     SendBleedAlert()
     MakePedLimp()
     doLimbAlert()
-    lib.callback('qbx_medical:server:resetHungerAndThirst')
+    lib.callback.await('qbx_medical:server:resetHungerAndThirst')
 end
 
 ---notify the player of bleeding to their body.
@@ -218,4 +227,5 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     ResetPedMovementClipset(cache.ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
     exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
+    LocalPlayer.state.invBusy = false
 end)

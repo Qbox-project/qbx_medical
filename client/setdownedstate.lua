@@ -4,7 +4,7 @@ local vehicleAnim = 'sit'
 local LastStandCuffedDict = 'dead'
 local LastStandCuffedAnim = 'dead_f'
 
-function PlayUnescortedLastStandAnimation()
+local function playUnescortedLastStandAnimation()
     if cache.vehicle then
         lib.requestAnimDict(vehicleDict, 5000)
         if not IsEntityPlayingAnim(cache.ped, vehicleDict, vehicleAnim, 3) then
@@ -37,15 +37,13 @@ local function playEscortedLastStandAnimation(ped)
     end
 end
 
-local function playLastStandAnimation()
+function PlayLastStandAnimation()
     if isEscorted then
         playEscortedLastStandAnimation(cache.ped)
     else
-        PlayUnescortedLastStandAnimation()
+        playUnescortedLastStandAnimation()
     end
 end
-
-exports('PlayLastStandAnimationDeprecated', playLastStandAnimation)
 
 ---@param bool boolean
 ---TODO: this event name should be changed within qb-policejob to be generic

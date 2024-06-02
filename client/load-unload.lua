@@ -16,9 +16,8 @@ end
 ---@param metadata any
 local function initDeathAndLastStand(metadata)
     if metadata.isdead then
-        DeathTime = config.laststandReviveInterval
+        DeathTime = config.deathTime
         OnDeath()
-        AllowRespawn()
     elseif metadata.inlaststand then
         StartLastStand()
     end

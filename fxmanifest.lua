@@ -5,11 +5,10 @@ description 'qbx_medical'
 repository 'https://github.com/Qbox-project/qbx_medical'
 version '1.0.0'
 
+ox_lib 'locale'
+
 shared_scripts {
     '@ox_lib/init.lua',
-    '@qbx_core/shared/locale.lua',
-    'locales/en.lua',
-    'locales/*.lua',
     'shared/**/*.lua',
 }
 
@@ -30,6 +29,7 @@ server_scripts {
 }
 
 files {
+    'locales/*.json',
     'config/client.lua',
     'config/shared.lua',
 }

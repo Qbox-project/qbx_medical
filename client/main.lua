@@ -107,14 +107,14 @@ local function doLimbAlert()
         local i = 0
         for bodyPartKey, injury in pairs(Injuries) do
             local bodyPart = sharedConfig.bodyParts[bodyPartKey]
-            limbDamageMsg = limbDamageMsg .. Lang:t('info.pain_message', { limb = bodyPart.label, severity = sharedConfig.woundLevels[injury.severity].label})
+            limbDamageMsg = limbDamageMsg .. locale('info.pain_message', bodyPart.label, sharedConfig.woundLevels[injury.severity].label)
             i += 1
             if i < NumInjuries then
                 limbDamageMsg = limbDamageMsg .. ' | '
             end
         end
     else
-        limbDamageMsg = Lang:t('info.many_places')
+        limbDamageMsg = locale('info.many_places')
     end
     exports.qbx_core:Notify(limbDamageMsg, 'error')
 end
@@ -173,7 +173,7 @@ end
 ---notify the player of bleeding to their body.
 function SendBleedAlert()
     if DeathState == sharedConfig.deathState.DEAD or BleedLevel == 0 then return end
-    exports.qbx_core:Notify(Lang:t('info.bleed_alert', {bleedstate = sharedConfig.bleedingStates[BleedLevel]}), 'inform')
+    exports.qbx_core:Notify(locale('info.bleed_alert', sharedConfig.bleedingStates[BleedLevel]), 'inform')
 end
 
 exports('SendBleedAlert', SendBleedAlert)
@@ -199,7 +199,7 @@ lib.callback.register('qbx_medical:client:heal', function(type)
     else
         resetMinorInjuries()
     end
-    exports.qbx_core:Notify(Lang:t('success.wounds_healed'), 'success')
+    exports.qbx_core:Notify(locale('success.wounds_healed'), 'success')
 end)
 
 CreateThread(function()
@@ -226,6 +226,6 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     resetAllInjuries()
     ResetPedMovementClipset(cache.ped, 0.0)
     TriggerServerEvent('hud:server:RelieveStress', 100)
-    exports.qbx_core:Notify(Lang:t('info.healthy'), 'inform')
+    exports.qbx_core:Notify(locale('info.healthy'), 'inform')
     LocalPlayer.state.invBusy = false
 end)

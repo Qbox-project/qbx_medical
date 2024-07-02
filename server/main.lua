@@ -134,48 +134,48 @@ end
 lib.callback.register('qbx_medical:server:resetHungerAndThirst', resetHungerAndThirst)
 
 lib.addCommand('revive', {
-    help = Lang:t('info.revive_player_a'),
+    help = locale('info.revive_player_a'),
 	restricted = 'group.admin',
 	params = {
-        { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
+        { name = 'id', help = locale('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
+		exports.qbx_core:Notify(source, locale('error.not_online'), 'error')
 		return
 	end
 	revivePlayer(args.id)
 end)
 
 lib.addCommand('kill', {
-    help =  Lang:t('info.kill'),
+    help =  locale('info.kill'),
 	restricted = 'group.admin',
 	params = {
-        { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
+        { name = 'id', help = locale('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
+		exports.qbx_core:Notify(source, locale('error.not_online'), 'error')
 		return
 	end
 	lib.callback.await('qbx_medical:client:killPlayer', args.id)
 end)
 
 lib.addCommand('aheal', {
-    help =  Lang:t('info.heal_player_a'),
+    help =  locale('info.heal_player_a'),
 	restricted = 'group.admin',
 	params = {
-        { name = 'id', help = Lang:t('info.player_id'), type = 'playerId', optional = true },
+        { name = 'id', help = locale('info.player_id'), type = 'playerId', optional = true },
     }
 }, function(source, args)
 	if not args.id then args.id = source end
 	local player = exports.qbx_core:GetPlayer(tonumber(args.id))
 	if not player then
-		exports.qbx_core:Notify(source, Lang:t('error.not_online'), 'error')
+		exports.qbx_core:Notify(source, locale('error.not_online'), 'error')
 		return
 	end
 	heal(args.id)

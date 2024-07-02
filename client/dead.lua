@@ -99,12 +99,12 @@ end)
 ---@param weapon string weapon hash
 local function logDeath(victim, attacker, weapon)
     local playerId = NetworkGetPlayerIndexFromPed(victim)
-    local playerName = (' %s (%d)'):format(GetPlayerName(playerId), GetPlayerServerId(playerId)) or Lang:t('info.self_death')
+    local playerName = (' %s (%d)'):format(GetPlayerName(playerId), GetPlayerServerId(playerId)) or locale('info.self_death')
     local killerId = NetworkGetPlayerIndexFromPed(attacker)
-    local killerName = ('%s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or Lang:t('info.self_death')
+    local killerName = ('%s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or locale('info.self_death')
     local weaponLabel = WEAPONS[weapon]?.label or 'Unknown'
     local weaponName = WEAPONS[weapon]?.name or 'Unknown'
-    local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
+    local message = locale('logs.death_log_message', killerName, playerName, weaponLabel, weaponName)
 
     lib.callback.await('qbx_medical:server:log', false, 'logDeath', message)
 end

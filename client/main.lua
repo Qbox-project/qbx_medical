@@ -42,12 +42,6 @@ end)
 function SetDeathState(deathState)
     playerState:set(DEATH_STATE_STATE_BAG, deathState, true)
     DeathState = deathState
-    
-    local playerData = QBX.PlayerData
-    playerData.metadata['isdead'] = (deathState == sharedConfig.deathState.DEAD)
-    playerData.metadata['inlaststand'] = (deathState == sharedConfig.deathState.LAST_STAND)
-    TriggerServerEvent('qb-core:server:SetMetaData', 'isdead', playerData.metadata['isdead'])
-    TriggerServerEvent('qb-core:server:SetMetaData', 'inlaststand', playerData.metadata['inlaststand'])
 end
 
 BleedTickTimer, AdvanceBleedTimer = 0, 0

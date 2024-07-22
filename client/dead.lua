@@ -11,12 +11,10 @@ local function playDeadAnimation()
 
     if cache.vehicle then
         if not IsEntityPlayingAnim(cache.ped, deadVehAnimDict, deadVehAnim, 3) then
-            lib.requestAnimDict(deadVehAnimDict, 5000)
-            TaskPlayAnim(cache.ped, deadVehAnimDict, deadVehAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
+            lib.playAnim(cache.ped, deadVehAnimDict, deadVehAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end
     elseif not IsEntityPlayingAnim(cache.ped, deadAnimDict, deadAnim, 3) then
-        lib.requestAnimDict(deadAnimDict, 5000)
-        TaskPlayAnim(cache.ped, deadAnimDict, deadAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
+        lib.playAnim(cache.ped, deadAnimDict, deadAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
     end
 end
 
@@ -101,12 +99,12 @@ end)
 ---@param weapon string weapon hash
 local function logDeath(victim, attacker, weapon)
     local playerId = NetworkGetPlayerIndexFromPed(victim)
-    local playerName = (' %s (%d)'):format(GetPlayerName(playerId), GetPlayerServerId(playerId)) or Lang:t('info.self_death')
+    local playerName = (' %s (%d)'):format(GetPlayerName(playerId), GetPlayerServerId(playerId)) or locale('info.self_death')
     local killerId = NetworkGetPlayerIndexFromPed(attacker)
-    local killerName = ('%s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or Lang:t('info.self_death')
+    local killerName = ('%s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or locale('info.self_death')
     local weaponLabel = WEAPONS[weapon]?.label or 'Unknown'
     local weaponName = WEAPONS[weapon]?.name or 'Unknown'
-    local message = Lang:t('logs.death_log_message', { killername = killerName, playername = playerName, weaponlabel = weaponLabel, weaponname = weaponName })
+    local message = locale('logs.death_log_message', killerName, playerName, weaponLabel, weaponName)
 
     lib.callback.await('qbx_medical:server:log', false, 'logDeath', message)
 end

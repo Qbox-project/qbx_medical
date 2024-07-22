@@ -37,11 +37,11 @@ local function logPlayerKiller()
     end
 
     local killerId = NetworkGetPlayerIndexFromPed(killer)
-    local killerName = killerId ~= -1 and (' %s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or Lang:t('info.self_death')
+    local killerName = killerId ~= -1 and (' %s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or locale('info.self_death')
     local weaponItem = WEAPONS[killerWeapon]
-    local weaponLabel = Lang:t('info.wep_unknown') or (weaponItem and weaponItem.label)
-    local weaponName = Lang:t('info.wep_unknown') or (weaponItem and weaponItem.name)
-    local message = Lang:t('logs.death_log_message', { killername = killerName, playername = GetPlayerName(cache.playerId), weaponlabel = weaponLabel, weaponname = weaponName })
+    local weaponLabel = locale('info.wep_unknown') or (weaponItem and weaponItem.label)
+    local weaponName = locale('info.wep_unknown') or (weaponItem and weaponItem.name)
+    local message = locale('logs.death_log_message', killerName, GetPlayerName(cache.playerId), weaponLabel, weaponName)
 
     lib.callback.await('qbx_medical:server:log', false, 'playerKiller', message)
 end
@@ -51,7 +51,7 @@ local function countdownLastStand()
     if LaststandTime - 1 > 0 then
         LaststandTime -= 1
     else
-        exports.qbx_core:Notify(Lang:t('error.bled_out'), 'error')
+        exports.qbx_core:Notify(locale('error.bled_out'), 'error')
         EndLastStand()
         logPlayerKiller()
         DeathTime = config.deathTime

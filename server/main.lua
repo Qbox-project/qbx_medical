@@ -39,10 +39,7 @@ end)
 
 ---@param player table|number
 local function revivePlayer(player)
-	if type(player) == 'number' then
-		player = exports.qbx_core:GetPlayer(player)
-	end
-	TriggerClientEvent('qbx_medical:client:playerRevived', player.PlayerData.source)
+    TriggerClientEvent('qbx_medical:client:playerRevived', player --[[@as number]])
 end
 
 exports('Revive', revivePlayer)
@@ -50,7 +47,7 @@ exports('Revive', revivePlayer)
 ---removes all ailments, sets to full health, and fills up hunger and thirst.
 ---@param src Source
 local function heal(src)
-	lib.callback.await('qbx_medical:client:heal', src, 'full')
+    TriggerClientEvent('qbx_medical:client:heal', src, 'partial')
 end
 
 exports('Heal', heal)
@@ -58,7 +55,7 @@ exports('Heal', heal)
 ---Removes any injuries with severity 2 or lower. Stops bleeding if bleed level is less than 3.
 ---@param src Source
 local function healPartially(src)
-	lib.callback.await('qbx_medical:client:heal', src, 'partial')
+    TriggerClientEvent('qbx_medical:client:heal', src, 'partial')
 end
 
 exports('HealPartially', healPartially)

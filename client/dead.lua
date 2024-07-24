@@ -2,10 +2,6 @@ local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local WEAPONS = exports.qbx_core:GetWeapons()
 local allowRespawn = true
-local killerData = {
-    attacker = nil,
-    weapon = nil
-}
 
 local function playDeadAnimation()
     local deadAnimDict = 'dead'
@@ -97,10 +93,6 @@ exports('DisableRespawn', function()
     allowRespawn = false
 end)
 
-exports('GetKillerData', function()
-    return killerData
-end)
-
 ---log the death of a player along with the attacker and the weapon used.
 ---@param victim number ped
 ---@param attacker number ped
@@ -133,13 +125,7 @@ AddEventHandler('gameEventTriggered', function(event, data)
         DeathTime = config.deathTime
         OnDeath()
     end
-
-    if victim == PlayerPedId() then
-        killerData = {
-            attacker = attacker,
-            weapon = weapon
-        }
-    end
+    TriggerEvent('qbx_medical:client:attackerData', attacker, weapon)
 end)
 
 function DisableControls()

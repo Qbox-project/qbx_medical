@@ -60,7 +60,7 @@ local function countdownLastStand()
 end
 
 ---put player in last stand mode and notify EMS.
-function StartLastStand()
+function StartLastStand(attacker, weapon)
     TriggerEvent('ox_inventory:disarm', cache.playerId, true)
     WaitForPlayerToStopMoving()
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
@@ -68,8 +68,8 @@ function StartLastStand()
     ResurrectPlayer()
     SetEntityHealth(cache.ped, 150)
     SetDeathState(sharedConfig.deathState.LAST_STAND)
-    TriggerEvent('qbx_medical:client:onPlayerLaststand')
-    TriggerServerEvent('qbx_medical:server:onPlayerLaststand')
+    TriggerEvent('qbx_medical:client:onPlayerLaststand', attacker, weapon)
+    TriggerServerEvent('qbx_medical:server:onPlayerLaststand', attacker, weapon)
     CreateThread(function()
         while DeathState == sharedConfig.deathState.LAST_STAND do
             countdownLastStand()

@@ -21,10 +21,10 @@ end
 exports('PlayDeadAnimation', playDeadAnimation)
 
 ---put player in death animation and make invincible
-function OnDeath()
+function OnDeath(attacker, weapon)
     SetDeathState(sharedConfig.deathState.DEAD)
-    TriggerEvent('qbx_medical:client:onPlayerDied')
-    TriggerServerEvent('qbx_medical:server:onPlayerDied')
+    TriggerEvent('qbx_medical:client:onPlayerDied', attacker, weapon)
+    TriggerServerEvent('qbx_medical:server:onPlayerDied', attacker, weapon)
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
 
     WaitForPlayerToStopMoving()
@@ -118,14 +118,13 @@ AddEventHandler('gameEventTriggered', function(event, data)
     if not IsEntityAPed(victim) or not victimDied or NetworkGetPlayerIndexFromPed(victim) ~= cache.playerId or not IsEntityDead(cache.ped) then return end
     if DeathState == sharedConfig.deathState.ALIVE then
         Wait(1000)
-        StartLastStand()
+        StartLastStand(attacker, weapon)
     elseif DeathState == sharedConfig.deathState.LAST_STAND then
         EndLastStand()
         logDeath(victim, attacker, weapon)
         DeathTime = config.deathTime
-        OnDeath()
+        OnDeath(attacker, weapon)
     end
-    TriggerEvent('qbx_medical:client:attackerData', attacker, weapon)
 end)
 
 function DisableControls()

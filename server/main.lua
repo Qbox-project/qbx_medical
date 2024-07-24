@@ -47,7 +47,7 @@ exports('Revive', revivePlayer)
 ---removes all ailments, sets to full health, and fills up hunger and thirst.
 ---@param src Source
 local function heal(src)
-    TriggerClientEvent('qbx_medical:client:heal', src, 'partial')
+    TriggerClientEvent('qbx_medical:client:heal', src, 'full')
 end
 
 exports('Heal', heal)

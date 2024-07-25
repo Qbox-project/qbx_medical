@@ -193,12 +193,13 @@ end
 
 ---heals player wounds.
 ---@param type? 'full'|any heals all wounds if full otherwise heals only major wounds.
-lib.callback.register('qbx_medical:client:heal', function(type)
+RegisterNetEvent('qbx_medical:client:heal', function(type)
     if type == 'full' then
         resetAllInjuries()
     else
         resetMinorInjuries()
     end
+
     exports.qbx_core:Notify(locale('success.wounds_healed'), 'success')
 end)
 

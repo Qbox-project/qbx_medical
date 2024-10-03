@@ -1,0 +1,53 @@
+{
+    "error": {
+        "bled_out": "Você sangrou até morrer..."
+    },
+    "success": {
+        "wounds_healed": "Seus ferimentos foram curados!"
+    },
+    "info": {
+        "self_death": "A si mesmo ou um NPC",
+        "wep_unknown": "Desconhecido",
+        "status": "Verificação de Status",
+        "healthy": "Você está completamente saudável novamente!",
+        "pain_message": "Seu %s está %s",
+        "many_places": "Você sente dor em muitos lugares...",
+        "bleed_alert": "Você está %s",
+        "revive_player_a": "Reviver um Jogador ou Você Mesmo (Somente Admin)",
+        "player_id": "ID do Jogador (pode estar vazio)",
+        "pain_level": "Definir o Nível de Dor Seu ou de um Jogador (Somente Admin)",
+        "kill": "Matar um Jogador ou Você Mesmo (Somente Admin)",
+        "heal_player_a": "Curar um Jogador ou Você Mesmo (Somente Admin)"
+    },
+    "states": {
+        "irritated": "irritado",
+        "quite_painful": "bastante doloroso",
+        "painful": "doloroso",
+        "really_painful": "muito doloroso",
+        "little_bleed": "sangrando um pouco...",
+        "bleed": "sangrando...",
+        "lot_bleed": "sangrando muito...",
+        "big_bleed": "sangrando demais..."
+    },
+    "body": {
+        "head": "Cabeça",
+        "neck": "Pescoço",
+        "spine": "Coluna",
+        "upper_body": "Parte Superior do Corpo",
+        "lower_body": "Parte Inferior do Corpo",
+        "left_arm": "Braço Esquerdo",
+        "left_hand": "Mão Esquerda",
+        "left_fingers": "Dedos da Mão Esquerda",
+        "left_leg": "Perna Esquerda",
+        "left_foot": "Pé Esquerdo",
+        "right_arm": "Braço Direito",
+        "right_hand": "Mão Direita",
+        "right_fingers": "Dedos da Mão Direita",
+        "right_leg": "Perna Direita",
+        "right_foot": "Pé Direito"
+    },
+    "logs": {
+        "death_log_title": "%s (%s) está morto",
+        "death_log_message": "%s matou %s com um **%s** (%s)"
+    }
+}

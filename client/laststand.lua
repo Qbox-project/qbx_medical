@@ -59,8 +59,12 @@ local function countdownLastStand()
     end
 end
 
+local startLastStandLock = false
+
 ---put player in last stand mode and notify EMS.
 function StartLastStand(attacker, weapon)
+    if startLastStandLock then return end
+    startLastStandLock = true
     TriggerEvent('ox_inventory:disarm', cache.playerId, true)
     WaitForPlayerToStopMoving()
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
@@ -83,6 +87,7 @@ function StartLastStand(attacker, weapon)
             PlayLastStandAnimation()
             Wait(0)
         end
+        startLastStandLock = false
     end)
 end
 

@@ -37,6 +37,7 @@ function OnDeath(attacker, weapon)
         end
     end)
     LocalPlayer.state.invBusy = true
+    LocalPlayer.state.invHotkeys = false
 
     ResurrectPlayer()
     playDeadAnimation()
@@ -55,6 +56,7 @@ local function respawn()
     end
     TriggerEvent('police:client:DeEscort')
     LocalPlayer.state.invBusy = false
+    LocalPlayer.state.invHotkeys = true
 end
 
 ---Allow player to respawn

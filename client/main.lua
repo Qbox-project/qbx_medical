@@ -229,4 +229,6 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
     TriggerServerEvent('hud:server:RelieveStress', 100)
     exports.qbx_core:Notify(locale('info.healthy'), 'inform')
     LocalPlayer.state.invBusy = false
+    LocalPlayer.state.invHotkeys = true
+
 end)

@@ -67,6 +67,8 @@ function StartLastStand(attacker, weapon)
     startLastStandLock = true
     TriggerEvent('ox_inventory:disarm', cache.playerId, true)
     WaitForPlayerToStopMoving()
+    LocalPlayer.state.invHotkeys = false
+    LocalPlayer.state.invBusy = true
     TriggerServerEvent('InteractSound_SV:PlayOnSource', 'demo', 0.1)
     LaststandTime = config.laststandReviveInterval
     ResurrectPlayer()

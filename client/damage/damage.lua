@@ -2,8 +2,15 @@ local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local playerArmor = nil
 local damageEffectsEnabled = true
-local WEAPONS = exports.qbx_core:GetWeapons()
+local WEAPONS = {}
 
+-- Initialize weapons after ensuring core is loaded
+CreateThread(function()
+    while not exports.qbx_core do
+        Wait(100)
+    end
+    WEAPONS = exports.qbx_core:GetWeapons()
+end)
 ---Increases severity of an injury
 ---@param bodyPartKey BodyPartKey
 local function upgradeInjury(bodyPartKey)
@@ -204,11 +211,12 @@ local function checkForDamage()
     if isArmorDamaged or isHealthDamaged then
         local damageDone = (Hp - health)
         local weaponHash = applyDamage(cache.ped, damageDone, isArmorDamaged)
-        if weaponHash and not WeaponsThatDamagedPlayer[weaponHash] then
+                -- Add safety check for WEAPONS table and weaponHash ! Its very useful 🙌
+        if weaponHash and WEAPONS and WEAPONS[weaponHash] and not WeaponsThatDamagedPlayer[weaponHash] then
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
                 multiline = false,
-                args = { locale('info.status'), WEAPONS[weaponHash].damagereason }
+                args = { locale('info.status'), WEAPONS[weaponHash].damagereason or 'Unknown weapon damage' }
             })
             WeaponsThatDamagedPlayer[weaponHash] = true
         end

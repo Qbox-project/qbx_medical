@@ -4,7 +4,6 @@ local playerArmor = nil
 local damageEffectsEnabled = true
 local WEAPONS = {}
 
--- Initialize weapons after ensuring core is loaded
 CreateThread(function()
     while not exports.qbx_core do
         Wait(100)

@@ -210,7 +210,6 @@ local function checkForDamage()
     if isArmorDamaged or isHealthDamaged then
         local damageDone = (Hp - health)
         local weaponHash = applyDamage(cache.ped, damageDone, isArmorDamaged)
-                -- Add safety check for WEAPONS table and weaponHash ! Its very useful 🙌
         if weaponHash and WEAPONS and WEAPONS[weaponHash] and not WeaponsThatDamagedPlayer[weaponHash] then
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },

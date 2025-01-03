@@ -1,4 +1,11 @@
 return {
+    ---@alias WoundLevelIndex number
+
+    ---@class WoundLevel
+    ---@field movementRate number
+    ---@field label string
+
+    ---@type table<WoundLevelIndex, WoundLevel>
     woundLevels = {
         {
             movementRate = 0.98,
@@ -18,6 +25,7 @@ return {
         },
     },
 
+    ---@type table<number, string>
     bleedingStates = { -- Translate bleeding alerts
         locale('states.little_bleed'),
         locale('states.bleed'),

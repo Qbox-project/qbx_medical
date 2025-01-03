@@ -57,6 +57,8 @@ return {
     ---@field armored boolean
     ---@field major number
     ---@field minor number
+
+    ---@type table<BodyPartKey, StaggerArea>
     staggerAreas = {
         SPINE = { armored = true, major = 60, minor = 30 },
         UPPER_BODY = { armored = false, major = 60, minor = 30 },

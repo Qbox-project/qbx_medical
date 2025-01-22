@@ -63,6 +63,9 @@ local startLastStandLock = false
 
 ---put player in last stand mode and notify EMS.
 function StartLastStand(attacker, weapon)
+    -- Temp fix for char selection screen
+    if not LocalPlayer.state.isLoggedIn then return end
+    -- Please make an actual fix for this. This is temp.
     if startLastStandLock then return end
     startLastStandLock = true
     TriggerEvent('ox_inventory:disarm', cache.playerId, true)

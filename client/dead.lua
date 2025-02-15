@@ -140,4 +140,10 @@ function DisableControls()
     EnableControlAction(0, 249, true)
     EnableControlAction(0, 46, true)
     EnableControlAction(0, 47, true)
+
+    -- Buttons used for navigating qbx_spawn
+    -- https://github.com/Qbox-project/qbx_spawn/blob/e129d40146ec64817c4bc55842907971b8f0e3bb/client/main.lua#L74-L76
+    EnableControlAction(0, 187, true)
+    EnableControlAction(0, 188, true)
+    EnableControlAction(0, 191, true)
 end

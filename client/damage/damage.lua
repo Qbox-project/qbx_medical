@@ -208,7 +208,7 @@ local function checkForDamage()
             TriggerEvent('chat:addMessage', {
                 color = { 255, 0, 0 },
                 multiline = false,
-                args = { locale('info.status'), WEAPONS[weaponHash].damagereason }
+                args = { locale('info.status'), WEAPONS?[weaponHash]?.damagereason or 'Unknown' }
             })
             WeaponsThatDamagedPlayer[weaponHash] = true
         end

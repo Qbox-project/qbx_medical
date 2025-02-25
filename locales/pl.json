@@ -1,0 +1,53 @@
+{
+    "error": {
+        "bled_out": "Doszło do wykrwawienia..."
+    },
+    "success": {
+        "wounds_healed": "Rany zostały wyleczone!"
+    },
+    "info": {
+        "self_death": "Samodzielnie lub przez NPC",
+        "wep_unknown": "Nieznane",
+        "status": "Sprawdzenie stanu",
+        "healthy": "Jesteś całkowicie zdrowy/a!",
+        "pain_message": "%s odczuwa %s",
+        "many_places": "Odczuwasz ból w wielu miejscach...",
+        "bleed_alert": "%s",
+        "revive_player_a": "Ożyw gracza lub siebie (Tylko admin)",
+        "player_id": "ID gracza (może być puste)",
+        "pain_level": "Ustaw poziom bólu sobie lub graczowi (Tylko admin)",
+        "kill": "Zabij gracza lub siebie (Tylko admin)",
+        "heal_player_a": "Wylecz gracza lub siebie (Tylko admin)"
+    },
+    "states": {
+        "irritated": "podrażnienie",
+        "quite_painful": "dość silny ból",
+        "painful": "ból",
+        "really_painful": "silny ból",
+        "little_bleed": "Lekko krwawisz",
+        "bleed": "Krwawisz",
+        "lot_bleed": "Mocno krwawisz",
+        "big_bleed": "Bardzo mocno krwawisz"
+    },
+    "body": {
+        "head": "Głowa",
+        "neck": "Szyja",
+        "spine": "Kręgosłup",
+        "upper_body": "Górna część ciała",
+        "lower_body": "Dolna część ciała",
+        "left_arm": "Lewe ramię",
+        "left_hand": "Lewa dłoń",
+        "left_fingers": "Lewe palce",
+        "left_leg": "Lewa noga",
+        "left_foot": "Lewa stopa",
+        "right_arm": "Prawe ramię",
+        "right_hand": "Prawa dłoń",
+        "right_fingers": "Prawe palce",
+        "right_leg": "Prawa noga",
+        "right_foot": "Prawa stopa"
+    }
+    "logs": {
+        "death_log_title": "%s (%s) nie żyje",
+        "death_log_message": "%s zabił/a %s za pomocą **%s** (%s)"
+    }
+}

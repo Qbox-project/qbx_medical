@@ -45,7 +45,7 @@
         "right_fingers": "Prawe palce",
         "right_leg": "Prawa noga",
         "right_foot": "Prawa stopa"
-    }
+    },
     "logs": {
         "death_log_title": "%s (%s) nie żyje",
         "death_log_message": "%s zabił/a %s za pomocą **%s** (%s)"

@@ -64,18 +64,44 @@ end
 exports('HealPartially', healPartially)
 
 ---Compatibility with txAdmin Menu's heal options.
----This is an admin only server side event that will pass the target player id or -1.
----@class EventData
----@field id number
----@param eventData EventData
-AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
-	if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' or type(eventData.id) ~= 'number' then
-		return
-	end
-
-	revivePlayer(eventData.id)
-	heal(eventData.id)
-end)
+---This is an admin only server side event that will handle player healing from txAdmin.
+---The event name and data structure depends on the txAdmin version.
+if GetResourceState('monitor') ~= 'missing' then
+    local TX_VERSION = GetResourceMetadata('monitor', 'version')
+    if TX_VERSION >= '8.0.0' then
+        lib.print.info(('txAdmin %s integration enabled (Modern API)'):format(TX_VERSION))
+        ---Compatibility with txAdmin Menu's heal options.
+        ---This is an admin only server side event that will pass the target player id or -1.
+        ---@class EventData
+        ---@field target number
+        ---@param eventData EventData
+        AddEventHandler('txAdmin:events:playerHealed', function(eventData)
+            if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' then return end
+            local target = eventData.target
+            local author = eventData.author or 'txAdmin'
+            if type(target) == 'number' then
+                revivePlayer(target)
+	            heal(target)
+            end
+        end)
+    else
+        lib.print.info(('txAdmin %s integration enabled (Legacy API)'):format(TX_VERSION))
+        ---Compatibility with txAdmin Menu's heal options.
+        ---This is an admin only server side event that will pass the target player id or -1.
+        ---@class EventData
+        ---@field id number
+        ---@param eventData EventData
+        AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
+            if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' then return end
+            local target = eventData.id
+            local author = eventData.author or 'txAdmin'
+            if type(target) == 'number' then
+                revivePlayer(target)
+	            heal(target)
+            end
+        end)
+    end
+end
 
 local function getPlayerInjuries(state)
 	local injuries = {}

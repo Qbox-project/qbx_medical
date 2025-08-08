@@ -5,7 +5,12 @@ local allowRespawn = true
 
 local function playDeadAnimation()
     local deadAnimDict = 'dead'
-    local deadAnim = not QBX.PlayerData.metadata.ishandcuffed and 'dead_a' or 'dead_f'
+    local deadAnim = 'dead_a'
+
+    if QBX.PlayerData and QBX.PlayerData.metadata and QBX.PlayerData.metadata.ishandcuffed ~= nil then
+        deadAnim = not QBX.PlayerData.metadata.ishandcuffed and 'dead_a' or 'dead_f'
+    end
+
     local deadVehAnimDict = 'veh@low@front_ps@idle_duck'
     local deadVehAnim = 'sit'
 

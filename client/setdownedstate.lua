@@ -10,8 +10,21 @@ local function playUnescortedLastStandAnimation()
             lib.playAnim(cache.ped, vehicleDict, vehicleAnim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end
     else
-        local dict = not QBX.PlayerData.metadata.ishandcuffed and LastStandDict or LastStandCuffedDict
-        local anim = not QBX.PlayerData.metadata.ishandcuffed and LastStandAnim or LastStandCuffedAnim
+        local dict, anim
+
+        if QBX.PlayerData and QBX.PlayerData.metadata then
+            if not QBX.PlayerData.metadata.ishandcuffed then
+                dict = LastStandDict
+                anim = LastStandAnim
+            else
+                dict = LastStandCuffedDict
+                anim = LastStandCuffedAnim
+            end
+        else
+            dict = LastStandDict
+            anim = LastStandAnim
+        end
+        
         if not IsEntityPlayingAnim(cache.ped, dict, anim, 3) then
             lib.playAnim(cache.ped, dict, anim, 1.0, 1.0, -1, 1, 0, false, false, false)
         end

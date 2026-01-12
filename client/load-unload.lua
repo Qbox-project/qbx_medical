@@ -1,4 +1,5 @@
 local config = require 'config.client'
+local plyState = LocalPlayer.state
 
 ---Initialize health and armor settings on the player's ped
 ---@param ped number
@@ -15,6 +16,7 @@ end
 ---starts death or last stand based off of player's metadata
 ---@param metadata any
 local function initDeathAndLastStand(metadata)
+    if not plyState.isLoggedIn then return end
     if metadata.isdead then
         DeathTime = config.deathTime
         OnDeath()

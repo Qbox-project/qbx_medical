@@ -1,0 +1,53 @@
+{
+    "error": {
+        "bled_out": "出血多量で死亡しました..."
+    },
+    "success": {
+        "wounds_healed": "傷が治療されました！"
+    },
+    "info": {
+        "self_death": "本人またはNPC",
+        "wep_unknown": "不明",
+        "status": "状態確認",
+        "healthy": "完全に回復しました！",
+        "pain_message": "%s が %s します",
+        "many_places": "複数の箇所に痛みがあります...",
+        "bleed_alert": "%s しています",
+        "revive_player_a": "プレイヤーまたは自分を蘇生（管理者専用）",
+        "player_id": "プレイヤーID（空欄可）",
+        "pain_level": "自分またはプレイヤーの痛みレベルを設定（管理者専用）",
+        "kill": "プレイヤーまたは自分を倒す（管理者専用）",
+        "heal_player_a": "プレイヤーまたは自分を回復（管理者専用）"
+    },
+    "states": {
+        "irritated": "不快な",
+        "quite_painful": "かなり痛い",
+        "painful": "痛い",
+        "really_painful": "非常に痛い",
+        "little_bleed": "少し出血しています...",
+        "bleed": "出血しています...",
+        "lot_bleed": "かなり出血しています...",
+        "big_bleed": "激しく出血しています..."
+    },
+    "body": {
+        "head": "頭",
+        "neck": "首",
+        "spine": "背骨",
+        "upper_body": "上半身",
+        "lower_body": "下半身",
+        "left_arm": "左腕",
+        "left_hand": "左手",
+        "left_fingers": "左指",
+        "left_leg": "左足",
+        "left_foot": "左足首",
+        "right_arm": "右腕",
+        "right_hand": "右手",
+        "right_fingers": "右指",
+        "right_leg": "右足",
+        "right_foot": "右足首"
+    },
+    "logs": {
+        "death_log_title": "%s (%s) が死亡しました",
+        "death_log_message": "%s が %s を **%s** で殺しました (%s)"
+    }
+}

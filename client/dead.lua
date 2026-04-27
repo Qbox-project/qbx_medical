@@ -2,6 +2,7 @@ local config = require 'config.client'
 local sharedConfig = require 'config.shared'
 local WEAPONS = exports.qbx_core:GetWeapons()
 local allowRespawn = true
+local plyState = LocalPlayer.state
 
 local function playDeadAnimation()
     local deadAnimDict = 'dead'
@@ -39,7 +40,7 @@ function OnDeath(attacker, weapon)
             Wait(0)
         end
     end)
-    LocalPlayer.state.invBusy = true
+    plyState.invBusy = true
 
     ResurrectPlayer()
     playDeadAnimation()
@@ -57,7 +58,7 @@ local function respawn()
         TriggerEvent('police:client:GetCuffed', -1)
     end
     TriggerEvent('police:client:DeEscort')
-    LocalPlayer.state.invBusy = false
+    plyState.invBusy = false
 end
 
 ---Allow player to respawn
@@ -117,6 +118,7 @@ end
 ---@param data table
 AddEventHandler('gameEventTriggered', function(event, data)
     if event ~= 'CEventNetworkEntityDamage' then return end
+    if not plyState.isLoggedIn then return end
     local victim, attacker, victimDied, weapon = data[1], data[2], data[4], data[7]
     if not IsEntityAPed(victim) or not victimDied or NetworkGetPlayerIndexFromPed(victim) ~= cache.playerId or not IsEntityDead(cache.ped) then return end
     if DeathState == sharedConfig.deathState.ALIVE then

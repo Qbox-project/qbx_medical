@@ -167,7 +167,6 @@ local function resetAllInjuries()
     SendBleedAlert()
     MakePedLimp()
     doLimbAlert()
-    lib.callback.await('qbx_medical:server:resetHungerAndThirst')
 end
 
 ---notify the player of bleeding to their body.

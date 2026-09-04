@@ -1,0 +1,53 @@
+{
+    "error": {
+        "bled_out": "Je bent leeggebloed..."
+    },
+    "success": {
+        "wounds_healed": "Je wonden zijn genezen!"
+    },
+    "info": {
+        "self_death": "Zichzelf of een NPC",
+        "wep_unknown": "Onbekend",
+        "status": "Statuscontrole",
+        "healthy": "Je bent weer helemaal gezond!",
+        "pain_message": "Uw%svoelt aan als%s",
+        "many_places": "Je hebt pijn op veel plaatsen...",
+        "bleed_alert": "Jij bent%s",
+        "revive_player_a": "Breng een speler of jezelf weer tot leven (alleen beheerder)",
+        "player_id": "Speler-ID (kan leeg zijn)",
+        "pain_level": "Stel het pijnniveau van jou of een speler in (alleen beheerder)",
+        "kill": "Dood een speler of jezelf (alleen beheerder)",
+        "heal_player_a": "Genees een speler of jezelf (alleen beheerder)"
+    },
+    "states": {
+        "irritated": "geïrriteerd",
+        "quite_painful": "behoorlijk pijnlijk",
+        "painful": "pijnlijk",
+        "really_painful": "echt pijnlijk",
+        "little_bleed": "bloedt een beetje...",
+        "bleed": "bloeden...",
+        "lot_bleed": "bloedt veel...",
+        "big_bleed": "bloedt heel erg..."
+    },
+    "body": {
+        "head": "Hoofd",
+        "neck": "Nek",
+        "spine": "Ruggengraat",
+        "upper_body": "Bovenlichaam",
+        "lower_body": "Onderlichaam",
+        "left_arm": "Linkerarm",
+        "left_hand": "Linkerhand",
+        "left_fingers": "Linkervingers",
+        "left_leg": "Linkerbeen",
+        "left_foot": "Linkervoet",
+        "right_arm": "Rechterarm",
+        "right_hand": "Rechterhand",
+        "right_fingers": "Rechter vingers",
+        "right_leg": "Rechterbeen",
+        "right_foot": "Rechtervoet"
+    },
+    "logs": {
+        "death_log_title": "%s(%s) is dood",
+        "death_log_message": "%sheeft%sgedood met een **%s** (%s)"
+    }
+}

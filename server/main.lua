@@ -67,8 +67,9 @@ exports('HealPartially', healPartially)
 ---This is an admin only server side event that will handle player healing from txAdmin.
 ---The event name and data structure depends on the txAdmin version.
 if GetResourceState('monitor') ~= 'missing' then
-    local TX_VERSION = GetResourceMetadata('monitor', 'version')
-    if TX_VERSION >= '8.0.0' then
+    local TX_VERSION = GetResourceMetadata('monitor', 'version', 0) or 'unknown'
+    local majorVersion = tonumber(TX_VERSION:match('^(%d+)')) or 0
+    if majorVersion >= 8 then
         lib.print.info(('txAdmin %s integration enabled (Modern API)'):format(TX_VERSION))
         ---Compatibility with txAdmin Menu's heal options.
         ---This is an admin only server side event that will pass the target player id or -1.
@@ -78,10 +79,9 @@ if GetResourceState('monitor') ~= 'missing' then
         AddEventHandler('txAdmin:events:playerHealed', function(eventData)
             if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' then return end
             local target = eventData.target
-            local author = eventData.author or 'txAdmin'
             if type(target) == 'number' then
                 revivePlayer(target)
-	            heal(target)
+                heal(target)
             end
         end)
     else
@@ -94,10 +94,9 @@ if GetResourceState('monitor') ~= 'missing' then
         AddEventHandler('txAdmin:events:healedPlayer', function(eventData)
             if GetInvokingResource() ~= 'monitor' or type(eventData) ~= 'table' then return end
             local target = eventData.id
-            local author = eventData.author or 'txAdmin'
             if type(target) == 'number' then
                 revivePlayer(target)
-	            heal(target)
+                heal(target)
             end
         end)
     end

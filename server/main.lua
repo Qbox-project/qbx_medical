@@ -46,6 +46,12 @@ end)
 
 ---@param player table|number
 local function resetHungerAndThirst(player)
+    if player == -1 then
+        for _, onlinePlayer in pairs(exports.qbx_core:GetQBPlayers()) do
+            resetHungerAndThirst(onlinePlayer)
+        end
+        return
+    end
     if type(player) == 'number' then
         player = exports.qbx_core:GetPlayer(player)
     end
@@ -56,10 +62,13 @@ local function resetHungerAndThirst(player)
     TriggerClientEvent('hud:client:UpdateNeeds', player.PlayerData.source, 100, 100)
 end
 
+exports('ResetHungerAndThirst', resetHungerAndThirst)
+
 ---@param player table|number
 local function revivePlayer(player)
     resetHungerAndThirst(player)
-    TriggerClientEvent('qbx_medical:client:playerRevived', player --[[@as number]])
+    local target = type(player) == 'table' and player.PlayerData.source or player
+    TriggerClientEvent('qbx_medical:client:playerRevived', target)
 end
 
 exports('Revive', revivePlayer)

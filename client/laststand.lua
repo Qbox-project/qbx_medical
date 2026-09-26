@@ -42,8 +42,8 @@ local function logPlayerKiller()
     local killerId = NetworkGetPlayerIndexFromPed(killer)
     local killerName = killerId ~= -1 and (' %s (%d)'):format(GetPlayerName(killerId), GetPlayerServerId(killerId)) or locale('info.self_death')
     local weaponItem = WEAPONS[killerWeapon]
-    local weaponLabel = locale('info.wep_unknown') or (weaponItem and weaponItem.label)
-    local weaponName = locale('info.wep_unknown') or (weaponItem and weaponItem.name)
+    local weaponLabel = (weaponItem and weaponItem.label) or locale('info.wep_unknown')
+    local weaponName = (weaponItem and weaponItem.name) or locale('info.wep_unknown')
     local message = locale('logs.death_log_message', killerName, GetPlayerName(cache.playerId), weaponLabel, weaponName)
 
     lib.callback.await('qbx_medical:server:log', false, 'playerKiller', message)

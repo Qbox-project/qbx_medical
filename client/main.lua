@@ -219,6 +219,7 @@ RegisterNetEvent('qbx_medical:client:playerRevived', function()
         EndLastStand()
     end
 
+    TriggerEvent('police:client:DeEscort')
     SetEntityMaxHealth(cache.ped, 200)
     SetEntityHealth(cache.ped, 200)
     ClearPedBloodDamage(cache.ped)
